@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewBag.Title = string.Format("{0}-管理后台", SysSetingsHelp.ProjectInfo.name);
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string pageId = ViewBag.pageId;
+}
+@model UserManager
+
+<div id="@(pageId)changePwdWin" class="easyui-dialog dialogwin" title="修改密码" style="width:420px;height:200px" data-options="resizable:false,modal:true,closed:true">
+</div>
+<div id="@(pageId)userInfoWin" class="easyui-dialog dialogwin" title="我的" style="width:80%;height:80%" data-options="resizable:false,modal:true,closed:true">
+</div>
+<audio id="sysNoticePlayer" style="display:none;">
+    <source src="~/Areas/Admin/Content/music/prompt.mp3" type="audio/ogg">
+</audio>
+<div data-options="region:'north',border:false" style="height: 63px;">
+    <div id="MainTitle">
+        <div id="TopLogo"><img src="~/Areas/Admin/Content/images/manager_log.png" /></div>
+        <div id="TopNav">
+            <div class="easyui-panel" id="topMenulist" data-options="border:false">
+                <a href="javascript:void(0);" id="@(pageId)userInfoBtn" class="easyui-linkbutton" data-options="plain:true">您好：@(Model.fullName)&nbsp;[角色：@(Model.rolesString)]</a>
+                @*@{
+                    int i = 0;
+                    foreach (SysMenu m in ViewBag.userMenu)
+                    {
+                        <a href="#" class="easyui-linkbutton LeftMenuChange" menuIndex="@i" data-options="group:'TopMenu',toggle:true,plain:true,selected:false,iconCls:'@m.icon'">@m.text</a>
+                        i++;
+                    }
+                }*@
+                <a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-lock'" id="@(pageId)UserChangePwdBtn">修改密码</a>
+                <a href="@Url.Action("logout","Login")" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-back'">退出登录</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div data-options="region:'west',split:true,title:'导航'" style="width: 200px; padding: 10px;">
+    <div class="easyui-panel" id="MainLeftTreeMenu" data-options="border:false">
+        <ul id="MainLeftTreeMenuList"></ul>
+    </div>
+</div>
+<div data-options="region:'east',split:true,collapsed:true,title:'更多'" style="width: 200px;"></div>
+<div data-options="region:'south',border:false" style="height: 30px; background: #A9FACD; padding: 7px;">@SysSetingsHelp.ProjectInfo.name - 后台管理系统</div>
+<div data-options="region:'center'">
+    <div id="MainCenterTabs" data-options="border:false, fit:true" class="easyui-tabs"></div>
+</div>

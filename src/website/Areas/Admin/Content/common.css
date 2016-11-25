@@ -1,0 +1,45 @@
+﻿    .tablebox {
+        padding:5px;
+    }
+    .formtable {
+        border-collapse:collapse;
+        width:100%;
+    }
+    .formtable td {
+        border:1px solid #eaeaea;
+        padding:10px;
+        vertical-align:top;
+    }
+        .formtable td.t {
+            width:15%;
+            font-weight:bold;
+        }
+        .formtable td:after {
+            border-bottom:none;
+        }
+    .formtitle {
+        line-height:2em;
+        font-size:1.2em;
+        padding-left:1px;
+        color: #297bed;
+    }
+   .hadImgWrap {
+        display: inline-block;
+        margin: 5px;
+        width: 250px;
+        height: 130px;
+        border: 1px solid #ddd;
+        overflow: hidden;
+    }
+    #addImg {
+        margin: 50px 0 0 90px;
+    }
+    .formtable {
+        border-collapse: collapse;
+
+    }
+    .supportTable td{
+        border:1px solid #eaeaea;
+        padding:10px;
+        vertical-align:top;
+    }

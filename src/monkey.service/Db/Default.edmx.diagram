@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d16b0da62c834e35a50ed90b60321172" Name="Diagram1" >
+        <EntityTypeShape EntityType="Default.Db_BaseUser" Width="1.5" PointX="0.5" PointY="0.625" />
+        <EntityTypeShape EntityType="Default.Db_ManagerUser" Width="1.5" PointX="0.5" PointY="3.25" />
+        <InheritanceConnector EntityType="Default.Db_ManagerUser" />
+        <EntityTypeShape EntityType="Default.Db_BaseLog" Width="1.5" PointX="6.375" PointY="0.5" />
+        <EntityTypeShape EntityType="Default.Db_ExceptionLog" Width="1.5" PointX="8.875" PointY="0.5" IsExpanded="true" />
+        <InheritanceConnector EntityType="Default.Db_ExceptionLog" />
+        <EntityTypeShape EntityType="Default.Db_UserLog" Width="1.5" PointX="8.875" PointY="2.75" />
+        <InheritanceConnector EntityType="Default.Db_UserLog" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

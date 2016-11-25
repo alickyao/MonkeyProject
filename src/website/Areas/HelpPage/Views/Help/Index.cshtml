@@ -1,0 +1,173 @@
+@using System.Web.Http
+@using System.Web.Http.Controllers
+@using System.Web.Http.Description
+@using System.Collections.ObjectModel
+@using website.Areas.HelpPage.Models
+@using monkey.service;
+@model Collection<ApiDescription>
+
+@{
+    ProjectInfo projectInfo = ViewBag.projectInfo;
+    ViewBag.Title = string.Format("{0} - Api Help Docs", projectInfo.name);
+
+    // Group APIs by controller
+    ILookup<HttpControllerDescriptor, ApiDescription> apiGroups = Model.ToLookup(api => api.ActionDescriptor.ControllerDescriptor);
+}
+
+<link type="text/css" href="~/Areas/HelpPage/HelpPage.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.11.3.min.js" type="text/javascript"></script>
+
+<style>
+    #mainTable {
+        width:100%;
+        border-collapse:collapse;
+        border-top:2px solid #0094ff;
+    }
+        #mainTable td {
+            padding:10px;
+            vertical-align:top;
+        }
+            #mainTable td#left {
+                width:30%;
+                background-color:#efefef;
+            }
+            #mainTable td.follow #wrap {
+                position:fixed;
+                left:18px;
+                top:8px;
+            }
+    #wrap{
+	    overflow:hidden;
+    }
+    #box1{
+	    margin:0 20px;
+	    overflow-y:scroll;
+	    overflow-x:hidden;
+    }
+
+    #Nav {
+        background-color:#aae3f2;
+        padding-left:10px;
+    }
+        #Nav ul {
+            list-style:none;
+            margin:0;
+            padding:10px 0 10px 0;
+        }
+        #Nav li {
+            display:inline;
+            padding:5px 5px 5px 0px;
+        }
+            #Nav li a {
+                text-decoration:none;
+                font-weight:bold;
+            }
+</style>
+<script>
+    $(function () {
+        var leftTd = $("#mainTable #left");
+        var headHeight = $("#head").height();
+        var listDir = $("#ListDir");
+        var wrap = $("#wrap");
+        wrap.css("width", leftTd.width() - 20 + "px");
+        wrap.css("heidht", leftTd.height() - 20 + "px");
+        var box1 = $("#box1");
+        box1.css("width", leftTd.width() - 20 + "px");
+        box1.css("heidht", leftTd.height() - 20 + "px");
+        listDir.css("width", leftTd.width() - 20 + "px");
+        listDir.css("heidht", leftTd.width() - 20 + "px");
+
+        $(window).scroll(function () {
+            var wt = $(window).scrollTop();
+
+            if (wt > headHeight) {
+                //浮动左侧的目录
+                if (!leftTd.hasClass("follow")) {
+                    console.log("浮动左侧目录");
+                    leftTd.addClass("follow");
+                    listDir.css("height", $(window).height() + "px");
+                }
+            }
+            else {
+                //归为左侧的目录
+                if (leftTd.hasClass("follow")) {
+                    console.log("归为左侧目录");
+                    leftTd.removeClass("follow");
+                    listDir.css("height", "auto");
+                }
+            }
+        });
+    });
+</script>
+<div id="head">
+    <header class="help-page">
+        <div class="content-wrapper">
+            <div class="float-left">
+                <h1>@ViewBag.Title</h1>
+            </div>
+        </div>
+    </header>
+    <section class="featured">
+        <div class="content-wrapper">
+            <h2>Introduction</h2>
+            <p>
+                @projectInfo.describe
+            </p>
+        </div>
+    </section>
+    <div id="Nav">
+        <ul>
+            <li>
+                <a href="@Url.Action("Index","Home",new { area="Admin"})">管理后台入口</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="body" class="help-page">
+    <table id="mainTable">
+        <tr>
+            <td id="left">
+                <div id="wrap">
+                    <div id="box1">
+                        <div id="ListDir">
+                            <section class="featured">
+                                <h2>目录</h2>
+                            </section>
+                            <section class="content-wrapper main-content clear-fix" style="padding-right:20px;">
+                                <table class="help-page-table">
+                                    <thead>
+                                        <tr>
+                                            <th>API Class</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ int dirNum = 1;}
+                                        @foreach (var group in apiGroups)
+                                        {
+                                            <tr>
+                                                <td class="api-name">@dirNum.ToString().PadLeft(2,'0') . <a href="#@(group.Key.ControllerName)">@group.Key.ControllerName</a></td>
+                                                <td class="api-documentation">@ViewBag.DocumentationProvider.GetDocumentation(group.Key)</td>
+                                            </tr>
+                                            dirNum++;
+                                        }
+                                    </tbody>
+                                </table>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <section class="content-wrapper main-content clear-fix">
+                    @foreach (var group in apiGroups)
+                    {
+                        @Html.DisplayFor(m => group, "ApiGroup")
+                    }
+                </section>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
