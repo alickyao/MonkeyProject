@@ -288,3 +288,7 @@ function showmsg(json) {
         $.messager.alert('发生异常', json.msg+"code:"+json.error, 'error');
     }
 }
+
+function getIframe(url) {
+    return '<iframe style="width:100%;height:100%;border:none;" frameborder="0" scrolling="no" src="' + url + '"></iframe>';
+}

@@ -2,10 +2,64 @@
 @{
     ViewBag.Title = string.Format("{0}-管理后台", SysSetingsHelp.ProjectInfo.name);
     Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string userMenu = JsonConvert.SerializeObject(Model.userMenu);
     string pageId = ViewBag.pageId;
 }
 @model UserManager
 
+<script>
+    $(function () {
+        //用户菜单
+        var userMenu = $.parseJSON('@Html.Raw(userMenu)');
+        if (userMenu.length > 0) {
+            //左侧菜单项目初始化
+            $('#MainLeftTreeMenuList').tree({
+                data: userMenu[0].children,
+                animate: true,
+                lines: true,
+                onClick: function (node) {
+                    console.log(node);
+                    if (node.url != null && node.url != "") {
+                        //判断标签是否已经被打开
+                        var opened = $("#MainCenterTabs").tabs('exists', node.text);
+                        if (!opened) {
+                            $("#MainCenterTabs").tabs('add', {
+                                title: node.text,
+                                href: node.url,
+                                closable: true,
+                                iconCls: node.icon
+                            });
+                        }
+                        else {
+                            $("#MainCenterTabs").tabs('select', node.text)
+                        }
+                    }
+                    else {
+                        console.log("菜单项未定义URL参数");
+                    }
+                }
+            });
+
+            //绑定顶部菜单点击事件
+            $(".LeftMenuChange").click(function () {
+                var index = $(this).attr("menuIndex");
+                $('#MainLeftTreeMenuList').tree({
+                    data: userMenu[index].children
+                });
+            });
+            $(".LeftMenuChange").first().click();
+        }
+        //加载工作台
+        $("#MainCenterTabs").tabs('add', {
+            title: "工作台",
+            //href: "",
+            closable: false,
+            iconCls: "icon-edit",
+            content: getIframe("@Url.Action("workTab")")
+        });
+    });
+</script>
+@*<iframe style="width:100%;height:100%;border:none; overflow:hidden;" frameborder="0" src="@Url.Action("workTab")"></iframe>*@
 <div id="@(pageId)changePwdWin" class="easyui-dialog dialogwin" title="修改密码" style="width:420px;height:200px" data-options="resizable:false,modal:true,closed:true">
 </div>
 <div id="@(pageId)userInfoWin" class="easyui-dialog dialogwin" title="我的" style="width:80%;height:80%" data-options="resizable:false,modal:true,closed:true">
@@ -17,16 +71,16 @@
     <div id="MainTitle">
         <div id="TopLogo"><img src="~/Areas/Admin/Content/images/manager_log.png" /></div>
         <div id="TopNav">
-            <div class="easyui-panel" id="topMenulist" data-options="border:false">
+            <div id="topMenulist" data-options="border:false">
                 <a href="javascript:void(0);" id="@(pageId)userInfoBtn" class="easyui-linkbutton" data-options="plain:true">您好：@(Model.fullName)&nbsp;[角色：@(Model.rolesString)]</a>
-                @*@{
+                @{
                     int i = 0;
-                    foreach (SysMenu m in ViewBag.userMenu)
+                    foreach (var m in Model.userMenu)
                     {
                         <a href="#" class="easyui-linkbutton LeftMenuChange" menuIndex="@i" data-options="group:'TopMenu',toggle:true,plain:true,selected:false,iconCls:'@m.icon'">@m.text</a>
                         i++;
                     }
-                }*@
+                }
                 <a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-lock'" id="@(pageId)UserChangePwdBtn">修改密码</a>
                 <a href="@Url.Action("logout","Login")" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-back'">退出登录</a>
             </div>

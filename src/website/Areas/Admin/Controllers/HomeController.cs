@@ -22,7 +22,17 @@ namespace website.Areas.Admin.Controllers
         {
             Response.Cache.SetNoStore();
             UserManager user = UserManager.getUserById(User.Identity.Name);
+            user.getUserMenu();
             return View(user);
+        }
+
+        /// <summary>
+        /// 工作台
+        /// </summary>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult workTab() {
+            return View();
         }
     }
 }

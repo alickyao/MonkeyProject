@@ -22,5 +22,9 @@
         padding: 5px; border:1px solid #dedede; border-bottom:none; border-right:none;
         border-top-left-radius:3px;
         background-color:#fcfcfc;
-        margin-top:26px;
+        margin-top:24px;
     }
+
+#MainCenterTabs .tabs-panels>.panel>.panel-body {  
+    overflow: hidden;  
+}  

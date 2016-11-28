@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using monkey.service.Db;
 using System.ComponentModel.DataAnnotations;
 using monkey.service.Logs;
+using monkey.service.Frame;
 
 namespace monkey.service.Users
 {
@@ -198,6 +199,69 @@ namespace monkey.service.Users
                 return new UserManager(row);
             }
         }
+
+
+        #region -- 用户菜单
+        private List<ManagerMenu> _userMenu = new List<ManagerMenu>();
+
+        /// <summary>
+        /// 用户的菜单项目
+        /// </summary>
+        public List<ManagerMenu> userMenu {
+            get { return _userMenu; }
+            set { _userMenu = value; }
+        }
+
+        /// <summary>
+        /// 获取用户的菜单(根据用户的角色)
+        /// </summary>
+        /// <returns></returns>
+        public List<ManagerMenu> getUserMenu()
+        {
+            List<ManagerMenu> m = ManagerMenu.managerMenu;
+            foreach (var s in m)
+            {
+                if (s.roles.Count == 0 ? true : s.roles.Intersect(this.rolesList).Count() > 0)
+                {
+                    this.userMenu.Add(new ManagerMenu()
+                    {
+                        icon = s.icon,
+                        roles = s.roles,
+                        text = s.text,
+                        url = s.url,
+                        children = s.children == null ? new List<ManagerMenu>() : getUserCheldMenu(s.children)
+                    });
+                }
+            }
+            return this.userMenu;
+        }
+
+        /// <summary>
+        /// 根据权限递归子菜单
+        /// </summary>
+        /// <param name="children"></param>
+        /// <returns></returns>
+        private List<ManagerMenu> getUserCheldMenu(List<ManagerMenu> children)
+        {
+            List<ManagerMenu> child = new List<ManagerMenu>();
+            foreach (var s in children)
+            {
+                if (s.roles.Count == 0 ? true : s.roles.Intersect(this.rolesList).Count() > 0)
+                {
+                    child.Add(new ManagerMenu()
+                    {
+                        icon = s.icon,
+                        roles = s.roles,
+                        text = s.text,
+                        url = s.url,
+                        children = s.children == null ? new List<ManagerMenu>() : getUserCheldMenu(s.children)
+                    });
+                }
+            }
+            return child;
+        }
+
+        #endregion
 
         public string getIdString()
         {
