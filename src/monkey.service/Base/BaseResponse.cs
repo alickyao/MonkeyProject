@@ -88,10 +88,14 @@ namespace monkey.service
     /// </summary>
     /// <typeparam name="T">数据行的类型</typeparam>
     public class BaseResponseList<T> {
+        private List<T> _rows = new List<T>();
         /// <summary>
         /// 数据行
         /// </summary>
-        public List<T> rows { get; set; }
+        public List<T> rows {
+            get { return _rows; }
+            set { _rows = value; }
+        }
         /// <summary>
         /// 总数
         /// </summary>

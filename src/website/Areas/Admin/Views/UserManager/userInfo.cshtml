@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewBag.Title = "用户信息";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+}
+
+@model UserManager
+
+<div data-options="region:'center',border:false" style="padding:5px;">
+    <h4>基本信息</h4>
+    <table class="formtable">
+        <tr>
+            <td class="t">登录名</td>
+            <td>@Model.loginName</td>
+        </tr>
+        <tr>
+            <td class="t">姓名</td>
+            <td>@Model.fullName</td>
+        </tr>
+        <tr>
+            <td class="t">角色</td>
+            <td>@Model.rolesString</td>
+        </tr>
+        <tr>
+            <td class="t">手机号码</td>
+            <td>@Model.mobilePhone</td>
+        </tr>
+        <tr>
+            <td class="t">创建时间</td>
+            <td>@Model.createdOn.ToString("yyyy-MM-dd HH:mm")</td>
+        </tr>
+        <tr>
+            <td class="t">最近登录</td>
+            <td>@(Model.lastLoginTime==null?"":Model.lastLoginTime.Value.ToString("yyyy-MM-dd HH:mm"))</td>
+        </tr>
+    </table>
+</div>

@@ -51,4 +51,20 @@ namespace monkey.service
             set { _getRows = value; }
         }
     }
+
+    /// <summary>
+    /// 标准带起止时间的查询请求对象
+    /// </summary>
+    public class BaseDateTimeRequest : BaseRequest
+    {
+        /// <summary>
+        /// 开始时间-可为空 为空则不限
+        /// </summary>
+        public DateTime? beginDate { get; set; }
+
+        /// <summary>
+        /// 结束时间-可为空 为空则不限
+        /// </summary>
+        public DateTime? endDate { get; set; }
+    }
 }

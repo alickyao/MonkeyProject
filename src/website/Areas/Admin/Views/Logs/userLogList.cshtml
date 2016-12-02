@@ -1,0 +1,119 @@
+﻿@using monkey.service.Logs;
+@{
+    ViewBag.Title = "userLogList";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string condtion = JsonConvert.SerializeObject(Model);
+    string pageId = ViewBag.pageId;
+}
+@model UserLogSearchRequest
+
+<script>
+    $(function () {
+        var request = $.parseJSON('@Html.Raw(condtion)');
+        var grid = $("#@(pageId)grid");
+
+        function loadGrid() {
+            console.log(request);
+            grid.datagrid("loading");
+            $.post("/api/Logs/getUserLogs", request, function (json) {
+                setGridRows(json, grid);
+            });
+        }
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: true,
+            rownumbers: false,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            onDblClickRow: function (rowIndex, rowData) {
+
+            },
+            columns: [[
+                {
+                    field: 'Id', title: '编号', align: 'right'
+                },
+
+                {
+                    field: 'showTime', title: '创建时间', align: 'right'
+                },
+                {
+                    field: 'code', title: '标示', align: 'left'
+                },
+                {
+                    field: 'userName', title: '对应用户', align: 'left'
+                },
+
+                {
+                    field: 'message', title: '信息内容'
+                },
+                {
+                    field: 'fkName', title: '对应其他信息名称', align: 'left'
+                },
+                {
+                    field: 'createdOnString', title: '详细时间', align: 'left'
+                }
+            ]]
+        });
+
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            }
+        });
+        loadGrid();
+
+        //查询栏
+        $("#@(pageId)searchbtn").click(function () {
+            var d = $("#@(pageId)searchform").serializeObject();
+            request.page = 1;
+            request.userName = d.userName;
+            request.q = d.q;
+            request.beginDate = d.beginDate;
+            request.endDate = d.endDate;
+            loadGrid();
+            grid.datagrid('getPager').pagination({
+                pageNumber: 1
+            });
+        });
+        $("#@(pageId)clearsearchbtn").click(function () {
+            $("#@(pageId)searchform").form("clear");
+        });
+    });
+</script>
+
+<div data-options="region:'north',border:false,title:'查询栏',split:false,iconCls:'icon-search'" style="padding:5px; background:#fdfdfd; height:71px;">
+    <form id="@(pageId)searchform">
+        <table>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td>对应用户:</td>
+                            <td><input type="text" class="easyui-textbox" name="userName" style="width:100px;"  /></td>
+                            <td>关键字:</td>
+                            <td><input type="text" class="easyui-textbox" name="q" style="width:100px;"  /></td>
+                            <td>开始时间:</td>
+                            <td><input type="text" class="easyui-datebox" name="beginDate" style="width:100px;" data-options="editable:false" /></td>
+                            <td>结束时间:</td>
+                            <td><input type="text" class="easyui-datebox" name="endDate" style="width:100px;" data-options="editable:false" /></td>
+                        </tr>
+                    </table>
+                </td>
+                <td><a href="#" class="easyui-linkbutton" iconCls="icon-search" id="@(pageId)searchbtn">查询</a></td>
+                <td><a href="#" class="easyui-linkbutton" iconCls="icon-clear" id="@(pageId)clearsearchbtn">清空查询栏</a></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div data-options="region:'center',border:false">
+    <table id="@(pageId)grid"></table>
+</div>
+

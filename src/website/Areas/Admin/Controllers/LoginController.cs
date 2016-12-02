@@ -1,4 +1,6 @@
-﻿using System;
+﻿using monkey.service;
+using monkey.service.Users;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,7 +12,7 @@ namespace website.Areas.Admin.Controllers
     /// <summary>
     /// 登录与注销
     /// </summary>
-    public class LoginController : Controller
+    public class LoginController : BaseController
     {
         /// <summary>
         /// 用户登录界面
@@ -28,6 +30,15 @@ namespace website.Areas.Admin.Controllers
         public ActionResult logout() {
             FormsAuthentication.SignOut();
             return RedirectToAction("login");
+        }
+
+        /// <summary>
+        /// 修改密码界面
+        /// </summary>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult changePwd() {
+            return View();
         }
     }
 }

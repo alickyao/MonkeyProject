@@ -193,8 +193,10 @@ namespace monkey.service.Users
         public void updateLastLoginInfo(string ipAddress) {
             this.lastLoginIpAddress = ipAddress;
             this.lastLoginTime = DateTime.Now;
+            saveLastLoginInfo();
         }
-        private void saveLastLoginInfo(string ipAddress) {
+
+        private void saveLastLoginInfo() {
             using (var db = new DefaultContainer())
             {
                 var row = db.Db_BaseUserSet.Single(p => p.Id == this.Id);

@@ -157,15 +157,21 @@
         <text>系统日志</text>
         <children>
           <ManagerMenu>
-            <text>用户日志</text>
+            <text>系统日志</text>
             <url>
-              <![CDATA[/Admin/ManagerMsg/userLog]]>
+              <![CDATA[/manager/Logs/baseLogList]]>
             </url>
           </ManagerMenu>
           <ManagerMenu>
-            <text>错误日志</text>
+            <text>用户日志</text>
             <url>
-              <![CDATA[/Admin/ManagerMsg/exceptionLog]]>
+              <![CDATA[/manager/Logs/userLogList]]>
+            </url>
+          </ManagerMenu>
+          <ManagerMenu>
+            <text>运行异常记录</text>
+            <url>
+              <![CDATA[/manager/Logs/exceptionLogList]]>
             </url>
           </ManagerMenu>
         </children>

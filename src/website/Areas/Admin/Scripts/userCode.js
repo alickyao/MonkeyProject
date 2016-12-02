@@ -275,20 +275,60 @@ function randomString(len) {
     return pwd;
 }
 
+//显示接口返回的信息
 function showmsg(json) {
     console.log(json);
-    if (json.error == 0) {
+    if (json.Message == "0") {
         //$.messager.alert('已完成', json.msg, 'info');
-        if (json.msg == "" || json.msg == null || json.msg == undefined || json.msg == "SUCCESS") {
-            json.msg = "操作成功";
+        if (json.MessageDetail == "" || json.MessageDetail == null || json.MessageDetail == undefined || json.MessageDetail == "SUCCESS") {
+            json.MessageDetail = "操作成功";
         }
-        toastr.info(json.msg);
+        toastr.info(json.MessageDetail);
     }
     else {
-        $.messager.alert('发生异常', json.msg+"code:"+json.error, 'error');
+        $.messager.alert(getErrorTitle(json.Message), "错误提示：<br />" + json.MessageDetail, 'error');
+    }
+}
+
+function getErrorTitle(code) {
+    var title = "未知异常";
+    switch (code) {
+        case "400":
+            title = "提交的请求参数为空";
+            break;
+        case "403":
+            title = "数据验证错误 服务器拒绝执行[code:" + code + "]";
+            break;
+        case "404":
+            title = "未能通过指定的条件找到对应的信息[code:" + code + "]";
+            break;
+        case "500":
+            title = "服务器错误[code:" + code + "]";
+            break;
+        case "501":
+            title = "该方法还未在服务器实现[code:" + code + "]";
+            break;
+        case "504":
+            title = "执行超时[code:" + code + "]";
+            break;
+    }
+    return title;
+}
+
+//给网格加载标准的接口返回列表数据
+function setGridRows(json, grid) {
+    console.log(json);
+    grid.datagrid("loaded");
+    if (json.Message == "0") {
+        grid.datagrid("loadData", json.item);
+    }
+    else {
+        $.messager.alert(getErrorTitle(json.Message), "错误提示：<br />" + json.MessageDetail, 'error');
     }
 }
 
 function getIframe(url) {
     return '<iframe style="width:100%;height:100%;border:none;" frameborder="0" scrolling="no" src="' + url + '"></iframe>';
 }
+
+toastr.options.positionClass = "toast-top-center";

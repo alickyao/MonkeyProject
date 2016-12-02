@@ -1,0 +1,140 @@
+﻿@using monkey.service.Logs;
+@{
+    ViewBag.Title = "baseLogList";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string condtion = JsonConvert.SerializeObject(Model);
+    string pageId = ViewBag.pageId;
+    var logType = JsonConvert.SerializeObject(SysHelps.getEnumTypeList(typeof(BaseLogType)));
+
+}
+@model BaseLogSearchReqeust
+<script>
+    $(function () {
+        var request = $.parseJSON('@Html.Raw(condtion)');
+        var logTypes = $.parseJSON('@Html.Raw(logType)');
+        var grid = $("#@(pageId)grid");
+
+        function loadGrid() {
+            if (request.types == null || request.types == undefined) {
+                request.types = [];
+            }
+            console.log(request);
+            grid.datagrid("loading");
+            $.post("/api/Logs/getLogs", request, function (json) {
+                setGridRows(json, grid);
+            });
+        }
+
+        $("#@(pageId)selectType").combobox({
+            valueField: "value",
+            textField: "text",
+            data: logTypes,
+            editable: false,
+            multiple:true
+        });
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: true,
+            rownumbers: false,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            onDblClickRow: function (rowIndex, rowData) {
+
+            },
+            columns: [[
+                {
+                    field: 'Id', title: '编号', align: 'right'
+                },
+                {
+                    field: 'logType', title: '类型', align: 'center',
+                    formatter: function (value, row, index) {
+                        return "";
+                    },
+                    styler: function (value, row, index) {
+                        var filename = "";
+                        switch (value) {
+                            case 0://系统
+                                filename = "tip.png"
+                                break;
+                            case 1://异常
+                                filename = "no.png"
+                                break;
+                            case 2://用户日志
+                                filename = "pencil.png"
+                                break;
+                        }
+                        return "background:url('/Areas/Admin/Content/theme/icons/" + filename + "') no-repeat center center;"
+                    }
+                },
+
+                {
+                    field: 'showTime', title: '创建时间', align: 'right'
+                },
+                {
+                    field: 'message', title: '信息内容'
+                },
+                {
+                    field: 'createdOnString', title: '详细时间', align: 'left'
+                }
+            ]]
+        });
+
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            }
+        });
+
+        //查询栏
+        $("#@(pageId)searchbtn").click(function () {
+            var d = $("#@(pageId)searchform").serializeObject();
+            request.page = 1;
+            request.types = d.types;
+            request.beginDate = d.beginDate;
+            request.endDate = d.endDate;
+            loadGrid();
+            grid.datagrid('getPager').pagination({
+                pageNumber: 1
+            });
+        });
+        $("#@(pageId)clearsearchbtn").click(function () {
+            $("#@(pageId)searchform").form("clear");
+        });
+
+        loadGrid();
+    });
+</script>
+<div data-options="region:'north',border:false,title:'查询栏',split:false,iconCls:'icon-search'" style="padding:5px; background:#fdfdfd; height:71px;">
+    <form id="@(pageId)searchform">
+        <table>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td>类型:</td>
+                            <td><select class="easyui-combobox" id="@(pageId)selectType" name="types" panelHeight="auto" style="width:100px"></select></td>
+                            <td>开始时间:</td>
+                            <td><input type="text" class="easyui-datebox" name="beginDate" style="width:100px;" data-options="editable:false" /></td>
+                            <td>结束时间:</td>
+                            <td><input type="text" class="easyui-datebox" name="endDate" style="width:100px;" data-options="editable:false" /></td>
+                        </tr>
+                    </table>
+                </td>
+                <td><a href="#" class="easyui-linkbutton" iconCls="icon-search" id="@(pageId)searchbtn">查询</a></td>
+                <td><a href="#" class="easyui-linkbutton" iconCls="icon-clear" id="@(pageId)clearsearchbtn">清空查询栏</a></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div data-options="region:'center',border:false">
+    <table id="@(pageId)grid"></table>
+</div>
+

@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewBag.Title = "修改密码";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+}
+<script>
+    $(document).ready(function(){
+        //验证扩展，检验两次密码是否输入一直
+        $.extend($.fn.validatebox.defaults.rules, {
+            equals: {
+                validator: function (value, param) {
+                    return value == $(param[0]).val();
+                },
+                message: '两次密码输入不一致'
+            }
+        });
+    });
+</script>
+<div data-options="region:'center',border:false" style="padding:5px;">
+    <form id="UserChangePwdForm">
+        <table class="formtable">
+            <tr>
+                <td class="t">当前密码：</td>
+                <td><input type="password" name="oldPwd" class="easyui-textbox" data-options="required:true" /></td>
+            </tr>
+            <tr>
+                <td class="t">新密码：</td>
+                <td><input type="password" name="newPwd" id="UserChangeNewPassword" class="easyui-textbox" data-options="required:true,validType:'length[6,20]'" /></td>
+            </tr>
+            <tr>
+                <td class="t">确认新密码：</td>
+                <td><input type="password" name="reNewPassword" class="easyui-textbox" required="required" validType="equals['#UserChangeNewPassword']" /></td>
+            </tr>
+        </table>
+    </form>
+</div>
+

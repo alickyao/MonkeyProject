@@ -45,7 +45,7 @@ namespace website.Controllers.Users
             user.updateLastLoginInfo(HttpContext.Current.Request.UserHostAddress);//更新最后一次登录时间
 
             //记录到日志
-            UserLog.create(string.Format("用户登录,IP地址：{0}，客户端：{1}", HttpContext.Current.Request.UserHostAddress, HttpContext.Current.Request.UserAgent), "login", user);
+            UserLog.create(string.Format("用户登录,IP地址：{0}，客户端：{1}", HttpContext.Current.Request.UserHostAddress, HttpContext.Current.Request.UserAgent), "后台用户登录", user);
 
             return BaseResponse.getResult(user);
         }
@@ -88,6 +88,20 @@ namespace website.Controllers.Users
         public BaseResponse<UserManager> getInfo(string id) {
             var item = UserManager.getUserById(id);
             return BaseResponse.getResult(item);
+        }
+
+        /// <summary>
+        /// 修改用户的登录密码
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
+        [HttpPost]
+        public BaseResponse changePwd(UserChangePwdRequst condtion) {
+            var user = UserManager.getUserById(User.Identity.Name);
+            user.changePwd(condtion);
+            UserLog.create("用户修改了登录密码", "修改登录密码", user);
+            return BaseResponse.getResult("密码修改成功");
         }
     }
 }

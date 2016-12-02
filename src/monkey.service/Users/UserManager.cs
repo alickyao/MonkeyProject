@@ -200,6 +200,25 @@ namespace monkey.service.Users
             }
         }
 
+        #region -- 密码
+
+        /// <summary>
+        /// 修改用户的密码
+        /// </summary>
+        /// <param name="condtion"></param>
+        public void changePwd(UserChangePwdRequst condtion) {
+            ValiDatas.valiData(condtion);
+            using (var db = new DefaultContainer()) {
+                var dbuser = db.Db_BaseUserSet.OfType<Db_ManagerUser>().Single(p => p.Id == this.Id);
+                if (dbuser.passWord.ToLower() != condtion.oldPwd.ToLower()) {
+                    throw new ValiDataException("您提供的旧密码错误");
+                }
+                dbuser.passWord = condtion.newPwd;
+                db.SaveChanges();
+            }
+        }
+
+        #endregion
 
         #region -- 用户菜单
         private List<ManagerMenu> _userMenu = new List<ManagerMenu>();

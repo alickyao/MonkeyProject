@@ -9,6 +9,16 @@ using System.Net;
 namespace monkey.service.Logs
 {
     /// <summary>
+    /// 异常日志搜索请求对象
+    /// </summary>
+    public class ExceptionLogSearchRequest : BaseDateTimeRequest {
+        /// <summary>
+        /// 错误代码 - 全字匹配
+        /// </summary>
+        public string code { get; set; }
+    }
+
+    /// <summary>
     /// 异常日志
     /// </summary>
     public class ExceptionLog:BaseLog
@@ -63,6 +73,44 @@ namespace monkey.service.Logs
                 db.SaveChanges();
                 return new ExceptionLog(log);
             }
+        }
+
+        /// <summary>
+        /// 检索系统异常日志
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static BaseResponseList<ExceptionLog> searchList(ExceptionLogSearchRequest condtion) {
+            BaseResponseList<ExceptionLog> result = new BaseResponseList<ExceptionLog>();
+            DateTime? endDate = null;
+            if (condtion.endDate != null)
+            {
+                endDate = DateTime.Parse(string.Format("{0} 23:59:59", condtion.endDate.Value.Date.ToString("yyyy-MM-dd")));
+            }
+            DateTime? beginDate = null;
+            if (condtion.beginDate != null)
+            {
+                beginDate = condtion.beginDate.Value.Date;
+            }
+            using (var db = new DefaultContainer()) {
+                var rows = (from c in db.Db_BaseLogSet.OfType<Db_ExceptionLog>()
+                            where (1 == 1)
+                            && (string.IsNullOrEmpty(condtion.code) ? true : c.code == condtion.code)
+                            && (beginDate == null ? true : c.createdOn >= beginDate)
+                            && (endDate == null ? true : c.createdOn <= endDate)
+                            select c);
+                result.total = rows.Count();
+                if (result.total > 0 && condtion.getRows)
+                {
+                    rows = rows.OrderByDescending(p => p.createdOn);
+                    if (condtion.page > 0)
+                    {
+                        rows = rows.Skip(condtion.getSkip()).Take(condtion.pageSize);
+                    }
+                    result.rows = rows.AsEnumerable().Select(p => new ExceptionLog(p)).ToList();
+                }
+            }
+            return result;
         }
     }
 }

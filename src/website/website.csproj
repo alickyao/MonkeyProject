@@ -689,6 +689,8 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
+    <Compile Include="Areas\Admin\Controllers\LogsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UserManagerController.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
     <Compile Include="Areas\HelpPage\App_Start\HelpPageConfig.cs" />
     <Compile Include="Areas\HelpPage\Controllers\HelpController.cs" />
@@ -718,6 +720,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
+    <Compile Include="Controllers\Logs\LogsController.cs" />
     <Compile Include="Controllers\Users\UserManagerController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -770,6 +773,11 @@
     <Content Include="Areas\Admin\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Home\workTab.cshtml" />
+    <Content Include="Areas\Admin\Views\Login\changePwd.cshtml" />
+    <Content Include="Areas\Admin\Views\UserManager\userInfo.cshtml" />
+    <Content Include="Areas\Admin\Views\Logs\baseLogList.cshtml" />
+    <Content Include="Areas\Admin\Views\Logs\userLogList.cshtml" />
+    <Content Include="Areas\Admin\Views\Logs\exceptionLogList.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
