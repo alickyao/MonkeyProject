@@ -11,57 +11,9 @@ using monkey.service.Frame;
 namespace monkey.service.Users
 {
     /// <summary>
-    /// 创建后台用户请求
-    /// </summary>
-    public class UserManagerCreateRequest{
-        /// <summary>
-        /// 登录名
-        /// </summary>
-        [Required]
-        [StringLength(50,MinimumLength =5)]
-        public string loginName { get; set; }
-
-        /// <summary>
-        /// 姓名
-        /// </summary>
-        [Required]
-        [StringLength(50)]
-        public string fullName { get; set; }
-
-        /// <summary>
-        /// 用户的角色
-        /// </summary>
-        [Required]
-        public string[] roleNames { get; set; }
-
-        /// <summary>
-        /// 手机号码
-        /// </summary>
-        public string mobilePhone { get; set; }
-    }
-
-    /// <summary>
-    /// 后台用户登录请求
-    /// </summary>
-    public class UserManagerLoginRequest {
-
-        /// <summary>
-        /// 登录名
-        /// </summary>
-        [Required]
-        public string loginName { get; set; }
-
-        /// <summary>
-        /// 密码 已通过MD5加密后的字符串  不区分大小写
-        /// </summary>
-        [Required]
-        public string passWord { get; set; }
-    }
-
-    /// <summary>
     /// 后台用户
     /// </summary>
-    public class UserManager: UserBase, ILogStringable
+    public class UserManager : UserBase, ILogStringable
     {
 
         #region -- 属性
@@ -128,41 +80,7 @@ namespace monkey.service.Users
 
 
         private static object locker = new object();
-        /// <summary>
-        /// 创建一个后台用户
-        /// </summary>
-        /// <param name="condtion"></param>
-        /// <returns></returns>
-        public static UserManager create(UserManagerCreateRequest condtion) {
-            ValiDatas.valiData(condtion);
 
-            lock (locker) {
-
-                //验证登录名是否已存在
-                var count = getLoginNameCount(condtion.loginName);
-                if (count > 0)
-                {
-                    throw new ValiDataException("该登录名已存在，创建失败");
-                }
-                string newId = Guid.NewGuid().ToString();
-                Db_ManagerUser user = new Db_ManagerUser()
-                {
-                    createdOn = DateTime.Now,
-                    fullName = condtion.fullName,
-                    loginName = condtion.loginName,
-                    mobilePhone = condtion.mobilePhone,
-                    passWord = SysSetingsHelp.DefaultAdminPwd,
-                    Id = newId,
-                    roleNames = string.Join(",", condtion.roleNames)
-                };
-                using (var db = new DefaultContainer())
-                {
-                    var newrow = db.Db_BaseUserSet.Add(user);
-                    db.SaveChanges();
-                    return getUserById(newId);
-                }
-            }
-        }
 
         /// <summary>
         /// 验证用户名和密码是否正确
@@ -185,8 +103,8 @@ namespace monkey.service.Users
                     });
                 }
 
-                var row = db.Db_BaseUserSet.OfType<Db_ManagerUser>().SingleOrDefault(p => 
-                p.loginName == condtion.loginName 
+                var row = db.Db_BaseUserSet.OfType<Db_ManagerUser>().SingleOrDefault(p =>
+                p.loginName == condtion.loginName
                 && p.passWord.ToLower() == condtion.passWord.ToLower()
                 && p.isDeleted == false
                 );
@@ -199,6 +117,116 @@ namespace monkey.service.Users
                 return new UserManager(row);
             }
         }
+
+        #region -- 编辑/创建
+
+        /// <summary>
+        /// 创建一个后台用户
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static UserManager create(UserManagerCreateRequest condtion)
+        {
+            ValiDatas.valiData(condtion);
+
+            lock (locker)
+            {
+
+                //验证登录名是否已存在
+                var count = getLoginNameCount(condtion.loginName);
+                if (count > 0)
+                {
+                    throw new ValiDataException("该登录名已存在，创建失败");
+                }
+                string newId = Guid.NewGuid().ToString();
+                Db_ManagerUser user = new Db_ManagerUser()
+                {
+                    createdOn = DateTime.Now,
+                    fullName = condtion.fullName,
+                    loginName = condtion.loginName,
+                    mobilePhone = condtion.mobilePhone,
+                    passWord = SysSetingsHelp.DefaultAdminPwd,
+                    Id = newId,
+                };
+                //角色
+                foreach (var role in condtion.roleNames)
+                {
+                    user.Db_BaseUserRole.Add(new Db_BaseUserRole()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        roleName = role,
+                    });
+                }
+                using (var db = new DefaultContainer())
+                {
+                    var newrow = db.Db_BaseUserSet.Add(user);
+                    db.SaveChanges();
+                    return getUserById(newId);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 编辑用户信息 信息与角色
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public UserManager edit(UserManagerEditRequest condtion) {
+            ValiDatas.valiData(condtion);
+            this.fullName = condtion.fullName;
+            this.mobilePhone = condtion.mobilePhone;
+            this.rolesList = condtion.roleNames.ToList();
+            save();
+            return this;
+        }
+
+        /// <summary>
+        /// 更新数据库的信息 可更新【姓名，手机与角色】
+        /// </summary>
+        private void save() {
+            using (var db = new DefaultContainer()) {
+                var dbuser = db.Db_BaseUserSet.OfType<Db_ManagerUser>().Single(p => p.Id == this.Id);
+                db.Db_BaseUserRoleSet.RemoveRange(dbuser.Db_BaseUserRole);
+                dbuser.fullName = this.fullName;
+                dbuser.mobilePhone = this.mobilePhone;
+                foreach (var role in this.rolesList) {
+                    dbuser.Db_BaseUserRole.Add(new Db_BaseUserRole()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        roleName = role
+                    });
+                }
+                db.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// 编辑基础信息  -  姓名与手机号
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public UserManager editBaseInfo(UserManagerBaseEditRequest condtion) {
+            ValiDatas.valiData(condtion);
+            this.fullName = condtion.fullName;
+            this.mobilePhone = condtion.mobilePhone;
+            saveBaseInfo();
+            return this;
+        }
+
+        /// <summary>
+        /// 保存基本信息-姓名与手机号
+        /// </summary>
+        private void saveBaseInfo() {
+            using (var db = new DefaultContainer())
+            {
+                var dbuser = db.Db_BaseUserSet.OfType<Db_ManagerUser>().Single(p => p.Id == this.Id);
+                dbuser.fullName = this.fullName;
+                dbuser.mobilePhone = this.mobilePhone;
+                db.SaveChanges();
+            }
+        }
+
+        #endregion
 
         #region -- 密码
 
@@ -214,6 +242,17 @@ namespace monkey.service.Users
                     throw new ValiDataException("您提供的旧密码错误");
                 }
                 dbuser.passWord = condtion.newPwd;
+                db.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// 重设用户的登录密码 -- 使用配置文件中的初始登录密码
+        /// </summary>
+        public void resetPwd() {
+            using (var db = new DefaultContainer()) {
+                var dbuser = db.Db_BaseUserSet.OfType<Db_ManagerUser>().Single(p => p.Id == this.Id);
+                dbuser.passWord = SysSetingsHelp.DefaultAdminPwd;
                 db.SaveChanges();
             }
         }
@@ -282,6 +321,8 @@ namespace monkey.service.Users
 
         #endregion
 
+        #region -- 日志
+
         public string getIdString()
         {
             return this.Id;
@@ -291,5 +332,39 @@ namespace monkey.service.Users
         {
             return string.Format("{0}[{1}]", this.fullName, this.rolesString);
         }
+
+        #endregion
+
+        #region -- 检索
+
+        /// <summary>
+        /// 检索后台用户列表
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static BaseResponseList<UserManager> searchList(UserManagerSearchRequest condtion) {
+            BaseResponseList<UserManager> result = new BaseResponseList<UserManager>();
+
+            using (var db = new DefaultContainer()) {
+                var rows = (from c in db.Db_BaseUserSet.OfType<Db_ManagerUser>()
+                            where (c.isDeleted == false)
+                            && (string.IsNullOrEmpty(condtion.q) ? true : (c.fullName.Contains(condtion.q) || (string.IsNullOrEmpty(c.mobilePhone) ? false : c.mobilePhone.Contains(condtion.q)) || (c.loginName.Contains(condtion.q))))
+                            &&(string.IsNullOrEmpty(condtion.role)? true :(c.Db_BaseUserRole.Select(x=> x.roleName).Contains(condtion.role)))
+                            select c
+                            );
+                result.total = rows.Count();
+                if (result.total > 0 && condtion.getRows) {
+                    rows = rows.OrderByDescending(p => p.createdOn);
+                    if (condtion.page > 0) {
+                        rows = rows.Skip(condtion.getSkip()).Take(condtion.pageSize);
+                    }
+                    result.rows = rows.AsEnumerable().Select(p => new UserManager(p)).ToList();
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
     }
 }

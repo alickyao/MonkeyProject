@@ -778,6 +778,8 @@
     <Content Include="Areas\Admin\Views\Logs\baseLogList.cshtml" />
     <Content Include="Areas\Admin\Views\Logs\userLogList.cshtml" />
     <Content Include="Areas\Admin\Views\Logs\exceptionLogList.cshtml" />
+    <Content Include="Areas\Admin\Views\UserManager\userList.cshtml" />
+    <Content Include="Areas\Admin\Views\UserManager\editUser.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

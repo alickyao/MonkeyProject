@@ -52,7 +52,7 @@
                     field: 'message', title: '错误描述'
                 },
                 {
-                    field: 'createdOnString', title: '详细时间', align: 'left'
+                    field: 'createdOnString', title: '详细创建时间', align: 'left'
                 }
             ]]
         });
@@ -85,37 +85,37 @@
         });
     });
 </script>
-
-<div data-options="region:'north',border:false,title:'查询栏',split:false,iconCls:'icon-search'" style="padding:5px; background:#fdfdfd; height:71px;">
-    <form id="@(pageId)searchform">
-        <table>
-            <tr>
-                <td>
-                    <table>
-                        <tr>
-                            <td>错误代码:</td>
-                            <td><input type="text" class="easyui-textbox" name="code" style="width:100px;" /></td>
-                            <td>开始时间:</td>
-                            <td><input type="text" class="easyui-datebox" name="beginDate" style="width:100px;" data-options="editable:false" /></td>
-                            <td>结束时间:</td>
-                            <td><input type="text" class="easyui-datebox" name="endDate" style="width:100px;" data-options="editable:false" /></td>
-                        </tr>
-                    </table>
-                </td>
-                <td><a href="#" class="easyui-linkbutton" iconCls="icon-search" id="@(pageId)searchbtn">查询</a></td>
-                <td><a href="#" class="easyui-linkbutton" iconCls="icon-clear" id="@(pageId)clearsearchbtn">清空查询栏</a></td>
-            </tr>
-        </table>
-    </form>
-</div>
-<div data-options="region:'center',border:false">
-    <div class="easyui-layout" data-options="fit:true">
-        <div data-options="region:'south',border:false,title:'堆栈信息',split:true,iconCls:'icon-tip'" style="padding:5px; background:#fdfdfd; height:100px;">
-            <div id="@(pageId)stackTrace"></div>
-        </div>
-        <div data-options="region:'center',border:false,title:'异常日志列表'">
-            <table id="@(pageId)grid"></table>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'north',border:false,title:'查询栏',split:false,iconCls:'icon-search'" style="padding:5px; background:#fdfdfd; height:71px;">
+        <form id="@(pageId)searchform">
+            <table>
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>错误代码:</td>
+                                <td><input type="text" class="easyui-textbox" name="code" style="width:100px;" /></td>
+                                <td>开始时间:</td>
+                                <td><input type="text" class="easyui-datebox" name="beginDate" style="width:100px;" data-options="editable:false" /></td>
+                                <td>结束时间:</td>
+                                <td><input type="text" class="easyui-datebox" name="endDate" style="width:100px;" data-options="editable:false" /></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td><a href="#" class="easyui-linkbutton" iconCls="icon-search" id="@(pageId)searchbtn">查询</a></td>
+                    <td><a href="#" class="easyui-linkbutton" iconCls="icon-clear" id="@(pageId)clearsearchbtn">清空查询栏</a></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div data-options="region:'center',border:false">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'south',border:false,title:'堆栈信息',split:true,iconCls:'icon-tip'" style="padding:5px; background:#fdfdfd; height:100px;">
+                <div id="@(pageId)stackTrace"></div>
+            </div>
+            <div data-options="region:'center',border:false,title:'异常日志列表'">
+                <table id="@(pageId)grid"></table>
+            </div>
         </div>
     </div>
 </div>
-

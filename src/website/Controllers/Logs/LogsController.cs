@@ -16,7 +16,7 @@ namespace website.Controllers.Logs
     public class LogsController : ApiController
     {
         /// <summary>
-        /// [后台权限]检索系统日志列表
+        /// [后台角色权限]检索系统日志列表
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
@@ -28,7 +28,7 @@ namespace website.Controllers.Logs
         }
 
         /// <summary>
-        /// [后台权限]检索用户日志
+        /// [后台角色权限]检索用户日志
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
@@ -40,7 +40,7 @@ namespace website.Controllers.Logs
         }
 
         /// <summary>
-        /// [后台权限]检索异常日志
+        /// [后台角色权限]检索异常日志
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>

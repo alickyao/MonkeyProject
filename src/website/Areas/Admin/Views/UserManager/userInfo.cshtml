@@ -5,33 +5,67 @@
 }
 
 @model UserManager
-
-<div data-options="region:'center',border:false" style="padding:5px;">
-    <h4>基本信息</h4>
-    <table class="formtable">
-        <tr>
-            <td class="t">登录名</td>
-            <td>@Model.loginName</td>
-        </tr>
-        <tr>
-            <td class="t">姓名</td>
-            <td>@Model.fullName</td>
-        </tr>
-        <tr>
-            <td class="t">角色</td>
-            <td>@Model.rolesString</td>
-        </tr>
-        <tr>
-            <td class="t">手机号码</td>
-            <td>@Model.mobilePhone</td>
-        </tr>
-        <tr>
-            <td class="t">创建时间</td>
-            <td>@Model.createdOn.ToString("yyyy-MM-dd HH:mm")</td>
-        </tr>
-        <tr>
-            <td class="t">最近登录</td>
-            <td>@(Model.lastLoginTime==null?"":Model.lastLoginTime.Value.ToString("yyyy-MM-dd HH:mm"))</td>
-        </tr>
-    </table>
+<script>
+    $(function () {
+        //保存基本信息按钮
+        var saveBaseInfoBtn = $("#userBaseInfoFormSaveBtn");
+        saveBaseInfoBtn.linkbutton({
+            onClick: function () {
+                var btn = $(this);
+                var form = $("#userBaseInfoForm");
+                if (form.form("validate")) {
+                    var d = form.serializeObject();
+                    console.log(d);
+                    var url = "/api/UserManager/editMyUserInfo";
+                    console.log(url);
+                    btn.linkbutton('disable');
+                    $.post(url, d, function (json) {
+                        showmsg(json);
+                        btn.linkbutton('enable');
+                    });
+                }
+            }
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false" style="padding:5px;">
+        <div class="easyui-tabs" data-options="fit:true">
+            <div title="基本信息" style="padding-top:5px;">
+                <form id="userBaseInfoForm">
+                    <table class="formtable">
+                        <tr>
+                            <td class="t">登录名</td>
+                            <td>@Model.loginName</td>
+                        </tr>
+                        <tr>
+                            <td class="t">姓名</td>
+                            <td><input type="text" name="fullName" class="easyui-textbox" style="width:150px" data-options="required:true,validType:'length[0,50]'" value="@Model.fullName" /></td>
+                        </tr>
+                        <tr>
+                            <td class="t">手机号码</td>
+                            <td><input type="text" name="mobilePhone" class="easyui-numberbox" style="width:150px" data-options="required:false,validType:'length[0,11]'" value="@Model.mobilePhone" /></td>
+                        </tr>
+                        <tr>
+                            <td class="t">角色</td>
+                            <td>@Model.rolesString</td>
+                        </tr>
+                        <tr>
+                            <td class="t">创建时间</td>
+                            <td>@Model.createdOn.ToString("yyyy-MM-dd HH:mm")</td>
+                        </tr>
+                        <tr>
+                            <td class="t">最近登录</td>
+                            <td>@(Model.lastLoginTime == null ? "" : string.Format("{0} [IPAddress:{1}]",Model.lastLoginTime.Value.ToString("yyyy-MM-dd HH:mm"), Model.lastLoginIpAddress))</td>
+                        </tr>
+                        <tr>
+                            <td class="t"></td>
+                            <td><a href="#" class="easyui-linkbutton" iconCls="icon-save" id="userBaseInfoFormSaveBtn">保存</a></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div title="用户日志" data-options="href:'@Url.Action("userLogList","Logs", new { userId = Model.Id })'"> </div>
+        </div>
+    </div>
 </div>

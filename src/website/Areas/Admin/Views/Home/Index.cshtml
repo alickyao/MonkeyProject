@@ -52,10 +52,10 @@
         //加载工作台
         $("#MainCenterTabs").tabs('add', {
             title: "工作台",
-            //href: "",
+            href: "@Url.Action("workTab")",
             closable: false,
             iconCls: "icon-edit",
-            content: getIframe("@Url.Action("workTab")")
+            @*content: getIframe("@Url.Action("workTab")")*@
         });
 
         var dialogWin = $('#dd');

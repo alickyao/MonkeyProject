@@ -1,0 +1,209 @@
+﻿
+@{
+    ViewBag.Title = "userList";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string pageId = ViewBag.pageId;
+    string condtion = JsonConvert.SerializeObject(Model);
+    string roles = JsonConvert.SerializeObject(SysRoles.getRolesList(SysRolesType.后台));
+    string newPageId = SysHelps.getRandmonStirng();
+}
+@model UserManagerSearchRequest
+
+<script>
+    $(function () {
+        var request = $.parseJSON('@Html.Raw(condtion)');
+        var roles = $.parseJSON('@Html.Raw(roles)');
+        var grid = $("#@(pageId)grid");
+
+        function loadGrid() {
+            console.log(request);
+            grid.datagrid("loading");
+            $.post("/api/UserManager/searchUserList", request, function (json) {
+                setGridRows(json, grid);
+            });
+        }
+
+        $("#@(pageId)selectRole").combobox({
+            valueField: "role",
+            textField: "name",
+            data: roles,
+            editable: false,
+            multiple: false
+        });
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: true,
+            rownumbers: true,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            onDblClickRow: function (rowIndex, rowData) {
+                var url = "@Url.Action("editUser",new { pageId = newPageId})";
+                url += "&Id=" + rowData.Id;
+                console.log(url);
+                dialogWin.dialog({
+                    href: url
+                }).dialog("open");
+            },
+            columns: [[
+                {
+                    field: 'loginName', title: '登录名'
+                },
+                {
+                    field: 'isDisabled', title: '已禁用', align: 'center', formatter: function (value, row, index) {
+                        return value ? "是" : "否";
+                    },
+                    styler: function (value, row, index) {
+                        return value ? "color:red" : "";
+                    }
+                },
+                {
+                    field: 'fullName', title: '姓名'
+                },
+                {
+                    field: 'rolesString', title: '角色'
+                },
+                {
+                    field: 'mobilePhone', title: '手机号'
+                },
+                {
+                    field: 'createdOnString', title: '创建时间'
+                },
+                {
+                    field: 'lastLoginTime', title: '最近登录', formatter: function (value, row, index) {
+                        if (value != null) {
+                            return row.lastLoginShowTimeString + "[" + row.lastLoginIpAddress + "]"
+                        }
+                    }
+                },
+            ]],
+            toolbar: [
+                {
+                    text: "新增",
+                    iconCls: "icon-add",
+                    handler: function () {
+                        var url = "@Url.Action("editUser",new { pageId= newPageId})";
+                        console.log(url);
+                        dialogWin.dialog({
+                            href: url
+                        }).dialog("open");
+                    }
+                },
+                {
+                    text: "删除",
+                    iconCls: "icon-remove",
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                        }
+                        else {
+                            $.messager.confirm('请确认', '确定删除用户:' + row.fullName + "?", function (r) {
+                                if (r) {
+                                    grid.datagrid("loading");
+                                    $.getJSON("/api/UserManager/deleteUser/" + row.Id, function (json) {
+                                        showmsg(json);
+                                        loadGrid();
+                                    });
+                                }
+                            });
+                        }
+                    }
+                },
+                {
+                    text: "重置密码",
+                    iconCls: "icon-reload",
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                        }
+                        else {
+                            $.messager.confirm('请确认', '确定重置用户:[' + row.fullName + "]的密码？<br />重置后的密码为系统初始值", function (r) {
+                                if (r) {
+                                    grid.datagrid("loading");
+                                    $.getJSON("/api/UserManager/reSetPwd/" + row.Id, function (json) {
+                                        showmsg(json);
+                                        loadGrid();
+                                    });
+                                }
+                            });
+                        }
+                    }
+                },
+            ]
+        });
+
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            }
+        });
+        loadGrid();
+
+        //查询栏
+        $("#@(pageId)searchbtn").click(function () {
+            var d = $("#@(pageId)searchform").serializeObject();
+            request.page = 1;
+            request.q = d.q;
+            request.role = d.role;
+            loadGrid();
+            grid.datagrid('getPager').pagination({
+                pageNumber: 1
+            });
+        });
+        $("#@(pageId)clearsearchbtn").click(function () {
+            $("#@(pageId)searchform").form("clear");
+        });
+
+
+        var dialogWin = $('#@(pageId)dd');
+
+        dialogWin.dialog({
+            title: "新增/编辑用户",
+            closed: false,
+            cache: false,
+            modal: true,
+            closed: true,
+            inline: true,
+            onClose: function () {
+                loadGrid();
+            }
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true">
+    <div id="@(pageId)dd" style="width:80%;height:80%">编辑用户窗口</div>
+    <div data-options="region:'north',border:false,title:'查询栏',split:false,iconCls:'icon-search'" style="padding:5px; background:#fdfdfd; height:71px;">
+        <form id="@(pageId)searchform">
+            <table>
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>登录名/姓名/手机号:</td>
+                                <td><input type="text" class="easyui-textbox" name="q" style="width:100px;" /></td>
+                                <td>所属角色:</td>
+                                <td>
+                                    <select class="easyui-combobox" id="@(pageId)selectRole" name="role" panelHeight="auto" style="width:100px"></select>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td><a href="#" class="easyui-linkbutton" iconCls="icon-search" id="@(pageId)searchbtn">查询</a></td>
+                    <td><a href="#" class="easyui-linkbutton" iconCls="icon-clear" id="@(pageId)clearsearchbtn">清空查询栏</a></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="@(pageId)grid"></table>
+    </div>
+</div>

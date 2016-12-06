@@ -6,13 +6,15 @@
     <edmx:Diagrams>
       <Diagram DiagramId="d16b0da62c834e35a50ed90b60321172" Name="Diagram1" >
         <EntityTypeShape EntityType="Default.Db_BaseUser" Width="1.5" PointX="0.5" PointY="0.625" />
-        <EntityTypeShape EntityType="Default.Db_ManagerUser" Width="1.5" PointX="0.5" PointY="3.25" />
+        <EntityTypeShape EntityType="Default.Db_ManagerUser" Width="1.5" PointX="0.5" PointY="4" />
         <InheritanceConnector EntityType="Default.Db_ManagerUser" />
         <EntityTypeShape EntityType="Default.Db_BaseLog" Width="1.5" PointX="6.375" PointY="0.5" />
         <EntityTypeShape EntityType="Default.Db_ExceptionLog" Width="1.5" PointX="8.875" PointY="0.5" IsExpanded="true" />
         <InheritanceConnector EntityType="Default.Db_ExceptionLog" />
         <EntityTypeShape EntityType="Default.Db_UserLog" Width="1.5" PointX="8.875" PointY="2.75" />
         <InheritanceConnector EntityType="Default.Db_UserLog" />
+        <EntityTypeShape EntityType="Default.Db_BaseUserRole" PointX="2.75" PointY="0.625" Width="1.5" />
+        <AssociationConnector Association="Default.Db_BaseUserDb_BaseUserRole" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

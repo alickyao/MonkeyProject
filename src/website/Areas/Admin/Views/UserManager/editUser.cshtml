@@ -1,0 +1,146 @@
+﻿
+@{
+    ViewBag.Title = "新增/编辑用户";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string pageId = ViewBag.pageId;
+    string Id = ViewBag.Id;
+    string userroles = JsonConvert.SerializeObject(Model.roleNames);
+    string selectroles = JsonConvert.SerializeObject(SysRoles.getRolesList(SysRolesType.后台));
+    UserManager userInfo = null;
+    if (!string.IsNullOrEmpty(Id)) {
+        userInfo = UserManager.getUserById(Id);
+    }
+}
+
+<script>
+    $(function () {
+        var roles = $.parseJSON('@Html.Raw(selectroles)');
+        var selectRoles = $("#@(pageId)roles");
+        var userroles = $.parseJSON('@Html.Raw(userroles)');
+        selectRoles.combobox({
+            valueField: "role",
+            textField: "name",
+            data: roles,
+            editable: false,
+            multiple: true,
+            required: true,
+            onLoadSuccess: function () {
+                //赋值
+                if (userroles != null) {
+                    selectRoles.combobox("setValues", userroles);
+                }
+            }
+        });
+        //保存基本信息按钮
+        var saveBaseInfoBtn = $("#@(pageId)saveBaseInfoBtn");
+        saveBaseInfoBtn.linkbutton({
+            onClick: function () {
+                var btn = $(this);
+                var form = $("#@(pageId)editForm");
+                if (form.form("validate")) {
+                    var d = form.serializeObject();
+                    console.log(d);
+                    var url = "/api/UserManager/editUser";
+                    if (d.Id != "") {
+                        //编辑
+                        url += "/" + d.Id;
+                    }
+                    console.log(url);
+                    btn.linkbutton('disable');
+                    $.post(url, d, function (json) {
+                        showmsg(json);
+                        btn.linkbutton('enable');
+                    });
+                }
+            }
+        });
+        //禁用设置按钮
+        var saveDisableInfoBtn = $("#@(pageId)saveDisableInfoBtn");
+        saveDisableInfoBtn.linkbutton({
+            onClick: function () {
+                var btn = $(this);
+                var form = $("#@(pageId)editDisableForm");
+                if (form.form("validate")) {
+                    var d = form.serializeObject();
+                    d.isDisabled = d.isDisabled == "0" ? false : true;
+                    console.log(d);
+                    var url = "/api/UserManager/setDisabled/@Id";
+                    console.log(url);
+                    btn.linkbutton('disable');
+                    $.post(url, d, function (json) {
+                        showmsg(json);
+                        btn.linkbutton('enable');
+                    });
+                }
+            }
+        });
+    });
+</script>
+
+@model UserManagerCreateRequest
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false" style="padding:5px;">
+        <div class="easyui-tabs" data-options="fit:true">
+            <div title="基本信息" style="padding-top:5px;">
+                <form id="@(pageId)editForm">
+                    <input type="hidden" name="Id" value="@Id" />
+                    <table class="formtable">
+                        @if (string.IsNullOrEmpty(Id))
+                        {
+                            <tr>
+                                <td class="t">登录名</td>
+                                <td><input type="text" name="loginName" class="easyui-textbox" style="width:150px" data-options="required:true,validType:'length[5,50]'" value="@Model.loginName" /></td>
+                            </tr>
+                        }
+                        <tr>
+                            <td class="t">姓名</td>
+                            <td><input type="text" name="fullName" class="easyui-textbox" style="width:150px" data-options="required:true,validType:'length[0,50]'" value="@Model.fullName" /></td>
+                        </tr>
+                        <tr>
+                            <td class="t">手机</td>
+                            <td><input type="text" name="mobilePhone" class="easyui-numberbox" style="width:150px" data-options="required:false,validType:'length[0,11]'" value="@Model.mobilePhone" /></td>
+                        </tr>
+                        <tr>
+                            <td class="t">角色</td>
+                            <td><select id="@(pageId)roles" name="roleNames" panelHeight="auto" style="width:150px"></select></td>
+                        </tr>
+                        <tr>
+                            <td class="t">
+                            </td>
+                            <td><a href="#" class="easyui-linkbutton" iconCls="icon-save" id="@(pageId)saveBaseInfoBtn">保存</a></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            @if (!string.IsNullOrEmpty(Id))
+            {
+                <div title="禁用设置" style="padding-top:5px;">
+                    <form id="@(pageId)editDisableForm">
+                        <table class="formtable">
+                            <tr>
+                                <td class="t">禁用</td>
+                                <td>
+                                    <select class="easyui-combobox" name="isDisabled" panelHeight="auto" style="width:100px">
+                                        <option value="0">未禁用</option>
+                                        <option value="1" @(userInfo.isDisabled?"selected='selected'":"") >已禁用</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="t">操作备注</td>
+                                <td><input class="easyui-textbox" data-options="multiline:true,required:true" name="remark" style="width:300px;height:100px;"></td>
+                            </tr>
+                            <tr>
+                                <td class="t"></td>
+                                <td><a href="#" class="easyui-linkbutton" iconCls="icon-save" id="@(pageId)saveDisableInfoBtn">保存</a></td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                <div title="用户日志" data-options="href:'@Url.Action("userLogList","Logs", new { userId = Id })'"> </div>
+            }
+        </div>
+    </div>
+</div>
+
+

@@ -4,126 +4,155 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Default.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="Db_BaseLogSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="logType" Type="tinyint" Nullable="false" />
-          <Property Name="createdOn" Type="datetime" Nullable="false" />
-          <Property Name="message" Type="nvarchar(max)" />
-        </EntityType>
-        <EntityType Name="Db_BaseLogSet_Db_ExceptionLog">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="code" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="stackTrace" Type="nvarchar(max)" />
-          <Property Name="codeString" Type="nvarchar" MaxLength="200" Nullable="false" />
-          <Property Name="Id" Type="bigint" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_BaseLogSet_Db_UserLog">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="code" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="userId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="userName" Type="nvarchar" MaxLength="500" Nullable="false" />
-          <Property Name="fkId" Type="nvarchar" MaxLength="50" />
-          <Property Name="fkName" Type="nvarchar" MaxLength="500" />
-          <Property Name="Id" Type="bigint" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_BaseUserSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="createdOn" Type="datetime" Nullable="false" />
-          <Property Name="lastLoginTime" Type="datetime" />
-          <Property Name="lastLoginIpAddress" Type="nvarchar" MaxLength="50" />
-          <Property Name="roleNames" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="isDeleted" Type="bit" Nullable="false" />
-          <Property Name="isDisabled" Type="bit" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_BaseUserSet_Db_ManagerUser">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="loginName" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="passWord" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="fullName" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="mobilePhone" Type="nvarchar" MaxLength="50" />
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <Association Name="FK_Db_ExceptionLog_inherits_Db_BaseLog">
-          <End Role="Db_BaseLogSet" Type="Self.Db_BaseLogSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_BaseLogSet_Db_ExceptionLog" Type="Self.Db_BaseLogSet_Db_ExceptionLog" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_BaseLogSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_BaseLogSet_Db_ExceptionLog">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_ManagerUser_inherits_Db_BaseUser">
-          <End Role="Db_BaseUserSet" Type="Self.Db_BaseUserSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_BaseUserSet_Db_ManagerUser" Type="Self.Db_BaseUserSet_Db_ManagerUser" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_BaseUserSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_BaseUserSet_Db_ManagerUser">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_UserLog_inherits_Db_BaseLog">
-          <End Role="Db_BaseLogSet" Type="Self.Db_BaseLogSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_BaseLogSet_Db_UserLog" Type="Self.Db_BaseLogSet_Db_UserLog" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_BaseLogSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_BaseLogSet_Db_UserLog">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="DefaultStoreContainer">
-          <EntitySet Name="Db_BaseLogSet" EntityType="Self.Db_BaseLogSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseLogSet_Db_ExceptionLog" EntityType="Self.Db_BaseLogSet_Db_ExceptionLog" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseLogSet_Db_UserLog" EntityType="Self.Db_BaseLogSet_Db_UserLog" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseUserSet" EntityType="Self.Db_BaseUserSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseUserSet_Db_ManagerUser" EntityType="Self.Db_BaseUserSet_Db_ManagerUser" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_Db_ExceptionLog_inherits_Db_BaseLog" Association="Self.FK_Db_ExceptionLog_inherits_Db_BaseLog">
-            <End Role="Db_BaseLogSet" EntitySet="Db_BaseLogSet" />
-            <End Role="Db_BaseLogSet_Db_ExceptionLog" EntitySet="Db_BaseLogSet_Db_ExceptionLog" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_ManagerUser_inherits_Db_BaseUser" Association="Self.FK_Db_ManagerUser_inherits_Db_BaseUser">
-            <End Role="Db_BaseUserSet" EntitySet="Db_BaseUserSet" />
-            <End Role="Db_BaseUserSet_Db_ManagerUser" EntitySet="Db_BaseUserSet_Db_ManagerUser" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_UserLog_inherits_Db_BaseLog" Association="Self.FK_Db_UserLog_inherits_Db_BaseLog">
-            <End Role="Db_BaseLogSet" EntitySet="Db_BaseLogSet" />
-            <End Role="Db_BaseLogSet_Db_UserLog" EntitySet="Db_BaseLogSet_Db_UserLog" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema></edmx:StorageModels>
+    <Schema Namespace="Default.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="DefaultStoreContainer">
+    <EntitySet Name="Db_BaseUserSet" EntityType="Default.Store.Db_BaseUserSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseLogSet" EntityType="Default.Store.Db_BaseLogSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseUserRoleSet" EntityType="Default.Store.Db_BaseUserRoleSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseUserSet_Db_ManagerUser" EntityType="Default.Store.Db_BaseUserSet_Db_ManagerUser" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseLogSet_Db_ExceptionLog" EntityType="Default.Store.Db_BaseLogSet_Db_ExceptionLog" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseLogSet_Db_UserLog" EntityType="Default.Store.Db_BaseLogSet_Db_UserLog" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="Db_BaseUserDb_BaseUserRole" Association="Default.Store.Db_BaseUserDb_BaseUserRole">
+      <End Role="Db_BaseUser" EntitySet="Db_BaseUserSet" />
+      <End Role="Db_BaseUserRole" EntitySet="Db_BaseUserRoleSet" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_ManagerUser_inherits_Db_BaseUser" Association="Default.Store.FK_Db_ManagerUser_inherits_Db_BaseUser">
+      <End Role="Db_BaseUser" EntitySet="Db_BaseUserSet" />
+      <End Role="Db_ManagerUser" EntitySet="Db_BaseUserSet_Db_ManagerUser" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_ExceptionLog_inherits_Db_BaseLog" Association="Default.Store.FK_Db_ExceptionLog_inherits_Db_BaseLog">
+      <End Role="Db_BaseLog" EntitySet="Db_BaseLogSet" />
+      <End Role="Db_ExceptionLog" EntitySet="Db_BaseLogSet_Db_ExceptionLog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_UserLog_inherits_Db_BaseLog" Association="Default.Store.FK_Db_UserLog_inherits_Db_BaseLog">
+      <End Role="Db_BaseLog" EntitySet="Db_BaseLogSet" />
+      <End Role="Db_UserLog" EntitySet="Db_BaseLogSet_Db_UserLog" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Db_BaseUserSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="createdOn" Type="datetime" Nullable="false" />
+    <Property Name="lastLoginTime" Type="datetime" Nullable="true" />
+    <Property Name="lastLoginIpAddress" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="isDeleted" Type="bit" Nullable="false" />
+    <Property Name="isDisabled" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_BaseLogSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="logType" Type="tinyint" Nullable="false" />
+    <Property Name="createdOn" Type="datetime" Nullable="false" />
+    <Property Name="message" Type="nvarchar(max)" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Db_BaseUserRoleSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="roleName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Db_BaseUserId" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_BaseUserSet_Db_ManagerUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="loginName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="passWord" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="fullName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="mobilePhone" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_BaseLogSet_Db_ExceptionLog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="code" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="stackTrace" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="codeString" Type="nvarchar" Nullable="false" MaxLength="200" />
+    <Property Name="Id" Type="bigint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_BaseLogSet_Db_UserLog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="code" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="userId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="userName" Type="nvarchar" Nullable="false" MaxLength="500" />
+    <Property Name="fkId" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="fkName" Type="nvarchar" Nullable="true" MaxLength="500" />
+    <Property Name="Id" Type="bigint" Nullable="false" />
+  </EntityType>
+  <Association Name="Db_BaseUserDb_BaseUserRole">
+    <End Role="Db_BaseUser" Type="Default.Store.Db_BaseUserSet" Multiplicity="1" />
+    <End Role="Db_BaseUserRole" Type="Default.Store.Db_BaseUserRoleSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Db_BaseUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_BaseUserRole">
+        <PropertyRef Name="Db_BaseUserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_ManagerUser_inherits_Db_BaseUser">
+    <End Role="Db_BaseUser" Type="Default.Store.Db_BaseUserSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_ManagerUser" Type="Default.Store.Db_BaseUserSet_Db_ManagerUser" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_BaseUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_ManagerUser">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_ExceptionLog_inherits_Db_BaseLog">
+    <End Role="Db_BaseLog" Type="Default.Store.Db_BaseLogSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_ExceptionLog" Type="Default.Store.Db_BaseLogSet_Db_ExceptionLog" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_BaseLog">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_ExceptionLog">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_UserLog_inherits_Db_BaseLog">
+    <End Role="Db_BaseLog" Type="Default.Store.Db_BaseLogSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_UserLog" Type="Default.Store.Db_BaseLogSet_Db_UserLog" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_BaseLog">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_UserLog">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="Default" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
         <EntityContainer Name="DefaultContainer" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Db_BaseUserSet" EntityType="Default.Db_BaseUser" />
           <EntitySet Name="Db_BaseLogSet" EntityType="Default.Db_BaseLog" />
+          <EntitySet Name="Db_BaseUserRoleSet" EntityType="Default.Db_BaseUserRole" />
+          <AssociationSet Name="Db_BaseUserDb_BaseUserRole" Association="Default.Db_BaseUserDb_BaseUserRole">
+            <End EntitySet="Db_BaseUserSet" Role="Db_BaseUser" />
+            <End EntitySet="Db_BaseUserRoleSet" Role="Db_BaseUserRole" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Db_BaseUser">
           <Key>
@@ -133,9 +162,9 @@
           <Property Name="createdOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="lastLoginTime" Type="DateTime" Nullable="true" Precision="3" />
           <Property Name="lastLoginIpAddress" Type="String" Nullable="true" MaxLength="50" Unicode="true" FixedLength="false" />
-          <Property Name="roleNames" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="isDeleted" Type="Boolean" Nullable="false" />
           <Property Name="isDisabled" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Db_BaseUserRole" Relationship="Default.Db_BaseUserDb_BaseUserRole" FromRole="Db_BaseUser" ToRole="Db_BaseUserRole" />
         </EntityType>
         <EntityType Name="Db_ManagerUser" BaseType="Default.Db_BaseUser" >
           <Property Name="loginName" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
@@ -164,6 +193,27 @@
           <Property Name="fkId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="fkName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="Db_BaseUserRole">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" />
+          <Property Name="roleName" Nullable="false" Type="String" />
+          <NavigationProperty Name="Db_BaseUser" Relationship="Default.Db_BaseUserDb_BaseUserRole" FromRole="Db_BaseUserRole" ToRole="Db_BaseUser" />
+          <Property Name="Db_BaseUserId" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+        </EntityType>
+        <Association Name="Db_BaseUserDb_BaseUserRole">
+          <End Type="Default.Db_BaseUser" Multiplicity="1" Role="Db_BaseUser" />
+          <End Type="Default.Db_BaseUserRole" Multiplicity="*" Role="Db_BaseUserRole" />
+          <ReferentialConstraint>
+            <Principal Role="Db_BaseUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Db_BaseUserRole">
+              <PropertyRef Name="Db_BaseUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -177,7 +227,6 @@
           <ScalarProperty Name="createdOn" ColumnName="createdOn" />
           <ScalarProperty Name="lastLoginTime" ColumnName="lastLoginTime" />
           <ScalarProperty Name="lastLoginIpAddress" ColumnName="lastLoginIpAddress" />
-          <ScalarProperty Name="roleNames" ColumnName="roleNames" />
           <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
           <ScalarProperty Name="isDisabled" ColumnName="isDisabled" />
         </MappingFragment>
@@ -211,12 +260,21 @@
       </EntityTypeMapping>
       <EntityTypeMapping TypeName="IsTypeOf(Default.Db_UserLog)">
         <MappingFragment StoreEntitySet="Db_BaseLogSet_Db_UserLog">
-          <ScalarProperty Name="fkName" ColumnName="fkName" />
-                <ScalarProperty Name="fkId" ColumnName="fkId" />
-                <ScalarProperty Name="userName" ColumnName="userName" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="code" ColumnName="code" />
           <ScalarProperty Name="userId" ColumnName="userId" />
+          <ScalarProperty Name="userName" ColumnName="userName" />
+          <ScalarProperty Name="fkId" ColumnName="fkId" />
+          <ScalarProperty Name="fkName" ColumnName="fkName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Db_BaseUserRoleSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Default.Db_BaseUserRole)">
+        <MappingFragment StoreEntitySet="Db_BaseUserRoleSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="roleName" ColumnName="roleName" />
+          <ScalarProperty Name="Db_BaseUserId" ColumnName="Db_BaseUserId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

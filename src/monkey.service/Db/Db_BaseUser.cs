@@ -14,12 +14,20 @@ namespace monkey.service.Db
     
     public partial class Db_BaseUser
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Db_BaseUser()
+        {
+            this.Db_BaseUserRole = new HashSet<Db_BaseUserRole>();
+        }
+    
         public string Id { get; set; }
         public System.DateTime createdOn { get; set; }
         public Nullable<System.DateTime> lastLoginTime { get; set; }
         public string lastLoginIpAddress { get; set; }
-        public string roleNames { get; set; }
         public bool isDeleted { get; set; }
         public bool isDisabled { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Db_BaseUserRole> Db_BaseUserRole { get; set; }
     }
 }

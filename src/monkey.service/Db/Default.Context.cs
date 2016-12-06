@@ -27,5 +27,6 @@ namespace monkey.service.Db
     
         public virtual DbSet<Db_BaseUser> Db_BaseUserSet { get; set; }
         public virtual DbSet<Db_BaseLog> Db_BaseLogSet { get; set; }
+        public virtual DbSet<Db_BaseUserRole> Db_BaseUserRoleSet { get; set; }
     }
 }

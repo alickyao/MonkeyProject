@@ -148,9 +148,24 @@ namespace monkey.service.Users
         public DateTime createdOn { get; set; }
 
         /// <summary>
+        /// 格式化后的创建时间
+        /// </summary>
+        public string createdOnString { get; set; }
+
+        /// <summary>
         /// 最近登录时间
         /// </summary>
         public DateTime? lastLoginTime { get; set; }
+
+        /// <summary>
+        /// 格式化后的最近登录时间
+        /// </summary>
+        public string lastLoginTimeString { get; set; }
+
+        /// <summary>
+        /// 格式化后的最近登录时间 （X分钟/小时/天前）
+        /// </summary>
+        public string lastLoginShowTimeString { get; set; }
 
         /// <summary>
         /// 最近登录的IP地址
@@ -180,10 +195,43 @@ namespace monkey.service.Users
             this.createdOn = row.createdOn;
             this.lastLoginIpAddress = row.lastLoginIpAddress;
             this.lastLoginTime = row.lastLoginTime;
-            this.rolesString = row.roleNames;
-            this.rolesList = string.IsNullOrEmpty(this.rolesString) ? new List<string>() : this.rolesString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            this.rolesString = String.Join("," ,row.Db_BaseUserRole.Select(p=>p.roleName));
+            this.rolesList = row.Db_BaseUserRole.Select(p => p.roleName).ToList();
             this.isDeleted = row.isDeleted;
             this.isDisabled = row.isDisabled;
+
+            //时间
+            this.createdOnString = this.createdOn.ToString("yyyy-MM-dd HH:mm");
+            if (this.lastLoginTime != null) {
+                this.lastLoginShowTimeString = SysHelps.get2TimeShowString(this.lastLoginTime.Value);
+                this.lastLoginTimeString = this.lastLoginTime.Value.ToString("yyyy-MM-dd HH:mm");
+            }
+        }
+
+        /// <summary>
+        /// 保存用户的禁用设置
+        /// </summary>
+        public void saveDisabled(bool isDisabled) {
+            if (this.isDisabled == isDisabled) {
+                throw new ValiDataException(string.Format("当前用户已是{0}状态，不能重复设置", this.isDisabled ? "已禁用" : "未禁用"));
+            }
+            this.isDisabled = isDisabled;
+            using (var db = new DefaultContainer()) {
+                var row = db.Db_BaseUserSet.Single(p => p.Id == this.Id);
+                row.isDisabled = this.isDisabled;
+                db.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// 将用户标记为删除
+        /// </summary>
+        public void delete() {
+            using (var db = new DefaultContainer()) {
+                var row = db.Db_BaseUserSet.Single(p => p.Id == this.Id);
+                row.isDeleted = true;
+                db.SaveChanges();
+            }
         }
 
         /// <summary>

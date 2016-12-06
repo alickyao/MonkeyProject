@@ -151,7 +151,7 @@
     <children>
       <ManagerMenu>
         <text>系统管理员维护</text>
-        <url><![CDATA[/Admin/ManagerUser/userList?keywords=&roles=admin&roles=user]]></url>
+        <url><![CDATA[/manager/UserManager/userList]]></url>
       </ManagerMenu>
       <ManagerMenu>
         <text>系统日志</text>

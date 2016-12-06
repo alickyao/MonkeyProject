@@ -80,7 +80,7 @@
                     field: 'message', title: '信息内容'
                 },
                 {
-                    field: 'createdOnString', title: '详细时间', align: 'left'
+                    field: 'createdOnString', title: '详细创建时间', align: 'left'
                 }
             ]]
         });
@@ -112,29 +112,30 @@
         loadGrid();
     });
 </script>
-<div data-options="region:'north',border:false,title:'查询栏',split:false,iconCls:'icon-search'" style="padding:5px; background:#fdfdfd; height:71px;">
-    <form id="@(pageId)searchform">
-        <table>
-            <tr>
-                <td>
-                    <table>
-                        <tr>
-                            <td>类型:</td>
-                            <td><select class="easyui-combobox" id="@(pageId)selectType" name="types" panelHeight="auto" style="width:100px"></select></td>
-                            <td>开始时间:</td>
-                            <td><input type="text" class="easyui-datebox" name="beginDate" style="width:100px;" data-options="editable:false" /></td>
-                            <td>结束时间:</td>
-                            <td><input type="text" class="easyui-datebox" name="endDate" style="width:100px;" data-options="editable:false" /></td>
-                        </tr>
-                    </table>
-                </td>
-                <td><a href="#" class="easyui-linkbutton" iconCls="icon-search" id="@(pageId)searchbtn">查询</a></td>
-                <td><a href="#" class="easyui-linkbutton" iconCls="icon-clear" id="@(pageId)clearsearchbtn">清空查询栏</a></td>
-            </tr>
-        </table>
-    </form>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'north',border:false,title:'查询栏',split:false,iconCls:'icon-search'" style="padding:5px; background:#fdfdfd; height:71px;">
+        <form id="@(pageId)searchform">
+            <table>
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>类型:</td>
+                                <td><select class="easyui-combobox" id="@(pageId)selectType" name="types" panelHeight="auto" style="width:100px"></select></td>
+                                <td>开始时间:</td>
+                                <td><input type="text" class="easyui-datebox" name="beginDate" style="width:100px;" data-options="editable:false" /></td>
+                                <td>结束时间:</td>
+                                <td><input type="text" class="easyui-datebox" name="endDate" style="width:100px;" data-options="editable:false" /></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td><a href="#" class="easyui-linkbutton" iconCls="icon-search" id="@(pageId)searchbtn">查询</a></td>
+                    <td><a href="#" class="easyui-linkbutton" iconCls="icon-clear" id="@(pageId)clearsearchbtn">清空查询栏</a></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="@(pageId)grid"></table>
+    </div>
 </div>
-<div data-options="region:'center',border:false">
-    <table id="@(pageId)grid"></table>
-</div>
-

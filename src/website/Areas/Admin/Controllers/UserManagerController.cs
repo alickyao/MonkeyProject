@@ -13,8 +13,6 @@ namespace website.Areas.Admin.Controllers
     /// </summary>
     public class UserManagerController : BaseController
     {
-        // GET: Admin/UserManager
-
 
         /// <summary>
         /// 用户信息展示界面
@@ -25,6 +23,40 @@ namespace website.Areas.Admin.Controllers
         {
             var user = UserManager.getUserById(User.Identity.Name);
             return View(user);
+        }
+
+        /// <summary>
+        /// 创建/编辑用户界面
+        /// </summary>
+        /// <param name="condtion">新增/编辑对象</param>
+        /// <param name="Id">用户的ID</param>
+        /// <param name="pageId">页面ID</param>
+        /// <returns></returns>
+        [Authorize(Roles = "admin")]
+        public ActionResult editUser(UserManagerCreateRequest condtion, string Id = null, string pageId = null)
+        {
+            if (!string.IsNullOrEmpty(Id))
+            {
+                UserManager user = UserManager.getUserById(Id);
+                condtion.fullName = user.fullName;
+                condtion.mobilePhone = user.mobilePhone;
+                condtion.roleNames = user.rolesList.ToArray();
+            }
+            ViewBag.Id = Id;
+            ViewBag.pageId = getPageId(pageId);
+            return View(condtion);
+        }
+
+        /// <summary>
+        /// 后台用户列表网格
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult userList(UserManagerSearchRequest condtion, string pageId) {
+            ViewBag.pageId = getPageId(pageId);
+            return View(condtion);
         }
     }
 }
