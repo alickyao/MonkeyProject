@@ -1,142 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ArrayOfManagerMenu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">Man
+<ArrayOfManagerMenu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <ManagerMenu>
-    <text>业务</text>
-    <roles>
-      <string>admin</string>
-      <string>user</string>
-    </roles>
+    <text>日常工作</text>
     <icon>icon-edit</icon>
-    <url />
-    <children>
-      <ManagerMenu>
-        <text>会员</text>
-        <children>
-          <ManagerMenu>
-            <text>会员管理</text>
-            <url><![CDATA[/Admin/ManagerMember/userList]]></url>
-          </ManagerMenu>
-        </children>
-      </ManagerMenu>
-      <ManagerMenu>
-        <text>订单与评价管理</text>
-        <children>
-          <ManagerMenu>
-            <text>产品订单</text>
-            <url><![CDATA[/Admin/Order/productOrderList]]></url>
-          </ManagerMenu>
-          <ManagerMenu>
-            <text>产品评价</text>
-            <url><![CDATA[/Admin/Order/commitList]]></url>
-          </ManagerMenu>
-        </children>
-      </ManagerMenu>
-      <ManagerMenu>
-        <text>调查问卷</text>
-        <children>
-          <ManagerMenu>
-            <text>答案列表</text>
-            <url><![CDATA[/Admin/Investigates/answerList]]></url>
-          </ManagerMenu>
-        </children>
-      </ManagerMenu>
-    </children>
-  </ManagerMenu>
-  <ManagerMenu>
-    <text>资源</text>
-    <icon>icon-more</icon>
     <roles>
       <string>admin</string>
       <string>user</string>
     </roles>
     <children>
       <ManagerMenu>
-        <text>网站内容管理</text>
+        <text>办公管理</text>
         <children>
           <ManagerMenu>
-            <text>内容分类管理</text>
-            <roles>
-              <string>admin</string>
-            </roles>
-            <url><![CDATA[/Admin/ManagerTree/catTreeList?fun=webcms]]></url>
-          </ManagerMenu>
-          <ManagerMenu>
-            <text>内容管理</text>
-            <url><![CDATA[/Admin/ManagerTree/catTreeGrid?fun=webcms]]></url>
-          </ManagerMenu>
-        </children>
-      </ManagerMenu>
-      
-      <ManagerMenu>
-        <text>微信公众平台管理</text>
-        <children>
-          <ManagerMenu>
-            <text>菜单与自动回复</text>
-            <children>
-              <ManagerMenu>
-                <text>菜单管理</text>
-                <url><![CDATA[/Admin/WeiXin/menu]]></url>
-              </ManagerMenu>
-              <ManagerMenu>
-                <text>自定义消息回复</text>
-                <children>
-                  <ManagerMenu>
-                    <text>文本消息</text>
-                    <url><![CDATA[/Admin/WeiXin/callbackTextMsg]]></url>
-                  </ManagerMenu>
-                  <ManagerMenu>
-                    <text>图文消息</text>
-                    <url><![CDATA[/Admin/WeiXin/callbackNewsMsg]]></url>
-                  </ManagerMenu>
-                </children>
-              </ManagerMenu>
-            </children>
-          </ManagerMenu>
-          <ManagerMenu>
-            <text>素材管理</text>
-            <url><![CDATA[/Admin/WeiXin/material]]></url>
-          </ManagerMenu>
-          <ManagerMenu>
-            <text>数据分析</text>
-          </ManagerMenu>
-        </children>
-      </ManagerMenu>
-      <ManagerMenu>
-        <text>文件管理</text>
-        <children>
-          <ManagerMenu>
-            <text>已上传文件列表</text>
-            <url><![CDATA[/Admin/Files/listUpload]]></url>
-          </ManagerMenu>
-        </children>
-      </ManagerMenu>
-      <ManagerMenu>
-        <text>地理位置</text>
-        <children>
-          <ManagerMenu>
-            <text>全国地域信息</text>
-            <url><![CDATA[/Admin/ManagerGeo/list]]></url>
-          </ManagerMenu>
-        </children>
-      </ManagerMenu>
-      <ManagerMenu>
-        <text>调查问卷</text>
-        <children>
-          <ManagerMenu>
-            <text>可选项目维护</text>
-            <url><![CDATA[/Admin/Investigates/questionItemList]]></url>
-          </ManagerMenu>
-        </children>
-      </ManagerMenu>
-      <ManagerMenu>
-        <text>运行记录</text>
-        <children>
-          <ManagerMenu>
-            <text>已发送短信历史</text>
-            <roles>
-              <string>admin</string>
-            </roles>
-            <url><![CDATA[/Admin/RunHistory/sentSmsList]]></url>
+            <text>请假申请</text>
+            <url></url>
           </ManagerMenu>
         </children>
       </ManagerMenu>
@@ -150,8 +27,13 @@
     </roles>
     <children>
       <ManagerMenu>
-        <text>系统管理员维护</text>
-        <url><![CDATA[/manager/UserManager/userList]]></url>
+        <text>系统管理员</text>
+        <children>
+          <ManagerMenu>
+            <text>系统管理员维护</text>
+            <url><![CDATA[/manager/UserManager/userList]]></url>
+          </ManagerMenu>
+        </children>
       </ManagerMenu>
       <ManagerMenu>
         <text>系统日志</text>

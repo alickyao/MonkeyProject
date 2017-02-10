@@ -103,6 +103,7 @@
       <DependentUpon>Default.edmx</DependentUpon>
     </Compile>
     <Compile Include="Frame\ManagerMenu.cs" />
+    <Compile Include="Fun\OA\LeaveService.cs" />
     <Compile Include="Logs\BaseLog.cs" />
     <Compile Include="Logs\ExceptionLog.cs" />
     <Compile Include="Logs\UserLog.cs" />
@@ -110,6 +111,9 @@
     <Compile Include="Users\UserBase.cs" />
     <Compile Include="Users\UserManager.cs" />
     <Compile Include="Users\UserModels.cs" />
+    <Compile Include="WorkFlow\WorkFlowBase.cs" />
+    <Compile Include="WorkFlow\WorkFlowRun.cs" />
+    <Compile Include="WorkFlow\WorkFlowStep.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\monkey.TTP\monkey.TTP.csproj">
