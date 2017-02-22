@@ -38,8 +38,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Activities" />
+    <Reference Include="System.Activities.DurableInstancing" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.DurableInstancing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Activities" />
@@ -53,13 +55,19 @@
     <Compile Include="ReadInt.cs" />
   </ItemGroup>
   <ItemGroup>
-    <XamlAppDef Include="Workflow1.xaml">
-      <SubType>Designer</SubType>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamlAppDef Include="Prompt.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </XamlAppDef>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <XamlAppDef Include="FlowchartNumberGuessWorkflow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </XamlAppDef>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

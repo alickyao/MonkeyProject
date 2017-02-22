@@ -7,6 +7,9 @@ using System.Activities;
 namespace monkey.workflow
 {
 
+    /// <summary>
+    /// 活动派生自 NativeActivity<TResult> 而不是 CodeActivity，这是默认的代码活动模板。如果活动提供单个结果，可以使用 CodeActivity<TResult>，它是通过 Result 参数公开的，但是 CodeActivity<TResult> 不支持使用书签，因此使用 NativeActivity<TResult>。
+    /// </summary>
     public sealed class ReadInt : NativeActivity<int>
     {
         [RequiredArgument]
@@ -23,9 +26,11 @@ namespace monkey.workflow
             }
 
             context.CreateBookmark(name, new BookmarkCallback(OnReadComplete));
-
         }
 
+        // NativeActivity derived activities that do asynchronous operations by calling 
+        // one of the CreateBookmark overloads defined on System.Activities.NativeActivityContext 
+        // must override the CanInduceIdle property and return true.
         protected override bool CanInduceIdle
         {
             get { return true; }
