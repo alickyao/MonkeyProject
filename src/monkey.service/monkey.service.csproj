@@ -111,9 +111,6 @@
     <Compile Include="Users\UserBase.cs" />
     <Compile Include="Users\UserManager.cs" />
     <Compile Include="Users\UserModels.cs" />
-    <Compile Include="WorkFlow\WorkFlowBase.cs" />
-    <Compile Include="WorkFlow\WorkFlowRun.cs" />
-    <Compile Include="WorkFlow\WorkFlowStep.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\monkey.TTP\monkey.TTP.csproj">
