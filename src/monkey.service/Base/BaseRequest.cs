@@ -67,4 +67,15 @@ namespace monkey.service
         /// </summary>
         public DateTime? endDate { get; set; }
     }
+
+    /// <summary>
+    /// 标准批量处理请求
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class BaseBatchRequest<T> {
+        /// <summary>
+        /// 数据行
+        /// </summary>
+        public List<T> rows { get; set; }
+    }
 }

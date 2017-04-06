@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 12/05/2016 13:08:31
+-- Date Created: 04/06/2017 13:35:01
 -- Generated from EDMX file: D:\project\git\MonkeyProject\src\monkey.service\Db\Default.edmx
 -- --------------------------------------------------
 
@@ -43,6 +43,9 @@ GO
 IF OBJECT_ID(N'[dbo].[Db_BaseUserRoleSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseUserRoleSet];
 GO
+IF OBJECT_ID(N'[dbo].[Db_BaseTreeSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseTreeSet];
+GO
 IF OBJECT_ID(N'[dbo].[Db_BaseUserSet_Db_ManagerUser]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser];
 GO
@@ -82,6 +85,15 @@ CREATE TABLE [dbo].[Db_BaseUserRoleSet] (
     [Id] nvarchar(50)  NOT NULL,
     [roleName] nvarchar(max)  NOT NULL,
     [Db_BaseUserId] nvarchar(50)  NOT NULL
+);
+GO
+
+-- Creating table 'Db_BaseTreeSet'
+CREATE TABLE [dbo].[Db_BaseTreeSet] (
+    [Id] nvarchar(50)  NOT NULL,
+    [Name] nvarchar(max)  NOT NULL,
+    [ParentId] nvarchar(50)  NULL,
+    [CreatedOn] datetime  NOT NULL
 );
 GO
 
@@ -134,6 +146,12 @@ GO
 -- Creating primary key on [Id] in table 'Db_BaseUserRoleSet'
 ALTER TABLE [dbo].[Db_BaseUserRoleSet]
 ADD CONSTRAINT [PK_Db_BaseUserRoleSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_BaseTreeSet'
+ALTER TABLE [dbo].[Db_BaseTreeSet]
+ADD CONSTRAINT [PK_Db_BaseTreeSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
