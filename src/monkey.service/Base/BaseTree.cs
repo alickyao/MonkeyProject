@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using monkey.service.Db;
 using System.ComponentModel.DataAnnotations;
+using monkey.service.Logs;
+using System.Threading;
 
 namespace monkey.service
 {
@@ -52,7 +54,7 @@ namespace monkey.service
     /// <summary>
     /// 基本树
     /// </summary>
-    public class BaseTree:BaseTreeAttr
+    public class BaseTree:BaseTreeAttr,ILogStringable
     {
 
         /// <summary>
@@ -64,6 +66,11 @@ namespace monkey.service
         /// 创建时间-文本
         /// </summary>
         public string CreatedOnString { get; set; }
+
+        /// <summary>
+        /// 折叠  节点状态，'open' 或 'closed'，默认：'open'。如果为'closed'的时候，将不自动展开该节点。
+        /// </summary>
+        public string state { get; set; }
 
         /// <summary>
         /// 子节点集合
@@ -83,6 +90,8 @@ namespace monkey.service
             this.CreatedOn = row.CreatedOn;
             this.CreatedOnString = this.CreatedOn.ToString("yyyy-MM-dd HH:mm");
             this.Seq = row.Seq;
+
+            this.state = "open";
         }
 
 
@@ -185,7 +194,6 @@ namespace monkey.service
         /// <returns></returns>
         public BaseTree EditBaseTree(BaseTreeAttr condtion) {
             ValiDatas.valiData(condtion);
-
             var r = CheckCode(condtion.Code, this.id);
             if (r > 0)
             {
@@ -256,6 +264,16 @@ namespace monkey.service
                               select c).Count();
                 return result;
             }
+        }
+
+        public string getIdString()
+        {
+            return this.id;
+        }
+
+        public string getNameString()
+        {
+            return this.text;
         }
     }
 }

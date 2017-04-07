@@ -687,6 +687,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\BaseManagementController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\LogsController.cs" />
@@ -781,6 +782,7 @@
     <Content Include="Areas\Admin\Views\Logs\exceptionLogList.cshtml" />
     <Content Include="Areas\Admin\Views\UserManager\userList.cshtml" />
     <Content Include="Areas\Admin\Views\UserManager\editUser.cshtml" />
+    <Content Include="Areas\Admin\Views\BaseManagement\BaseTreeGrid.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -791,6 +793,7 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Scripts\kindeditor\attached\" />
+    <Folder Include="Areas\Admin\Views\BaseMangement\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\monkey.service\monkey.service.csproj">

@@ -1,0 +1,280 @@
+﻿
+@{
+    ViewBag.Title = "基本树维护";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string pageId = ViewBag.pageId;
+}
+<script>
+    $(function () {
+        var treeGrid = $("#@(pageId)TreeGrid");
+
+        var editRow = undefined;
+
+        treeGrid.treegrid({
+            idField: 'id',
+            treeField: 'text',
+            animate: true,
+            pagination: false,
+            singleSelect: true,
+            fit: true,
+            border: false,
+            lines: true,
+            fitColumns: false,
+            columns: [[
+                {
+                    field: 'Seq', title: '排序', width: 60, align: 'right',
+                    editor: {
+                        type: "numberbox",
+                        options: {
+                            required: true,
+                            min: 0,
+                            max: 1000
+                        }
+                    }
+                },
+                {
+                    field: 'text', title: '节点名称', width: 200, align: 'left',
+                    editor: {
+                        type: "textbox",
+                        options: {
+                            required: true,
+                        }
+                    }
+                },
+                {
+                    field: 'Code', title: '节点编号', width: 100, align: 'left',
+                    editor: {
+                        type: "textbox",
+                        options: {
+                            required: true,
+                            validType:length[0,20]
+                        }
+                    }
+                },
+                { field: 'CreatedOnString', title: '创建时间', width:120, align: 'center' },
+            ]],
+            onDblClickRow: function (row) {
+                beginEdit();
+            },
+            toolbar: [
+                {
+                    text: "新增节点",
+                    iconCls: "icon-add",
+                    handler: function () {
+                        if (editRow == undefined) {
+                            var node = treeGrid.treegrid('getSelected');
+                            editRow = "";
+                            treeGrid.treegrid('append', {
+                                parent: node == null ? "" : node.id,  // the node has a 'id' value that defined through 'idField' property
+                                data: [{
+                                    id: editRow,
+                                    Seq: 0,
+                                    text: '',
+                                    Code: '',
+                                    ParentId: node == null ? "" : node.id
+                                }]
+                            });
+                            treeGrid.treegrid("beginEdit", editRow);
+                            treeGrid.treegrid("select", editRow);
+                        }
+                    }
+                },
+                {
+                    text: "编辑选中",
+                    iconCls: "icon-edit",
+                    handler: function () {
+                        beginEdit();
+                    }
+                },
+                {
+                    text: "取消编辑",
+                    iconCls: "icon-undo",
+                    handler: function () {
+                        if (editRow != undefined) {
+                            treeGrid.treegrid("cancelEdit", editRow);
+                            if (editRow == "") {
+                                treeGrid.treegrid("remove", editRow);
+                            }
+                            editRow = undefined;
+                        }
+                    }
+                },
+                '-',
+                {
+                    text: "保存",
+                    iconCls: "icon-save",
+                    handler: function () {
+                        if (editRow != undefined) {
+                            var Reg = treeGrid.treegrid("validateRow", editRow);
+                            if (Reg) {
+                                treeGrid.treegrid("endEdit", editRow);
+                                var row = treeGrid.treegrid("find", editRow);
+                                console.log(row);
+                                treeGrid.treegrid("loading");
+                                $.post("/api/BaseTree/EditBaseTree", row, function (json) {
+                                    console.log(json);
+                                    showmsg(json);
+                                    if (json.Message == "0") {
+                                        editRow = undefined;
+                                        loadData();
+                                    }
+                                    else {
+                                        treeGrid.treegrid("beginEdit", editRow);
+                                        treeGrid.treegrid("loaded");
+                                    }
+                                });
+                            }
+                        }
+                        else {
+                            $.messager.alert("提示", "没有数据需要保存", "info");
+                        }
+                    }
+                },
+                {
+                    text: "删除节点",
+                    iconCls: "icon-clear",
+                    handler: function () {
+                        if (editRow == undefined) {
+                            var srow = treeGrid.treegrid("getSelected");
+                            if (srow != null) {
+                                $.messager.confirm('请确认', '确定将节点:【' + srow.text + "】进行物理为删除？<br />其子节点也将一并被物理删除", function (r) {
+                                    if (r) {
+                                        $.getJSON("/api/BaseTree/DelBaseTree/" + srow.id, function (json) {
+                                            showmsg(json);
+                                            loadData();
+                                        });
+                                    }
+                                });
+                            }
+                            else {
+                                $.messager.alert('您的操作有误', "请先选择需要删除的节点", 'error');
+                            }
+                        }
+                        else {
+                            $.messager.alert("提示", "请先保存或退出编辑模式", "info");
+                        }
+                    }
+                },
+                '-',
+                {
+                    text: "刷新",
+                    iconCls: "icon-reload",
+                    handler: function () {
+                        if (editRow == undefined) {
+                            loadData();
+                        }
+                        else {
+                            $.messager.alert("提示", "请先保存或退出编辑模式", "info");
+                        }
+                    }
+                },
+                '-',
+                {
+                    text: "查看操作日志",
+                    iconCls: "icon-tip",
+                    handler: function () {
+                        var srow = treeGrid.treegrid("getSelected");
+                        if (srow != null) {
+                            var url = "@Url.Action("userLogList", "Logs")";
+                            url += "?fkId=" + srow.id;
+                            console.log(url);
+                            var dd = $("#@(pageId)dd");
+                            dd.dialog({
+                                title:"查看日志",
+                                content: getIframe(url)
+                            }).dialog("open");
+                        }
+                        else {
+                            $.messager.alert('您的操作有误', "请先选中一个节点", 'error');
+                        }
+                    }
+                }
+            ]
+        });
+
+
+        function beginEdit() {
+            if (editRow == undefined) {
+                var node = treeGrid.treegrid('getSelected');
+                if (node != null) {
+                    editRow = node.id;
+                    treeGrid.treegrid("beginEdit", editRow);
+                }
+                else {
+                    $.messager.alert("提示", "请先选中您要编辑的节点", "info");
+                }
+
+            }
+            else {
+                $.messager.alert("提示", "请先保存或退出编辑模式", "info");
+            }
+        }
+
+        function loadData() {
+            treeGrid.treegrid("loading");
+            $.getJSON("/api/BaseTree/GetBaseTreeRootsList", function (json) {
+                
+                treeGrid.treegrid("loaded");
+                editRow = undefined;
+                //左树网格
+                treeGrid.treegrid("loadData", json.item);
+                //右边树
+                rightTree.tree("loadData", json.item.rows);
+            })
+        }
+        loadData();
+
+        //右侧树形初始化
+        var rightTree = $("#@(pageId)Tree");
+        rightTree.tree({
+            lines: true,
+            dnd: true,
+            onDrop: function (target, source, point) {
+                var tNode = rightTree.tree("getNode", target);
+                console.log(source.text + "[" + point + "]" + tNode.text);
+                var pId = "";
+                if (point == "append") {
+                    pId = tNode.id;
+                }
+                else {
+                    pId = tNode.ParentId
+                };
+                //调用编辑
+                source.ParentId = pId;
+                source.children = null;
+                var request = {
+                    "id": source.id,
+                    "text": source.text,
+                    "Seq": source.Seq,
+                    "Code": source.Code,
+                    "ParentId": source.ParentId
+                };
+                console.log(request);
+                $.messager.confirm('请确认', '确认移动节点【'+ request.text +'】位置吗？', function (r) {
+                    if (r) {
+                        treeGrid.treegrid("loading");
+                        $.post("/api/BaseTree/EditBaseTree", request, function (json) {
+                            showmsg(json);
+                            if (json.Message == "0") {
+                                loadData();
+                            }
+                        })
+                    }
+                    else {
+                        loadData();
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div id="@(pageId)dd" style="width:90%;height:90%;overflow:hidden"></div>
+    <div data-options="region:'east',title:'拖动节点进行位置调节',split:true,border:false" style="width:300px;">
+        <ul id="@(pageId)Tree"></ul>
+    </div>
+    <div data-options="region:'center',border:false,title:'基本树列表'">
+        <table id="@(pageId)TreeGrid"></table>
+    </div>
+</div>

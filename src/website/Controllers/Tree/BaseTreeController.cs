@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using monkey.service;
 using monkey.service.Users;
+using monkey.service.Logs;
 
 namespace website.Controllers.Tree
 {
@@ -20,7 +21,7 @@ namespace website.Controllers.Tree
         /// <returns></returns>
         [HttpGet]
         [ApiAuthorize(RoleType = SysRolesType.后台)]
-        public BaseResponseList<BaseTree> GetBaseTreeRootsList() {
+        public BaseResponse<BaseResponseList<BaseTree>> GetBaseTreeRootsList() {
             BaseResponseList<BaseTree> result = new BaseResponseList<BaseTree>();
             result.rows = BaseTree.GetBaseTreeRoots();
             if (result.rows.Count > 0) {
@@ -29,7 +30,7 @@ namespace website.Controllers.Tree
                 }
             }
             result.total = result.rows.Count;
-            return result;
+            return BaseResponse.getResult(result);
         }
 
 
@@ -67,16 +68,29 @@ namespace website.Controllers.Tree
         [HttpPost]
         [ApiAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse<BaseTree> EditBaseTree(BaseTreeAttr condtion) {
+            BaseTree t;
+            var thisUser = UserManager.getUserById(User.Identity.Name);
+            string msg = "{0}基本树项目，[{1}]";
             if (string.IsNullOrEmpty(condtion.id))
             {
                 //新增
-                var info  = BaseTree.CreateBaseTree(condtion);
-                return BaseResponse.getResult(info, "新增成功");
+                t  = BaseTree.CreateBaseTree(condtion);
+
+                //日志
+                msg = string.Format(msg, "新增", condtion.text);
+                UserLog.create(msg, "基本树维护", thisUser, t);
+                
+                return BaseResponse.getResult(t, "新增成功");
             }
             else {
                 //编辑
                 var info = BaseTree.GetBaseTreeById(condtion.id);
-                var result = info.EditBaseTree(condtion);
+                t = info.EditBaseTree(condtion);
+
+                //日志
+                msg = string.Format(msg, "编辑", condtion.text);
+                UserLog.create(msg, "基本树维护", thisUser, t);
+
                 return BaseResponse.getResult(info, "保存成功");
             }
         }
@@ -89,8 +103,11 @@ namespace website.Controllers.Tree
         [HttpGet]
         [ApiAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse DelBaseTree(string id) {
+
+            var thisUser = UserManager.getUserById(User.Identity.Name);
             var info = BaseTree.GetBaseTreeById(id);
             info.DelBaseTree();
+            UserLog.create(string.Format("物理删除基本树项目：{0}",info.text), "基本树维护", thisUser);
             return BaseResponse.getResult("删除成功");
         }
     }

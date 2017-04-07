@@ -36,6 +36,15 @@
         </children>
       </ManagerMenu>
       <ManagerMenu>
+        <text>基础项维护</text>
+        <children>
+          <ManagerMenu>
+            <text>基本树维护</text>
+            <url><![CDATA[/manager/BaseManagement/BaseTreeGrid]]></url>
+          </ManagerMenu>
+        </children>
+      </ManagerMenu>
+      <ManagerMenu>
         <text>系统日志</text>
         <children>
           <ManagerMenu>
