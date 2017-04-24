@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apps", "apps", "{54485B0E-B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "website", "website\website.csproj", "{DE02C6B4-48FA-4876-8F4D-1B98D5CE174B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "monkey.app.timequartz", "monkey.app.timequartz\monkey.app.timequartz.csproj", "{65330AF6-7723-4186-8643-843EF866E634}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,11 +55,20 @@ Global
 		{DE02C6B4-48FA-4876-8F4D-1B98D5CE174B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DE02C6B4-48FA-4876-8F4D-1B98D5CE174B}.Release|x86.ActiveCfg = Release|Any CPU
 		{DE02C6B4-48FA-4876-8F4D-1B98D5CE174B}.Release|x86.Build.0 = Release|Any CPU
+		{65330AF6-7723-4186-8643-843EF866E634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65330AF6-7723-4186-8643-843EF866E634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65330AF6-7723-4186-8643-843EF866E634}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{65330AF6-7723-4186-8643-843EF866E634}.Debug|x86.Build.0 = Debug|Any CPU
+		{65330AF6-7723-4186-8643-843EF866E634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65330AF6-7723-4186-8643-843EF866E634}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65330AF6-7723-4186-8643-843EF866E634}.Release|x86.ActiveCfg = Release|Any CPU
+		{65330AF6-7723-4186-8643-843EF866E634}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{798954E9-6835-40DB-96A6-2C0A8FA06B31} = {54485B0E-BFB0-4DD8-9007-6409D5547D1D}
+		{65330AF6-7723-4186-8643-843EF866E634} = {54485B0E-BFB0-4DD8-9007-6409D5547D1D}
 	EndGlobalSection
 EndGlobal

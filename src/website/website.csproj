@@ -722,6 +722,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\Logs\LogsController.cs" />
+    <Compile Include="Controllers\SysBase\TimerController.cs" />
     <Compile Include="Controllers\Tree\BaseTreeController.cs" />
     <Compile Include="Controllers\Users\UserManagerController.cs" />
     <Compile Include="Global.asax.cs">
