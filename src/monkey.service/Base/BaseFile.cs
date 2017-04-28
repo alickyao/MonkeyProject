@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using monkey.service.Db;
+using System.ComponentModel.DataAnnotations;
+using System.Web;
+using System.IO;
+using System.Drawing;
 
 namespace monkey.service
 {
@@ -23,6 +27,8 @@ namespace monkey.service
     /// </summary>
     public class BaseFile
     {
+        #region - 基本属性
+
         /// <summary>
         /// 文件的ID
         /// </summary>
@@ -52,6 +58,8 @@ namespace monkey.service
         /// 创建时间 - 文本
         /// </summary>
         public string CreatedOnString { get; set; }
+
+        #endregion
 
         /// <summary>
         /// 构造方法 （从数据库）
@@ -150,6 +158,124 @@ namespace monkey.service
             }
 
             return result;
+        }
+        
+        /// <summary>
+        /// 获取缩略图
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public string GetImgFileThumbnailPath(GetImgFileThumbnailRequest condtion) {
+            return GetImgFileThumbnailPath(this.Path, condtion);
+        }
+
+        /// <summary>
+        /// 获取缩略图
+        /// </summary>
+        /// <param name="path">目标文件的存放路径</param>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static string GetImgFileThumbnailPath(string path, GetImgFileThumbnailRequest condtion) {
+            ValiDatas.valiData(condtion);
+            int width = condtion.Width;
+            int height = condtion.Height;
+            string imgUrl = path;
+            string fileName = HttpContext.Current.Server.MapPath(imgUrl);
+
+            if (!File.Exists(fileName)) throw new DataNotFundException("指定的文件不存在");
+            string fileExt = System.IO.Path.GetExtension(fileName).ToLower();
+            string[] imgTypes = { ".gif", ".jpg", ".jpeg", ".png", ".bmp" };
+            if (!imgTypes.Contains(fileExt)) throw new ValiDataException("只有图片文件才能生成缩略图");
+            if (imgUrl.IndexOf("thumbnail", StringComparison.OrdinalIgnoreCase) != -1) throw new ValiDataException("传入的文件已经是缩略图地址了，不能再生成缩略图");
+
+            string imgDir = string.Format("{0}/thumbnail/{1}_{2}",imgUrl.Substring(0, imgUrl.LastIndexOf('.')), width, height);
+            string imgFile = string.Format("{0}/{1}", imgDir, imgUrl.Substring(imgUrl.LastIndexOf("/", StringComparison.OrdinalIgnoreCase)));
+            //判断目录是否存在
+            if (!Directory.Exists(HttpContext.Current.Server.MapPath(imgDir))) Directory.CreateDirectory(HttpContext.Current.Server.MapPath(imgDir));
+            //创建缩略图
+            if (!File.Exists(HttpContext.Current.Server.MapPath(imgFile))) MakeThumbnail(fileName, HttpContext.Current.Server.MapPath(imgFile), width, height);
+            return imgFile;
+        }
+
+        /// <summary>
+        /// 获取缩略图
+        /// </summary>
+        /// <param name="sourcePath"></param>
+        /// <param name="newPath"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        private static void MakeThumbnail(string sourcePath, string newPath, int width, int height)
+        {
+            Image ig = Image.FromFile(sourcePath);
+            int towidth = width;
+            int toheight = height;
+            int x = 0;
+            int y = 0;
+            int ow = ig.Width;
+            int oh = ig.Height;
+            if ((double)ig.Width / (double)ig.Height > (double)towidth / (double)toheight)
+            {
+                oh = ig.Height;
+                ow = ig.Height * towidth / toheight;
+                y = 0;
+                x = (ig.Width - ow) / 2;
+
+            }
+            else
+            {
+                ow = ig.Width;
+                oh = ig.Width * height / towidth;
+                x = 0;
+                y = (ig.Height - oh) / 2;
+            }
+            Image bitmap = new Bitmap(towidth, toheight);
+            Graphics g = Graphics.FromImage(bitmap);
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            g.Clear(Color.Transparent);
+            g.DrawImage(ig, new Rectangle(0, 0, towidth, toheight), new Rectangle(x, y, ow, oh), GraphicsUnit.Pixel);
+            try
+            {
+                bitmap.Save(newPath, System.Drawing.Imaging.ImageFormat.Jpeg);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                ig.Dispose();
+                bitmap.Dispose();
+                g.Dispose();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 获取缩略图请求
+    /// </summary>
+    public class GetImgFileThumbnailRequest
+    {
+        private int _width = 200;
+        /// <summary>
+        /// 宽度（单位：像素） 默认为200
+        /// </summary>
+        [Required]
+        [Range(100, 2000)]
+        public int Width {
+            get { return _width; }
+            set { _width = value; }
+        }
+
+        private int _height = 200;
+        /// <summary>
+        /// 高度（单位：像素） 默认为200
+        /// </summary>
+        [Required]
+        [Range(100, 2000)]
+        public int Height {
+            get { return _height; }
+            set { _height = value; }
         }
     }
 }

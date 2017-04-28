@@ -43,6 +43,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
@@ -69,6 +70,7 @@
     <Compile Include="Base\BaseTree.cs" />
     <Compile Include="Base\Exceptions.cs" />
     <Compile Include="Base\Helps.cs" />
+    <Compile Include="Base\IThreading.cs" />
     <Compile Include="Base\Setings.cs" />
     <Compile Include="Base\ValiDatas.cs" />
     <Compile Include="Db\Db_BaseDoc.cs">

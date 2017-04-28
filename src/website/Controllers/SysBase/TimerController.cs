@@ -21,19 +21,35 @@ namespace website.Controllers.SysBase
         /// <returns></returns>
         [HttpGet]
         public BaseResponse DoScan() {
-            DateTime beginScanTime = DateTime.Now;
-            Thread.Sleep(100);
+
 
             #region -- 详细的执行逻辑
 
+            List<IThreading> runList = new List<IThreading>();
+            runList.Add(new TRuningLogToDataBase());
 
+            foreach (var item in runList) {
+                Thread t = new Thread(new ThreadStart(item.Run));
+                t.Start();
+            }
 
             #endregion
 
-            var usedTime = (DateTime.Now - beginScanTime).Milliseconds;
-            string msg = string.Format("定时触发已执行完毕耗时： {0} ms", usedTime);
-            BaseLog.create(msg);
-            return BaseResponse.getResult(msg);
+            return BaseResponse.getResult();
+        }
+    }
+
+    /// <summary>
+    /// 写入到系统日志
+    /// </summary>
+    public class TRuningLogToDataBase : IThreading
+    {
+        /// <summary>
+        /// 执行
+        /// </summary>
+        public void Run()
+        {
+            BaseLog.create("后台定时触发已开始执行");
         }
     }
 }

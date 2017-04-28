@@ -69,5 +69,38 @@ namespace website.Controllers.SysBase
         public BaseResponseList<BaseFile> SearchFiles(BaseRequest condtion) {
             return BaseFile.SearchBaseFileList(condtion);
         }
+
+        /// <summary>
+        /// [匿名访问]根据指定的文件ID获取缩略图路径
+        /// </summary>
+        /// <param name="id">文件的ID</param>
+        /// <param name="condtion">长宽说明 可为空 默认长宽均为200px</param>
+        /// <returns></returns>
+        [HttpPost]
+        public BaseResponse<string> GetImgFileThumbnailPathByFileId(string id, GetImgFileThumbnailRequest condtion) {
+            if (condtion == null) {
+                condtion = new GetImgFileThumbnailRequest();
+            }
+            var fileInfo = BaseFile.GetInstance(id);
+            var imgPath = fileInfo.GetImgFileThumbnailPath(condtion);
+            return BaseResponse.getResult(imgPath, "success");
+        }
+
+        /// <summary>
+        /// [匿名访问]根据指定的文件路径获取缩略图路径
+        /// </summary>
+        /// <param name="path">文件的路径 例如 /Upload/xxx/xxx.jpg</param>
+        /// <param name="condtion">长宽说明 可为空 默认长宽均为200px</param>
+        /// <returns></returns>
+        [HttpPost]
+        public BaseResponse<string> GetImgFileThumbnailPathByFilePath(string path, GetImgFileThumbnailRequest condtion)
+        {
+            if (condtion == null)
+            {
+                condtion = new GetImgFileThumbnailRequest();
+            }
+            var imgPath = BaseFile.GetImgFileThumbnailPath(path, condtion);
+            return BaseResponse.getResult(imgPath, "success");
+        }
     }
 }
