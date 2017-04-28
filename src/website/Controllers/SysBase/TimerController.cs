@@ -16,7 +16,7 @@ namespace website.Controllers.SysBase
     public class TimerController : ApiController
     {
         /// <summary>
-        /// 触发系统自动刷新
+        /// [匿名访问]触发系统自动刷新
         /// </summary>
         /// <returns></returns>
         [HttpGet]

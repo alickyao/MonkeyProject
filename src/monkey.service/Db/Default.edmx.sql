@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/06/2017 13:35:01
+-- Date Created: 04/28/2017 13:40:06
 -- Generated from EDMX file: D:\project\git\MonkeyProject\src\monkey.service\Db\Default.edmx
 -- --------------------------------------------------
 
@@ -20,11 +20,11 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_Db_BaseUserDb_BaseUserRole]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_BaseUserRoleSet] DROP CONSTRAINT [FK_Db_BaseUserDb_BaseUserRole];
 GO
-IF OBJECT_ID(N'[dbo].[FK_Db_ManagerUser_inherits_Db_BaseUser]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser] DROP CONSTRAINT [FK_Db_ManagerUser_inherits_Db_BaseUser];
-GO
 IF OBJECT_ID(N'[dbo].[FK_Db_ExceptionLog_inherits_Db_BaseLog]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_BaseLogSet_Db_ExceptionLog] DROP CONSTRAINT [FK_Db_ExceptionLog_inherits_Db_BaseLog];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_ManagerUser_inherits_Db_BaseUser]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser] DROP CONSTRAINT [FK_Db_ManagerUser_inherits_Db_BaseUser];
 GO
 IF OBJECT_ID(N'[dbo].[FK_Db_UserLog_inherits_Db_BaseLog]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_BaseLogSet_Db_UserLog] DROP CONSTRAINT [FK_Db_UserLog_inherits_Db_BaseLog];
@@ -34,26 +34,26 @@ GO
 -- Dropping existing tables
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[Db_BaseUserSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseUserSet];
-GO
 IF OBJECT_ID(N'[dbo].[Db_BaseLogSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseLogSet];
-GO
-IF OBJECT_ID(N'[dbo].[Db_BaseUserRoleSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseUserRoleSet];
-GO
-IF OBJECT_ID(N'[dbo].[Db_BaseTreeSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseTreeSet];
-GO
-IF OBJECT_ID(N'[dbo].[Db_BaseUserSet_Db_ManagerUser]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser];
 GO
 IF OBJECT_ID(N'[dbo].[Db_BaseLogSet_Db_ExceptionLog]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseLogSet_Db_ExceptionLog];
 GO
 IF OBJECT_ID(N'[dbo].[Db_BaseLogSet_Db_UserLog]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseLogSet_Db_UserLog];
+GO
+IF OBJECT_ID(N'[dbo].[Db_BaseTreeSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseTreeSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_BaseUserRoleSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseUserRoleSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_BaseUserSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseUserSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_BaseUserSet_Db_ManagerUser]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser];
 GO
 
 -- --------------------------------------------------
@@ -93,7 +93,45 @@ CREATE TABLE [dbo].[Db_BaseTreeSet] (
     [Id] nvarchar(50)  NOT NULL,
     [Name] nvarchar(max)  NOT NULL,
     [ParentId] nvarchar(50)  NULL,
+    [CreatedOn] datetime  NOT NULL,
+    [Code] nvarchar(50)  NOT NULL,
+    [Seq] int  NOT NULL
+);
+GO
+
+-- Creating table 'Db_BaseDocSet'
+CREATE TABLE [dbo].[Db_BaseDocSet] (
+    [Id] nvarchar(50)  NOT NULL,
+    [DocType] int  NOT NULL,
+    [Caption] nvarchar(max)  NOT NULL,
+    [Code] nvarchar(50)  NULL,
+    [TreeId] nvarchar(50)  NULL,
+    [CreatedOn] datetime  NOT NULL,
+    [Seq] int  NOT NULL,
+    [IsDeleted] bit  NOT NULL,
+    [IsDisabled] bit  NOT NULL
+);
+GO
+
+-- Creating table 'Db_BaseFileSet'
+CREATE TABLE [dbo].[Db_BaseFileSet] (
+    [Id] nvarchar(50)  NOT NULL,
+    [Path] nvarchar(max)  NOT NULL,
+    [FileName] nvarchar(max)  NOT NULL,
+    [ExName] nvarchar(50)  NULL,
     [CreatedOn] datetime  NOT NULL
+);
+GO
+
+-- Creating table 'Db_BaseDocFileSet'
+CREATE TABLE [dbo].[Db_BaseDocFileSet] (
+    [Id] nvarchar(50)  NOT NULL,
+    [FileId] nvarchar(50)  NOT NULL,
+    [Seq] int  NOT NULL,
+    [Caption] nvarchar(max)  NULL,
+    [Descript] nvarchar(max)  NULL,
+    [CreatedOn] datetime  NOT NULL,
+    [Db_BaseDocId] nvarchar(50)  NOT NULL
 );
 GO
 
@@ -127,6 +165,14 @@ CREATE TABLE [dbo].[Db_BaseLogSet_Db_UserLog] (
 );
 GO
 
+-- Creating table 'Db_BaseDocSet_Db_DocPic'
+CREATE TABLE [dbo].[Db_BaseDocSet_Db_DocPic] (
+    [Descript] nvarchar(max)  NULL,
+    [Content] nvarchar(max)  NULL,
+    [Id] nvarchar(50)  NOT NULL
+);
+GO
+
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
@@ -155,6 +201,24 @@ ADD CONSTRAINT [PK_Db_BaseTreeSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
+-- Creating primary key on [Id] in table 'Db_BaseDocSet'
+ALTER TABLE [dbo].[Db_BaseDocSet]
+ADD CONSTRAINT [PK_Db_BaseDocSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_BaseFileSet'
+ALTER TABLE [dbo].[Db_BaseFileSet]
+ADD CONSTRAINT [PK_Db_BaseFileSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_BaseDocFileSet'
+ALTER TABLE [dbo].[Db_BaseDocFileSet]
+ADD CONSTRAINT [PK_Db_BaseDocFileSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
 -- Creating primary key on [Id] in table 'Db_BaseUserSet_Db_ManagerUser'
 ALTER TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser]
 ADD CONSTRAINT [PK_Db_BaseUserSet_Db_ManagerUser]
@@ -170,6 +234,12 @@ GO
 -- Creating primary key on [Id] in table 'Db_BaseLogSet_Db_UserLog'
 ALTER TABLE [dbo].[Db_BaseLogSet_Db_UserLog]
 ADD CONSTRAINT [PK_Db_BaseLogSet_Db_UserLog]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_BaseDocSet_Db_DocPic'
+ALTER TABLE [dbo].[Db_BaseDocSet_Db_DocPic]
+ADD CONSTRAINT [PK_Db_BaseDocSet_Db_DocPic]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -190,6 +260,21 @@ GO
 CREATE INDEX [IX_FK_Db_BaseUserDb_BaseUserRole]
 ON [dbo].[Db_BaseUserRoleSet]
     ([Db_BaseUserId]);
+GO
+
+-- Creating foreign key on [Db_BaseDocId] in table 'Db_BaseDocFileSet'
+ALTER TABLE [dbo].[Db_BaseDocFileSet]
+ADD CONSTRAINT [FK_Db_BaseDocDb_BaseDocFile]
+    FOREIGN KEY ([Db_BaseDocId])
+    REFERENCES [dbo].[Db_BaseDocSet]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_Db_BaseDocDb_BaseDocFile'
+CREATE INDEX [IX_FK_Db_BaseDocDb_BaseDocFile]
+ON [dbo].[Db_BaseDocFileSet]
+    ([Db_BaseDocId]);
 GO
 
 -- Creating foreign key on [Id] in table 'Db_BaseUserSet_Db_ManagerUser'
@@ -215,6 +300,15 @@ ALTER TABLE [dbo].[Db_BaseLogSet_Db_UserLog]
 ADD CONSTRAINT [FK_Db_UserLog_inherits_Db_BaseLog]
     FOREIGN KEY ([Id])
     REFERENCES [dbo].[Db_BaseLogSet]
+        ([Id])
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [Id] in table 'Db_BaseDocSet_Db_DocPic'
+ALTER TABLE [dbo].[Db_BaseDocSet_Db_DocPic]
+ADD CONSTRAINT [FK_Db_DocPic_inherits_Db_BaseDoc]
+    FOREIGN KEY ([Id])
+    REFERENCES [dbo].[Db_BaseDocSet]
         ([Id])
     ON DELETE CASCADE ON UPDATE NO ACTION;
 GO

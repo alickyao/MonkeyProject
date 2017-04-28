@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base\Authorize.cs" />
+    <Compile Include="Base\BaseFile.cs" />
     <Compile Include="Base\BaseRequest.cs" />
     <Compile Include="Base\BaseResponse.cs" />
     <Compile Include="Base\BaseTree.cs" />
@@ -70,6 +71,15 @@
     <Compile Include="Base\Helps.cs" />
     <Compile Include="Base\Setings.cs" />
     <Compile Include="Base\ValiDatas.cs" />
+    <Compile Include="Db\Db_BaseDoc.cs">
+      <DependentUpon>Default.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Db\Db_BaseDocFile.cs">
+      <DependentUpon>Default.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Db\Db_BaseFile.cs">
+      <DependentUpon>Default.tt</DependentUpon>
+    </Compile>
     <Compile Include="Db\Db_BaseLog.cs">
       <DependentUpon>Default.tt</DependentUpon>
     </Compile>
@@ -80,6 +90,9 @@
       <DependentUpon>Default.tt</DependentUpon>
     </Compile>
     <Compile Include="Db\Db_BaseUserRole.cs">
+      <DependentUpon>Default.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Db\Db_DocPic.cs">
       <DependentUpon>Default.tt</DependentUpon>
     </Compile>
     <Compile Include="Db\Db_ExceptionLog.cs">
@@ -107,6 +120,7 @@
       <DependentUpon>Default.edmx</DependentUpon>
     </Compile>
     <Compile Include="Frame\ManagerMenu.cs" />
+    <Compile Include="Fun\Doc\BaseDoc.cs" />
     <Compile Include="Fun\OA\LeaveService.cs" />
     <Compile Include="Logs\BaseLog.cs" />
     <Compile Include="Logs\ExceptionLog.cs" />

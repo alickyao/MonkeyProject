@@ -16,6 +16,12 @@
         <EntityTypeShape EntityType="Default.Db_BaseUserRole" PointX="2.75" PointY="0.625" Width="2.5" />
         <AssociationConnector Association="Default.Db_BaseUserDb_BaseUserRole" />
         <EntityTypeShape EntityType="Default.Db_BaseTree" Width="1.5" PointX="0.5" PointY="6.5" />
+        <EntityTypeShape EntityType="Default.Db_BaseDoc" Width="1.5" PointX="0.5" PointY="12.5" />
+        <EntityTypeShape EntityType="Default.Db_BaseFile" Width="1.5" PointX="0.5" PointY="9.25" />
+        <EntityTypeShape EntityType="Default.Db_BaseDocFile" Width="1.5" PointX="3.125" PointY="12.5" />
+        <AssociationConnector Association="Default.Db_BaseDocDb_BaseDocFile" />
+        <EntityTypeShape EntityType="Default.Db_DocPic" Width="1.5" PointX="0.5" PointY="16.25" />
+        <InheritanceConnector EntityType="Default.Db_DocPic" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
