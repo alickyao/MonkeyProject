@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/28/2017 13:40:06
+-- Date Created: 05/03/2017 15:20:32
 -- Generated from EDMX file: D:\project\git\MonkeyProject\src\monkey.service\Db\Default.edmx
 -- --------------------------------------------------
 
@@ -20,22 +20,64 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_Db_BaseUserDb_BaseUserRole]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_BaseUserRoleSet] DROP CONSTRAINT [FK_Db_BaseUserDb_BaseUserRole];
 GO
-IF OBJECT_ID(N'[dbo].[FK_Db_ExceptionLog_inherits_Db_BaseLog]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_BaseLogSet_Db_ExceptionLog] DROP CONSTRAINT [FK_Db_ExceptionLog_inherits_Db_BaseLog];
+IF OBJECT_ID(N'[dbo].[FK_Db_BaseDocDb_BaseDocFile]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_BaseDocFileSet] DROP CONSTRAINT [FK_Db_BaseDocDb_BaseDocFile];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_WorkFlowDefinitionDb_WorkFlowSetp]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_WorkFlowSetpSet] DROP CONSTRAINT [FK_Db_WorkFlowDefinitionDb_WorkFlowSetp];
 GO
 IF OBJECT_ID(N'[dbo].[FK_Db_ManagerUser_inherits_Db_BaseUser]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser] DROP CONSTRAINT [FK_Db_ManagerUser_inherits_Db_BaseUser];
 GO
+IF OBJECT_ID(N'[dbo].[FK_Db_ExceptionLog_inherits_Db_BaseLog]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_BaseLogSet_Db_ExceptionLog] DROP CONSTRAINT [FK_Db_ExceptionLog_inherits_Db_BaseLog];
+GO
 IF OBJECT_ID(N'[dbo].[FK_Db_UserLog_inherits_Db_BaseLog]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_BaseLogSet_Db_UserLog] DROP CONSTRAINT [FK_Db_UserLog_inherits_Db_BaseLog];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_DocPic_inherits_Db_BaseDoc]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_BaseDocSet_Db_DocPic] DROP CONSTRAINT [FK_Db_DocPic_inherits_Db_BaseDoc];
 GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[Db_BaseUserSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseUserSet];
+GO
 IF OBJECT_ID(N'[dbo].[Db_BaseLogSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseLogSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_BaseUserRoleSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseUserRoleSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_BaseTreeSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseTreeSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_BaseDocSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseDocSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_BaseFileSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseFileSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_BaseDocFileSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseDocFileSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_WorkFlowRoleSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_WorkFlowRoleSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_WorkFlowRoleDescriptSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_WorkFlowRoleDescriptSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_WorkFlowSetpSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_WorkFlowSetpSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefinitionSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_WorkFlowDefinitionSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_BaseUserSet_Db_ManagerUser]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser];
 GO
 IF OBJECT_ID(N'[dbo].[Db_BaseLogSet_Db_ExceptionLog]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseLogSet_Db_ExceptionLog];
@@ -43,17 +85,8 @@ GO
 IF OBJECT_ID(N'[dbo].[Db_BaseLogSet_Db_UserLog]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseLogSet_Db_UserLog];
 GO
-IF OBJECT_ID(N'[dbo].[Db_BaseTreeSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseTreeSet];
-GO
-IF OBJECT_ID(N'[dbo].[Db_BaseUserRoleSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseUserRoleSet];
-GO
-IF OBJECT_ID(N'[dbo].[Db_BaseUserSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseUserSet];
-GO
-IF OBJECT_ID(N'[dbo].[Db_BaseUserSet_Db_ManagerUser]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser];
+IF OBJECT_ID(N'[dbo].[Db_BaseDocSet_Db_DocPic]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseDocSet_Db_DocPic];
 GO
 
 -- --------------------------------------------------
@@ -132,6 +165,53 @@ CREATE TABLE [dbo].[Db_BaseDocFileSet] (
     [Descript] nvarchar(max)  NULL,
     [CreatedOn] datetime  NOT NULL,
     [Db_BaseDocId] nvarchar(50)  NOT NULL
+);
+GO
+
+-- Creating table 'Db_WorkFlowRoleSet'
+CREATE TABLE [dbo].[Db_WorkFlowRoleSet] (
+    [Id] nvarchar(50)  NOT NULL,
+    [RoleName] nvarchar(100)  NOT NULL,
+    [Descript] nvarchar(max)  NULL,
+    [CreatedOn] datetime  NOT NULL
+);
+GO
+
+-- Creating table 'Db_WorkFlowRoleDescriptSet'
+CREATE TABLE [dbo].[Db_WorkFlowRoleDescriptSet] (
+    [WorkFlowRoleId] nvarchar(50)  NOT NULL,
+    [UserId] nvarchar(50)  NOT NULL,
+    [CreatedOn] datetime  NOT NULL
+);
+GO
+
+-- Creating table 'Db_WorkFlowDefSetpSet'
+CREATE TABLE [dbo].[Db_WorkFlowDefSetpSet] (
+    [Id] nvarchar(50)  NOT NULL,
+    [Seq] int  NOT NULL,
+    [Caption] nvarchar(100)  NOT NULL,
+    [WFConfirmRoleId] nvarchar(50)  NOT NULL,
+    [Db_WorkFlowDefinitionId] nvarchar(50)  NOT NULL
+);
+GO
+
+-- Creating table 'Db_WorkFlowDefinitionSet'
+CREATE TABLE [dbo].[Db_WorkFlowDefinitionSet] (
+    [Id] nvarchar(50)  NOT NULL,
+    [Caption] nvarchar(100)  NOT NULL,
+    [Descript] nvarchar(max)  NULL,
+    [CreatedOn] datetime  NOT NULL
+);
+GO
+
+-- Creating table 'Db_WorkFlowDefLineSet'
+CREATE TABLE [dbo].[Db_WorkFlowDefLineSet] (
+    [Id] nvarchar(50)  NOT NULL,
+    [FromId] nvarchar(50)  NOT NULL,
+    [ToId] nvarchar(50)  NOT NULL,
+    [Caption] nvarchar(100)  NOT NULL,
+    [Descript] nvarchar(max)  NULL,
+    [Db_WorkFlowDefinitionId] nvarchar(50)  NOT NULL
 );
 GO
 
@@ -219,6 +299,36 @@ ADD CONSTRAINT [PK_Db_BaseDocFileSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
+-- Creating primary key on [Id] in table 'Db_WorkFlowRoleSet'
+ALTER TABLE [dbo].[Db_WorkFlowRoleSet]
+ADD CONSTRAINT [PK_Db_WorkFlowRoleSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [WorkFlowRoleId], [UserId] in table 'Db_WorkFlowRoleDescriptSet'
+ALTER TABLE [dbo].[Db_WorkFlowRoleDescriptSet]
+ADD CONSTRAINT [PK_Db_WorkFlowRoleDescriptSet]
+    PRIMARY KEY CLUSTERED ([WorkFlowRoleId], [UserId] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_WorkFlowDefSetpSet'
+ALTER TABLE [dbo].[Db_WorkFlowDefSetpSet]
+ADD CONSTRAINT [PK_Db_WorkFlowDefSetpSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_WorkFlowDefinitionSet'
+ALTER TABLE [dbo].[Db_WorkFlowDefinitionSet]
+ADD CONSTRAINT [PK_Db_WorkFlowDefinitionSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_WorkFlowDefLineSet'
+ALTER TABLE [dbo].[Db_WorkFlowDefLineSet]
+ADD CONSTRAINT [PK_Db_WorkFlowDefLineSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
 -- Creating primary key on [Id] in table 'Db_BaseUserSet_Db_ManagerUser'
 ALTER TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser]
 ADD CONSTRAINT [PK_Db_BaseUserSet_Db_ManagerUser]
@@ -275,6 +385,36 @@ GO
 CREATE INDEX [IX_FK_Db_BaseDocDb_BaseDocFile]
 ON [dbo].[Db_BaseDocFileSet]
     ([Db_BaseDocId]);
+GO
+
+-- Creating foreign key on [Db_WorkFlowDefinitionId] in table 'Db_WorkFlowDefSetpSet'
+ALTER TABLE [dbo].[Db_WorkFlowDefSetpSet]
+ADD CONSTRAINT [FK_Db_WorkFlowDefinitionDb_WorkFlowSetp]
+    FOREIGN KEY ([Db_WorkFlowDefinitionId])
+    REFERENCES [dbo].[Db_WorkFlowDefinitionSet]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_Db_WorkFlowDefinitionDb_WorkFlowSetp'
+CREATE INDEX [IX_FK_Db_WorkFlowDefinitionDb_WorkFlowSetp]
+ON [dbo].[Db_WorkFlowDefSetpSet]
+    ([Db_WorkFlowDefinitionId]);
+GO
+
+-- Creating foreign key on [Db_WorkFlowDefinitionId] in table 'Db_WorkFlowDefLineSet'
+ALTER TABLE [dbo].[Db_WorkFlowDefLineSet]
+ADD CONSTRAINT [FK_Db_WorkFlowDefinitionDb_WorkFlowLine]
+    FOREIGN KEY ([Db_WorkFlowDefinitionId])
+    REFERENCES [dbo].[Db_WorkFlowDefinitionSet]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_Db_WorkFlowDefinitionDb_WorkFlowLine'
+CREATE INDEX [IX_FK_Db_WorkFlowDefinitionDb_WorkFlowLine]
+ON [dbo].[Db_WorkFlowDefLineSet]
+    ([Db_WorkFlowDefinitionId]);
 GO
 
 -- Creating foreign key on [Id] in table 'Db_BaseUserSet_Db_ManagerUser'

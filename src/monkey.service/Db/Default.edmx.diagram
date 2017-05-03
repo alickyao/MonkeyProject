@@ -22,6 +22,13 @@
         <AssociationConnector Association="Default.Db_BaseDocDb_BaseDocFile" />
         <EntityTypeShape EntityType="Default.Db_DocPic" Width="1.5" PointX="0.5" PointY="16.25" />
         <InheritanceConnector EntityType="Default.Db_DocPic" />
+        <EntityTypeShape EntityType="Default.Db_WorkFlowRole" Width="1.875" PointX="0.5" PointY="18.75" />
+        <EntityTypeShape EntityType="Default.Db_WorkFlowRoleDescript" Width="2.25" PointX="3.5" PointY="18.75" />
+        <EntityTypeShape EntityType="Default.Db_WorkFlowDefSetp" Width="2.625" PointX="3.5" PointY="21.75" />
+        <EntityTypeShape EntityType="Default.Db_WorkFlowDefinition" Width="2.375" PointX="0.5" PointY="21.75" />
+        <AssociationConnector Association="Default.Db_WorkFlowDefinitionDb_WorkFlowSetp" />
+        <EntityTypeShape EntityType="Default.Db_WorkFlowDefLine" Width="2.625" PointX="3.5" PointY="24.375" />
+        <AssociationConnector Association="Default.Db_WorkFlowDefinitionDb_WorkFlowLine" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

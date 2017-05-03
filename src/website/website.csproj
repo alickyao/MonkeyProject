@@ -726,6 +726,8 @@
     <Compile Include="Controllers\SysBase\TimerController.cs" />
     <Compile Include="Controllers\Tree\BaseTreeController.cs" />
     <Compile Include="Controllers\Users\UserManagerController.cs" />
+    <Compile Include="Controllers\WorkFlow\WorkFlowDefinitionController.cs" />
+    <Compile Include="Controllers\WorkFlow\WorkFlowRolesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

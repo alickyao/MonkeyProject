@@ -106,6 +106,21 @@
     <Compile Include="Db\Db_UserLog.cs">
       <DependentUpon>Default.tt</DependentUpon>
     </Compile>
+    <Compile Include="Db\Db_WorkFlowDefinition.cs">
+      <DependentUpon>Default.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Db\Db_WorkFlowDefLine.cs">
+      <DependentUpon>Default.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Db\Db_WorkFlowDefSetp.cs">
+      <DependentUpon>Default.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Db\Db_WorkFlowRole.cs">
+      <DependentUpon>Default.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Db\Db_WorkFlowRoleDescript.cs">
+      <DependentUpon>Default.tt</DependentUpon>
+    </Compile>
     <Compile Include="Db\Default.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -131,6 +146,9 @@
     <Compile Include="Users\UserBase.cs" />
     <Compile Include="Users\UserManager.cs" />
     <Compile Include="Users\UserModels.cs" />
+    <Compile Include="WorkFlow\WorkFlowBase.cs" />
+    <Compile Include="WorkFlow\WorkFlowRole.cs" />
+    <Compile Include="WorkFlow\WorkFlowDefinition.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\monkey.TTP\monkey.TTP.csproj">
