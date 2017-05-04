@@ -486,6 +486,23 @@
     <Content Include="Areas\Admin\Scripts\bootstrapValidator\validator\vin.js" />
     <Content Include="Areas\Admin\Scripts\bootstrapValidator\validator\zipCode.js" />
     <Content Include="Areas\Admin\Scripts\easyui-lang-zh_CN.js" />
+    <Content Include="Areas\Admin\Scripts\gooflow\default.css" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\bullet_blue.png" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\codebase\GooFlow.css" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\codebase\GooFlow.js" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\codebase\img\gooflow_bg.png" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\codebase\img\gooflow_blank.gif" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\codebase\img\gooflow_btn_bg.png" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\codebase\img\gooflow_bullet.png" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\codebase\img\gooflow_icon.png" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\codebase\img\GooFlow_line_oper.png" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\codebase\img\gooflow_tip.png" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\demo.html" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\GooFlow_line_oper.png" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\ui-icons_222222_256x240.png" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\新建文本文档.txt" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\未命名-3.png" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFunc.js" />
     <Content Include="Areas\Admin\Scripts\jquery.easyui-1.4.3.min.js" />
     <Content Include="Areas\Admin\Scripts\kindeditor\kindeditor-min.js" />
     <Content Include="Areas\Admin\Scripts\kindeditor\kindeditor.js" />
@@ -692,6 +709,7 @@
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\LogsController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserManagerController.cs" />
+    <Compile Include="Areas\Admin\Controllers\WorkFlowController.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
     <Compile Include="Areas\HelpPage\App_Start\HelpPageConfig.cs" />
     <Compile Include="Areas\HelpPage\Controllers\HelpController.cs" />
@@ -787,6 +805,10 @@
     <Content Include="Areas\Admin\Views\UserManager\userList.cshtml" />
     <Content Include="Areas\Admin\Views\UserManager\editUser.cshtml" />
     <Content Include="Areas\Admin\Views\BaseManagement\BaseTreeGrid.cshtml" />
+    <Content Include="Areas\Admin\Views\WorkFlow\DefinitionList.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\View_gooflowlayout.cshtml" />
+    <Content Include="Areas\Admin\Views\WorkFlow\EditDefinition.cshtml" />
+    <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\设计器API说明书.doc" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

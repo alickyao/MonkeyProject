@@ -12,14 +12,10 @@ namespace monkey.service.Db
     using System;
     using System.Collections.Generic;
     
-    public partial class Db_WorkFlowDefLine
+    public partial class Db_WorkFlowDefStep : Db_WorkFlowDefBaseUnit
     {
-        public string Id { get; set; }
-        public string From { get; set; }
-        public string To { get; set; }
-        public Nullable<int> M { get; set; }
-        public string Name { get; set; }
         public int Type { get; set; }
+        public string WorkFlowRoleId { get; set; }
         public string Db_WorkFlowDefinitionId { get; set; }
     
         public virtual Db_WorkFlowDefinition Db_WorkFlowDefinition { get; set; }

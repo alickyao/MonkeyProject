@@ -106,13 +106,19 @@
     <Compile Include="Db\Db_UserLog.cs">
       <DependentUpon>Default.tt</DependentUpon>
     </Compile>
+    <Compile Include="Db\Db_WorkFlowDefArea.cs">
+      <DependentUpon>Default.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Db\Db_WorkFlowDefBaseUnit.cs">
+      <DependentUpon>Default.tt</DependentUpon>
+    </Compile>
     <Compile Include="Db\Db_WorkFlowDefinition.cs">
       <DependentUpon>Default.tt</DependentUpon>
     </Compile>
     <Compile Include="Db\Db_WorkFlowDefLine.cs">
       <DependentUpon>Default.tt</DependentUpon>
     </Compile>
-    <Compile Include="Db\Db_WorkFlowDefSetp.cs">
+    <Compile Include="Db\Db_WorkFlowDefStep.cs">
       <DependentUpon>Default.tt</DependentUpon>
     </Compile>
     <Compile Include="Db\Db_WorkFlowRole.cs">

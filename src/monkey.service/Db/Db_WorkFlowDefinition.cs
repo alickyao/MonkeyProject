@@ -17,8 +17,9 @@ namespace monkey.service.Db
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Db_WorkFlowDefinition()
         {
-            this.Db_WorkFlowSetp = new HashSet<Db_WorkFlowDefSetp>();
-            this.Db_WorkFlowLine = new HashSet<Db_WorkFlowDefLine>();
+            this.Db_WorkFlowDefArea = new HashSet<Db_WorkFlowDefArea>();
+            this.Db_WorkFlowDefLine = new HashSet<Db_WorkFlowDefLine>();
+            this.Db_WorkFlowDefStep = new HashSet<Db_WorkFlowDefStep>();
         }
     
         public string Id { get; set; }
@@ -27,8 +28,10 @@ namespace monkey.service.Db
         public System.DateTime CreatedOn { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Db_WorkFlowDefSetp> Db_WorkFlowSetp { get; set; }
+        public virtual ICollection<Db_WorkFlowDefArea> Db_WorkFlowDefArea { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Db_WorkFlowDefLine> Db_WorkFlowLine { get; set; }
+        public virtual ICollection<Db_WorkFlowDefLine> Db_WorkFlowDefLine { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Db_WorkFlowDefStep> Db_WorkFlowDefStep { get; set; }
     }
 }

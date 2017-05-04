@@ -45,6 +45,23 @@
         </children>
       </ManagerMenu>
       <ManagerMenu>
+        <text>工作流程</text>
+        <children>
+          <ManagerMenu>
+            <text>审批角色设置</text>
+            <url>
+              <![CDATA[]]>
+            </url>
+          </ManagerMenu>
+          <ManagerMenu>
+            <text>工作流程定义</text>
+            <url>
+              <![CDATA[/manager/WorkFlow/DefinitionList]]>
+            </url>
+          </ManagerMenu>
+        </children>
+      </ManagerMenu>
+      <ManagerMenu>
         <text>系统日志</text>
         <children>
           <ManagerMenu>

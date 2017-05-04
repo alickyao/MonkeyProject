@@ -48,6 +48,14 @@ namespace monkey.service
         }
 
         /// <summary>
+        /// 获取一个guid()  "-"已被替换为""
+        /// </summary>
+        /// <returns></returns>
+        public static string GetNewId() {
+            return Guid.NewGuid().ToString().Replace("-", "");
+        }
+
+        /// <summary>
         /// 获取枚举的详细可选项列表
         /// </summary>
         /// <param name="t">枚举类型</param>

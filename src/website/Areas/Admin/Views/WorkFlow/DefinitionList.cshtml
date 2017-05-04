@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewBag.Title = "DefinitionList";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string pageId = ViewBag.pageId;
+    string condtion = JsonConvert.SerializeObject(Model);
+    string newPageId = SysHelps.getRandmonStirng();
+}
+@model BaseRequest
+
+<script>
+    $(function () {
+        var request = $.parseJSON('@Html.Raw(condtion)');
+        var grid = $("#@(pageId)grid");
+
+
+        function loadGrid() {
+            console.log(request);
+            grid.datagrid("loading");
+            $.post("/api/WorkFlowDefinition/GetWorkFlowDefinitionList", request, function (json) {
+                setGridRows(json, grid);
+            });
+        }
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: true,
+            rownumbers: true,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            onDblClickRow: function (rowIndex, rowData) {
+                var url = "@Url.Action("EditDefinition", new { pageId = newPageId})";
+                url += "&Id=" + rowData.Id;
+                console.log(url);
+                dialogWin.dialog({
+                    content: getIframe(url)
+                }).dialog("open");
+            },
+            columns: [[
+                {
+                    field: 'CreatedOnString', title: '创建时间'
+                },
+                {
+                    field: 'Caption', title: '流程名称'
+                },
+                {
+                    field: 'Descript', title: '流程描述'
+                },
+            ]],
+            toolbar: [
+                {
+                    text: "新增",
+                    iconCls: "icon-add",
+                    handler: function () {
+                        var url = "@Url.Action("EditDefinition", new { pageId= newPageId})";
+                        console.log(url);
+                        dialogWin.dialog({
+                            content: getIframe(url)
+                        }).dialog("open");
+                    }
+                },
+                {
+                    text: "删除",
+                    iconCls: "icon-remove",
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                        }
+                        else {
+                            $.messager.confirm('请确认', '确定删除用户:' + row.fullName + "?", function (r) {
+                                if (r) {
+                                    
+                                }
+                            });
+                        }
+                    }
+                },
+            ]
+        });
+
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            }
+        });
+        loadGrid();
+
+        var dialogWin = $('#@(pageId)dd');
+
+        dialogWin.dialog({
+            title: "新增/编辑 工作流程定义",
+            closed: false,
+            cache: false,
+            modal: true,
+            closed: true,
+            inline: true,
+            onClose: function () {
+                loadGrid();
+            }
+        });
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div id="@(pageId)dd" style="width:90%;height:90%; overflow:hidden">新增/编辑 工作流程定义</div>
+    <div data-options="region:'center',border:false">
+        <table id="@(pageId)grid"></table>
+    </div>
+</div>
+
