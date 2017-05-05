@@ -9,13 +9,13 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        var ifr = $("body").parent().parent();
+        var ifr = $("#@(pageId)WorkFlowDefBox");
         var property = {
             width: ifr.width(),
             height: ifr.height(),
             toolBtns: ["start", "end", "task", "node", "chat", "state", "plug", "join", "fork", "complex"],
             haveHead: true,
-            headBtns: ["save", "undo", "redo"],//如果haveHead=true，则定义HEAD区的按钮
+            headBtns: ["save", "undo", "redo", "reload"],//如果haveHead=true，则定义HEAD区的按钮
             haveTool: true,
             haveGroup: true,
             useOperStack: true
@@ -40,8 +40,8 @@
 
         WorkFlowDef = $.createGooFlow($("#@(pageId)WorkFlowDef"), property);
         WorkFlowDef.setNodeRemarks(remark);
-        WorkFlowDef.onItemDel = function (id, type) {
-            return confirm("确定要删除该单元吗?");
+        WorkFlowDef.onFreshClick = function () {
+            loadData();
         }
         WorkFlowDef.onBtnSaveClick = function () {
             console.log("保存");
@@ -69,13 +69,14 @@
             console.log("提交请求");
             console.log(request);
             $.post("/api/WorkFlowDefinition/EditWorkFlowDefUnits", request, function (json) {
-                console.log("返回对象");
-                console.log(json);
+                showmsg(json);
+                if (json.Message == 0) {
+                    setData(json);
+                }
             });
         }
 
-        //加载数据
-        $.getJSON("/api/WorkFlowDefinition/GetWorkFlowDefinitionById/@id", function (json) {
+        function setData(json) {
             if (json.Message == 0) {
                 var defInfo = json.item.DictionaryUnits;
                 defInfo.title = json.item.Caption;
@@ -88,12 +89,69 @@
 
                 console.log("流程图信息");
                 console.log(defInfo);
-                WorkFlowDef.loadData(defInfo);
+                WorkFlowDef.loadData(defInfo);//流程图
+
+                //节点网格
+                var gridData = {
+                    Message: 0,
+                    item: {}
+                };
+                gridData.item.rows = json.item.ArrayUnits.Steps;
+                gridData.item.total = gridData.item.rows.length;
+                setGridRows(gridData, nodeGrid);
             }
             else {
                 $.messager.alert(getErrorTitle(json.Message), "错误提示：<br />" + json.MessageDetail, 'error');
             }
+        }
+
+        function loadData() {
+            //加载数据
+            nodeGrid.datagrid("loading");
+            $.getJSON("/api/WorkFlowDefinition/GetWorkFlowDefinitionById/@id", function (json) {
+                setData(json);
+            });
+        }
+
+
+        //数据明细网格定义
+
+        var nodeGrid = $("#@(pageId)NodeGrid");
+
+        nodeGrid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: false,
+            rownumbers: true,
+            singleSelect: true,
+            idField: "Id",
+            columns: [[
+                {
+                    field: 'name', title: '节点名称'
+                },
+                {
+                    field: 'typeZHString', title: '节点类型'
+                },
+                {
+                    field: 'Id', title: '节点ID'
+                },
+            ]],
+            toolbar: [
+                {
+                    text: "刷新",
+                    iconCls: "icon-reload",
+                    handler: function () {
+                        loadData();
+                    }
+                }
+            ]
         });
+
+
+
+        loadData();
 
 
         //jsondata = {
@@ -111,8 +169,24 @@
         //        WorkFlowDef_area_8: { name: "area_8", left: 35, top: 39, color: "red", width: 472, height: 114 }
         //    }
         //};
-        
+
     });
 </script>
-<div id="@(pageId)WorkFlowDef"></div>
+
+<div class="easyui-layout" data-options="fit:true">
+    
+    <div data-options="region:'center',border:false">
+        <div id="@(pageId)tt" class="easyui-tabs" data-options="fit:true,border:false">
+            <div title="流程图" id="@(pageId)WorkFlowDefBox" style="padding:0">
+                <div id="@(pageId)WorkFlowDef"></div>
+            </div>
+            <div title="节点明细" data-options="" style="padding:0">
+                <table id="@(pageId)NodeGrid"></table>
+            </div>
+        </div>  
+    </div>
+</div>
+
+
+
 

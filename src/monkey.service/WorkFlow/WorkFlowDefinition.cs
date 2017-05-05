@@ -292,7 +292,7 @@ namespace monkey.service.WorkFlow
                 var row = db.Db_WorkFlowDefinitionSet.Single(p => p.Id == this.Id);
                 //数组部分
                 //步骤
-                this.ArrayUnits.Steps = row.Db_WorkFlowDefStep.Select(p => new WorkFlowDefStep(p)).ToList();
+                this.ArrayUnits.Steps = row.Db_WorkFlowDefStep.OrderBy(p=>p.Type).Select(p => new WorkFlowDefStep(p)).ToList();
                 //线条
                 this.ArrayUnits.Lines = row.Db_WorkFlowDefLine.Select(p => new WorkFlowDefLine(p)).ToList();
                 //区域
@@ -321,6 +321,16 @@ namespace monkey.service.WorkFlow
         /// <param name="condtion"></param>
         /// <returns></returns>
         public WorkFlowDefinition EditDefUnit(WorkFlowDefEditRequest condtion) {
+
+            if (condtion.lines == null) {
+                condtion.lines = new List<WorkFlowDefLine>();
+            }
+            if (condtion.areas == null) {
+                condtion.areas = new List<WorkFlowDefArea>();
+            }
+            if (condtion.nodes == null) {
+                condtion.nodes = new List<WorkFlowDefStep>();
+            }
 
             using (var db = new DefaultContainer()) {
                 //三从表 创建新增/编辑已有/删除多余
@@ -357,7 +367,7 @@ namespace monkey.service.WorkFlow
                         row.Top = item.top;
                     }
                 }
-                var delSetpRows = (from c in db.Db_WorkFlowDefBaseUnitSet.OfType<Db_WorkFlowDefStep>().AsEnumerable() where !condtion.nodes.Select(p => p.Id).Contains(c.Id) select c);
+                var delSetpRows = (from c in db.Db_WorkFlowDefBaseUnitSet.OfType<Db_WorkFlowDefStep>().AsEnumerable() where !condtion.nodes.Select(p => p.Id).Contains(c.Id) && c.Db_WorkFlowDefinitionId==this.Id select c);
                 if (delSetpRows.Count() > 0) {
                     db.Db_WorkFlowDefBaseUnitSet.RemoveRange(delSetpRows);
                 }
@@ -390,7 +400,7 @@ namespace monkey.service.WorkFlow
                         row.Type = item.type;
                     }
                 }
-                var delLineRows = (from c in db.Db_WorkFlowDefLineSet.AsEnumerable() where !condtion.lines.Select(p => p.Id).Contains(c.Id) select c);
+                var delLineRows = (from c in db.Db_WorkFlowDefLineSet.AsEnumerable() where !condtion.lines.Select(p => p.Id).Contains(c.Id) && c.Db_WorkFlowDefinitionId == this.Id select c);
                 if (delLineRows.Count() > 0) {
                     db.Db_WorkFlowDefLineSet.RemoveRange(delLineRows);
                 }
@@ -425,7 +435,7 @@ namespace monkey.service.WorkFlow
                         row.Top = item.top;
                     }
                 }
-                var delAreaRows = (from c in db.Db_WorkFlowDefBaseUnitSet.OfType<Db_WorkFlowDefArea>().AsEnumerable() where !condtion.areas.Select(p => p.Id).Contains(c.Id) select c);
+                var delAreaRows = (from c in db.Db_WorkFlowDefBaseUnitSet.OfType<Db_WorkFlowDefArea>().AsEnumerable() where !condtion.areas.Select(p => p.Id).Contains(c.Id) && c.Db_WorkFlowDefinitionId == this.Id select c);
                 if (delAreaRows.Count() > 0)
                 {
                     db.Db_WorkFlowDefBaseUnitSet.RemoveRange(delAreaRows);
@@ -487,7 +497,7 @@ namespace monkey.service.WorkFlow
         /// </summary>
         /// <param name="row"></param>
         public WorkFlowDefBaseUnit(Db_WorkFlowDefBaseUnit row) {
-            this.name = row.Name;
+            this.name = string.IsNullOrEmpty(row.Name) ? "" : row.Name;
             this.width = row.Width;
             this.height = row.Height;
             this.left = row.Left;
@@ -530,6 +540,27 @@ namespace monkey.service.WorkFlow
     /// </summary>
     public class WorkFlowDefStep: WorkFlowDefBaseUnit
     {
+        #region
+
+        /// <summary>
+        /// 类型字典
+        /// </summary>
+        public static Dictionary<string, string> typeShowStrings;
+
+        static WorkFlowDefStep() {
+            typeShowStrings = new Dictionary<string, string>();
+            typeShowStrings.Add("start", "开始结点");
+            typeShowStrings.Add("end", "结束结点");
+            typeShowStrings.Add("task", "任务结点");
+            typeShowStrings.Add("node", "自动结点");
+            typeShowStrings.Add("chat", "决策结点");
+            typeShowStrings.Add("state", "状态结点");
+            typeShowStrings.Add("plug", "附加插件");
+            typeShowStrings.Add("join", "联合结点");
+            typeShowStrings.Add("fork", "分支结点");
+            typeShowStrings.Add("complex", "复合结点");
+        }
+
         /// <summary>
         /// 工作流步骤节点的ID
         /// </summary>
@@ -541,10 +572,16 @@ namespace monkey.service.WorkFlow
         public WorkFlowStepType type { get; set; }
 
         /// <summary>
-        /// 工作流步骤节点类型 - 文本
+        /// 工作流步骤节点类型 - 文本 英文
         /// </summary>
         public string typeString { get; set; }
 
+        /// <summary>
+        /// 工作流步骤节点类型 - 文本 中文
+        /// </summary>
+        public string typeZHString { get; set; }
+
+        #endregion
         /// <summary>
         /// 空构造
         /// </summary>
@@ -558,6 +595,7 @@ namespace monkey.service.WorkFlow
             this.Id = row.Id;
             this.type = (WorkFlowStepType)row.Type;
             this.typeString = this.type.ToString();
+            this.typeZHString = typeShowStrings[this.typeString];
         }
     }
 
