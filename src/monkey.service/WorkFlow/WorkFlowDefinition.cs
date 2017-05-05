@@ -55,25 +55,6 @@ namespace monkey.service.WorkFlow
         complex
     }
 
-    /// <summary>
-    /// 工作流线段类型
-    /// </summary>
-    public enum WorkFlowLineType
-    {
-        /// <summary>
-        /// 直线
-        /// </summary>
-        sl,
-        /// <summary>
-        /// 中段可上下移动的折线
-        /// </summary>
-        tb,
-        /// <summary>
-        /// 中段可左右移动的折线
-        /// </summary>
-        lr
-    }
-
     #region - 编辑请求
 
     /// <summary>
@@ -132,17 +113,17 @@ namespace monkey.service.WorkFlow
         /// <summary>
         /// 工作流程定义中所有步骤的集合
         /// </summary>
-        public Dictionary<string,WorkFlowDefStep> Steps { get; set; }
+        public Dictionary<string,WorkFlowDefStep> nodes { get; set; }
 
         /// <summary>
         /// 工作流程定义中所有的关系线
         /// </summary>
-        public Dictionary<string,WorkFlowDefLine> Lines { get; set; }
+        public Dictionary<string,WorkFlowDefLine> lines { get; set; }
 
         /// <summary>
         /// 工作流程定义中所有的区域集合
         /// </summary>
-        public Dictionary<string,WorkFlowDefArea> Areas { get; set; }
+        public Dictionary<string,WorkFlowDefArea> areas { get; set; }
     }
 
     /// <summary>
@@ -318,19 +299,19 @@ namespace monkey.service.WorkFlow
                 this.ArrayUnits.Areas = row.Db_WorkFlowDefArea.Select(p => new WorkFlowDefArea(p)).ToList();
             }
             //字典部分
-            this.DictionaryUnits.Areas = new Dictionary<string, WorkFlowDefArea>();
-            this.DictionaryUnits.Lines = new Dictionary<string, WorkFlowDefLine>();
-            this.DictionaryUnits.Steps = new Dictionary<string, WorkFlowDefStep>();
+            this.DictionaryUnits.areas = new Dictionary<string, WorkFlowDefArea>();
+            this.DictionaryUnits.lines = new Dictionary<string, WorkFlowDefLine>();
+            this.DictionaryUnits.nodes = new Dictionary<string, WorkFlowDefStep>();
 
             foreach (var item in this.ArrayUnits.Steps) {
-                this.DictionaryUnits.Steps.Add(item.Id, item);
+                this.DictionaryUnits.nodes.Add(item.Id, item);
             }
             foreach (var item in this.ArrayUnits.Lines) {
-                this.DictionaryUnits.Lines.Add(item.Id, item);
+                this.DictionaryUnits.lines.Add(item.Id, item);
             }
             foreach (var item in this.ArrayUnits.Areas)
             {
-                this.DictionaryUnits.Areas.Add(item.Id, item);
+                this.DictionaryUnits.areas.Add(item.Id, item);
             }
         }
 
@@ -343,13 +324,19 @@ namespace monkey.service.WorkFlow
 
             using (var db = new DefaultContainer()) {
                 //三从表 创建新增/编辑已有/删除多余
+
+                //节点
+                Dictionary<string,string> nodesComb = new Dictionary<string, string>();//ID转换
+                #region -- 节点
                 foreach (var item in condtion.nodes) {
                     var row = db.Db_WorkFlowDefBaseUnitSet.OfType<Db_WorkFlowDefStep>().SingleOrDefault(p => p.Id == item.Id);
                     if (row == null)
                     {
+                        var newId = SysHelps.GetNewId();
+                        nodesComb.Add(item.Id, newId);
                         var newRow = new Db_WorkFlowDefStep()
                         {
-                            Id = SysHelps.GetNewId(),
+                            Id = newId,
                             Db_WorkFlowDefinitionId = this.Id,
                             Name = item.name,
                             Type = (int)item.type,
@@ -361,6 +348,7 @@ namespace monkey.service.WorkFlow
                         db.Db_WorkFlowDefBaseUnitSet.Add(newRow);
                     }
                     else {
+                        nodesComb.Add(item.Id, item.Id);
                         row.Name = item.name;
                         row.Type = (int)item.type;
                         row.Height = item.height;
@@ -373,6 +361,78 @@ namespace monkey.service.WorkFlow
                 if (delSetpRows.Count() > 0) {
                     db.Db_WorkFlowDefBaseUnitSet.RemoveRange(delSetpRows);
                 }
+                #endregion
+
+                //连线
+
+                #region -- 连线
+                foreach (var item in condtion.lines) {
+                    var row = db.Db_WorkFlowDefLineSet.SingleOrDefault(p => p.Id == item.Id);
+                    if (row == null)
+                    {
+                        var newRow = new Db_WorkFlowDefLine()
+                        {
+                            Id = SysHelps.GetNewId(),
+                            From = nodesComb[item.from],
+                            To = nodesComb[item.to],
+                            M = item.M,
+                            Name = item.name,
+                            Type = item.type,
+                            Db_WorkFlowDefinitionId = this.Id
+                        };
+                        db.Db_WorkFlowDefLineSet.Add(newRow);
+                    }
+                    else {
+                        row.From = nodesComb[item.from];
+                        row.To = nodesComb[item.to];
+                        row.M = item.M;
+                        row.Name = item.name;
+                        row.Type = item.type;
+                    }
+                }
+                var delLineRows = (from c in db.Db_WorkFlowDefLineSet.AsEnumerable() where !condtion.lines.Select(p => p.Id).Contains(c.Id) select c);
+                if (delLineRows.Count() > 0) {
+                    db.Db_WorkFlowDefLineSet.RemoveRange(delLineRows);
+                }
+                #endregion
+
+                //区域
+
+                #region -- 区域
+                foreach (var item in condtion.areas) {
+                    var row = db.Db_WorkFlowDefBaseUnitSet.OfType<Db_WorkFlowDefArea>().SingleOrDefault(p => p.Id == item.Id);
+                    if (row == null)
+                    {
+                        var newRow = new Db_WorkFlowDefArea()
+                        {
+                            Id = SysHelps.GetNewId(),
+                            Db_WorkFlowDefinitionId = this.Id,
+                            Name = item.name,
+                            Color = item.color,
+                            Height = item.height,
+                            Width = item.width,
+                            Left = item.left,
+                            Top = item.top
+                        };
+                        db.Db_WorkFlowDefBaseUnitSet.Add(newRow);
+                    }
+                    else {
+                        row.Name = item.name;
+                        row.Color = item.color;
+                        row.Height = item.height;
+                        row.Width = item.width;
+                        row.Left = item.left;
+                        row.Top = item.top;
+                    }
+                }
+                var delAreaRows = (from c in db.Db_WorkFlowDefBaseUnitSet.OfType<Db_WorkFlowDefArea>().AsEnumerable() where !condtion.areas.Select(p => p.Id).Contains(c.Id) select c);
+                if (delAreaRows.Count() > 0)
+                {
+                    db.Db_WorkFlowDefBaseUnitSet.RemoveRange(delAreaRows);
+                }
+
+                #endregion
+
                 db.SaveChanges();
             }
 
@@ -527,7 +587,7 @@ namespace monkey.service.WorkFlow
         /// <summary>
         /// 当type=”lr”时,为中段的相对于工作区的X坐标值,当type=”tb”时,为中段的相对于工作区的Y坐标值.
         /// </summary>
-        public int? M { get; set; }
+        public double? M { get; set; }
 
         /// <summary>
         /// 布尔值,表示是否已被用橙色标注
@@ -542,12 +602,7 @@ namespace monkey.service.WorkFlow
         /// <summary>
         /// 连线类型,取值有”sl”直线,”lr”中段可左右移动的折线,”tb”中段可上下移动的折线
         /// </summary>
-        public WorkFlowLineType type { get; set; }
-
-        /// <summary>
-        /// 连线类型 - String
-        /// </summary>
-        public string typeString { get; set; }
+        public string type { get; set; }
 
         #endregion
 
@@ -566,8 +621,7 @@ namespace monkey.service.WorkFlow
             this.to = row.To;
             this.M = row.M;
             this.name = row.Name;
-            this.type = (WorkFlowLineType)row.Type;
-            this.typeString = this.type.ToString();
+            this.type = row.Type;
         }
     }
 }

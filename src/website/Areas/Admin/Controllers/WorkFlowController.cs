@@ -29,9 +29,11 @@ namespace website.Areas.Admin.Controllers
         /// 编辑工作流程图的定义
         /// </summary>
         /// <param name="id">工作流的ID</param>
+        /// <param name="pageId"></param>
         /// <returns></returns>
-        public ActionResult EditDefinition(string id) {
+        public ActionResult EditDefinition(string id,string pageId) {
             ViewBag.Id = id;
+            ViewBag.pageId = getPageId(pageId);
             return View();
         }
     }
