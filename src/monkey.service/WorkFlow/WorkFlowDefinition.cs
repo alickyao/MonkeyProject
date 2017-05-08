@@ -538,7 +538,7 @@ namespace monkey.service.WorkFlow
     /// <summary>
     /// 工作流步骤定义
     /// </summary>
-    public class WorkFlowDefStep: WorkFlowDefBaseUnit
+    public class WorkFlowDefStep : WorkFlowDefBaseUnit
     {
         #region
 
@@ -567,6 +567,11 @@ namespace monkey.service.WorkFlow
         public string Id { get; set; }
 
         /// <summary>
+        /// 工作流定义的ID
+        /// </summary>
+        public string DefinitionId { get; set; }
+
+        /// <summary>
         /// 工作流步骤节点类型
         /// </summary>
         public WorkFlowStepType type { get; set; }
@@ -582,6 +587,7 @@ namespace monkey.service.WorkFlow
         public string typeZHString { get; set; }
 
         #endregion
+
         /// <summary>
         /// 空构造
         /// </summary>
@@ -596,6 +602,39 @@ namespace monkey.service.WorkFlow
             this.type = (WorkFlowStepType)row.Type;
             this.typeString = this.type.ToString();
             this.typeZHString = typeShowStrings[this.typeString];
+            this.DefinitionId = row.Db_WorkFlowDefinitionId;
+        }
+
+        /// <summary>
+        /// 根据ID获取步骤的详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static WorkFlowDefStep GetInstance(string id) {
+            using (var db = new DefaultContainer()) {
+                var row = db.Db_WorkFlowDefBaseUnitSet.OfType<Db_WorkFlowDefStep>().SingleOrDefault(p => p.Id == id);
+                if (row == null) {
+                    throw new DataNotFundException(string.Format("传入的工作流步骤ID：[{0}] 有误，未能找到匹配的数据", id));
+                }
+                return new WorkFlowDefStep(row);
+            }
+        }
+
+        /// <summary>
+        /// 获取该步骤后续的线列表
+        /// </summary>
+        /// <returns></returns>
+        public List<WorkFlowDefLineDetail> GetNextLineDetails() {
+            List<WorkFlowDefLineDetail> result = new List<WorkFlowDefLineDetail>();
+            using (var db = new DefaultContainer()) {
+                var rows = (from c in db.Db_WorkFlowDefLineSet.AsEnumerable()
+                            join s in db.Db_WorkFlowDefBaseUnitSet.OfType<Db_WorkFlowDefStep>() on c.To equals s.Id
+                            where c.From == this.Id
+                            && c.Db_WorkFlowDefinitionId == this.DefinitionId
+                            select new { c,s }).ToList();
+                result = rows.Select(p => new WorkFlowDefLineDetail(p.c, this, p.s)).ToList();
+            }
+            return result;
         }
     }
 
@@ -660,6 +699,33 @@ namespace monkey.service.WorkFlow
             this.M = row.M;
             this.name = row.Name;
             this.type = row.Type;
+        }
+    }
+
+    /// <summary>
+    /// 工作流步骤关系线明细
+    /// </summary>
+    public class WorkFlowDefLineDetail : WorkFlowDefLine {
+        
+        /// <summary>
+        /// 出发节点
+        /// </summary>
+        public WorkFlowDefStep FromStep { get; set; }
+
+        /// <summary>
+        /// 目标节点
+        /// </summary>
+        public WorkFlowDefStep ToStep { get; set; }
+
+        /// <summary>
+        /// 构造方法 从步骤获取数据后进行构造
+        /// </summary>
+        /// <param name="row">数据库中的线信息</param>
+        /// <param name="from">来自（出发节点）</param>
+        /// <param name="to">目标（数据库）</param>
+        public WorkFlowDefLineDetail(Db_WorkFlowDefLine row, WorkFlowDefStep from, Db_WorkFlowDefStep to):base(row) {
+            this.FromStep = from;
+            this.ToStep = new WorkFlowDefStep(to);
         }
     }
 }

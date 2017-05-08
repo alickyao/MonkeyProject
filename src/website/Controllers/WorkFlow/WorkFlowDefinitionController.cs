@@ -64,5 +64,18 @@ namespace website.Controllers.WorkFlow
             var result = info.EditDefUnit(condtion);
             return BaseResponse.getResult(result, "保存成功");
         }
+
+        /// <summary>
+        /// [后台角色权限]获取步骤的后续关系线列表信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
+        public BaseResponse<List<WorkFlowDefLineDetail>> GetWorkFlowSetpNextLines(string id) {
+            var info = WorkFlowDefStep.GetInstance(id);
+            var result = info.GetNextLineDetails();
+            return BaseResponse.getResult(result);
+        }
     }
 }

@@ -116,6 +116,7 @@
 
         //数据明细网格定义
 
+        //节点网格
         var nodeGrid = $("#@(pageId)NodeGrid");
 
         nodeGrid.datagrid({
@@ -127,6 +128,19 @@
             rownumbers: true,
             singleSelect: true,
             idField: "Id",
+            onClickRow: function (index, row) {
+                lineGrid.datagrid("loading");
+                var url = "/api/WorkFlowDefinition/GetWorkFlowSetpNextLines/" + row.Id;
+                $.getJSON(url, function (json) {
+                    lineGrid.datagrid("loaded");
+                    if (json.Message == 0) {
+                        lineGrid.datagrid("loadData", { total: json.item.total, rows: json.item });
+                    }
+                    else {
+                        showmsg(json);
+                    }
+                });
+            },
             columns: [[
                 {
                     field: 'name', title: '节点名称'
@@ -149,10 +163,41 @@
             ]
         });
 
-
-
         loadData();
 
+        //关系线网格
+
+        var lineGrid = $("#@(pageId)LineGrid");
+
+        lineGrid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: false,
+            rownumbers: true,
+            singleSelect: true,
+            idField: "Id",
+            columns: [[
+                {
+                    field: 'Id', title: '关系线ID'
+                },
+                {
+                    field: 'name', title: '关系线名称'
+                },
+                {
+                    field: 'ToStep.name', title: '目标节点', formatter: function (value, row, index) {
+                        return row.ToStep.name
+                    }
+                },
+                {
+                    field: 'ToStep.typeZHString', title: '节点类型',
+                    formatter: function (value, row, index) {
+                        return row.ToStep.typeZHString
+                    }
+                }
+            ]],
+        });
 
         //jsondata = {
         //    title: "业务流程定义",
@@ -181,7 +226,10 @@
                 <div id="@(pageId)WorkFlowDef"></div>
             </div>
             <div title="节点明细" data-options="" style="padding:0">
-                <table id="@(pageId)NodeGrid"></table>
+                <div class="easyui-layout" data-options="fit:true,border:false">
+                    <div data-options="region:'south',title:'节点后续关系线明细',split:true,border:false" style="height:200px;"><table id="@(pageId)LineGrid"></table></div>
+                    <div data-options="region:'center',title:'节点明细列表',border:false"><table id="@(pageId)NodeGrid"></table></div>
+                </div>
             </div>
         </div>  
     </div>
