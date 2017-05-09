@@ -143,6 +143,7 @@
           </Key>
           <Property Name="Type" Type="int" Nullable="false" />
           <Property Name="WorkFlowRoleId" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsCountersign" Type="bit" />
           <Property Name="Db_WorkFlowDefinitionId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
@@ -601,6 +602,7 @@
           <Property Name="Type" Type="Int32" Nullable="false" />
           <Property Name="WorkFlowRoleId" Type="String" Nullable="true" MaxLength="50" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="Db_WorkFlowDefinition" Relationship="Default.Db_WorkFlowDefinitionDb_WorkFlowDefStep" FromRole="Db_WorkFlowDefStep" ToRole="Db_WorkFlowDefinition" />
+          <Property Name="IsCountersign" Type="Boolean" Nullable="true" />
           <Property Name="Db_WorkFlowDefinitionId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Db_WorkFlowDefArea" BaseType="Default.Db_WorkFlowDefBaseUnit" >
@@ -828,7 +830,8 @@
       </EntityTypeMapping>
       <EntityTypeMapping TypeName="IsTypeOf(Default.Db_WorkFlowDefStep)">
         <MappingFragment StoreEntitySet="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="IsCountersign" ColumnName="IsCountersign" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="WorkFlowRoleId" ColumnName="WorkFlowRoleId" />
           <ScalarProperty Name="Db_WorkFlowDefinitionId" ColumnName="Db_WorkFlowDefinitionId" />

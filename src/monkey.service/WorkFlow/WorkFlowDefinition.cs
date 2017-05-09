@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using monkey.service;
 using monkey.service.Db;
+using monkey.service.Logs;
 using System.ComponentModel.DataAnnotations;
 
 namespace monkey.service.WorkFlow
@@ -55,7 +56,7 @@ namespace monkey.service.WorkFlow
         complex
     }
 
-    #region - 编辑请求
+    #region - 数据整理
 
     /// <summary>
     /// 工作流程定义编辑请求
@@ -84,8 +85,6 @@ namespace monkey.service.WorkFlow
         public List<WorkFlowDefArea> areas { get; set; }
     }
 
-    #endregion
-
     /// <summary>
     /// 业务流程图（数组）
     /// </summary>
@@ -93,7 +92,7 @@ namespace monkey.service.WorkFlow
         /// <summary>
         /// 工作流程定义中所有步骤的集合
         /// </summary>
-        public List<WorkFlowDefStep> Steps { get; set; }
+        public List<WorkFlowDefSetpDetail> Steps { get; set; }
 
         /// <summary>
         /// 工作流程定义中所有的关系线
@@ -113,7 +112,7 @@ namespace monkey.service.WorkFlow
         /// <summary>
         /// 工作流程定义中所有步骤的集合
         /// </summary>
-        public Dictionary<string,WorkFlowDefStep> nodes { get; set; }
+        public Dictionary<string, WorkFlowDefSetpDetail> nodes { get; set; }
 
         /// <summary>
         /// 工作流程定义中所有的关系线
@@ -126,10 +125,12 @@ namespace monkey.service.WorkFlow
         public Dictionary<string,WorkFlowDefArea> areas { get; set; }
     }
 
+    #endregion
+
     /// <summary>
     /// 工作流程定义
     /// </summary>
-    public class WorkFlowDefinition {
+    public class WorkFlowDefinition:ILogStringable {
 
         #region -- 属性
 
@@ -232,8 +233,8 @@ namespace monkey.service.WorkFlow
         /// 批量新增/编辑业务流程定义
         /// </summary>
         /// <param name="condtion"></param>
-        public static int EditDefs(List<WorkFlowDefinition> condtion) {
-            int total = 0;
+        public static List<WorkFlowDefinition> EditDefs(List<WorkFlowDefinition> condtion) {
+            List<WorkFlowDefinition> result = new List<WorkFlowDefinition>();
 
             if (condtion != null) {
                 if (condtion.Count > 0) {
@@ -261,15 +262,15 @@ namespace monkey.service.WorkFlow
                                     CreatedOn = DateTime.Now
                                 };
                                 db.Db_WorkFlowDefinitionSet.Add(dbDef);
+                                result.Add(new WorkFlowDefinition(dbDef));
                             }
                             else {
                                 //编辑
                                 var dbDef = db.Db_WorkFlowDefinitionSet.Single(p => p.Id == item.Id);
                                 dbDef.Caption = item.Caption;
                                 dbDef.Descript = item.Descript;
+                                result.Add(new WorkFlowDefinition(dbDef));
                             }
-
-                            total++;
                         }
                         db.SaveChanges();
                     }
@@ -279,7 +280,7 @@ namespace monkey.service.WorkFlow
 
             
             
-            return total;
+            return result;
         }
 
         /// <summary>
@@ -292,7 +293,14 @@ namespace monkey.service.WorkFlow
                 var row = db.Db_WorkFlowDefinitionSet.Single(p => p.Id == this.Id);
                 //数组部分
                 //步骤
-                this.ArrayUnits.Steps = row.Db_WorkFlowDefStep.OrderBy(p=>p.Type).Select(p => new WorkFlowDefStep(p)).ToList();
+                //this.ArrayUnits.Steps = row.Db_WorkFlowDefStep.OrderBy(p=>p.Type).Select(p => new WorkFlowDefStep(p)).ToList();
+
+                this.ArrayUnits.Steps = (from c in row.Db_WorkFlowDefStep
+                                         join r in db.Db_WorkFlowRoleSet on c.WorkFlowRoleId equals r.Id into temp
+                                         from role in temp.DefaultIfEmpty()
+                                         select new WorkFlowDefSetpDetail(c, role)
+                                         ).ToList();
+
                 //线条
                 this.ArrayUnits.Lines = row.Db_WorkFlowDefLine.Select(p => new WorkFlowDefLine(p)).ToList();
                 //区域
@@ -301,7 +309,7 @@ namespace monkey.service.WorkFlow
             //字典部分
             this.DictionaryUnits.areas = new Dictionary<string, WorkFlowDefArea>();
             this.DictionaryUnits.lines = new Dictionary<string, WorkFlowDefLine>();
-            this.DictionaryUnits.nodes = new Dictionary<string, WorkFlowDefStep>();
+            this.DictionaryUnits.nodes = new Dictionary<string, WorkFlowDefSetpDetail>();
 
             foreach (var item in this.ArrayUnits.Steps) {
                 this.DictionaryUnits.nodes.Add(item.Id, item);
@@ -450,7 +458,36 @@ namespace monkey.service.WorkFlow
             info.SetUnits();
             return info;
         }
-        
+
+        /// <summary>
+        /// 删除（物理删除）
+        /// 删除工作流信息和与其相关的流程图信息
+        /// </summary>
+        public void Delete() {
+            using (var db = new DefaultContainer()) {
+                var row = db.Db_WorkFlowDefinitionSet.Single(p => p.Id == this.Id);
+                if (row.Db_WorkFlowDefArea.Count > 0)
+                    db.Db_WorkFlowDefBaseUnitSet.RemoveRange(row.Db_WorkFlowDefArea);
+                if (row.Db_WorkFlowDefStep.Count > 0)
+                    db.Db_WorkFlowDefBaseUnitSet.RemoveRange(row.Db_WorkFlowDefStep);
+                if (row.Db_WorkFlowDefLine.Count > 0)
+                    db.Db_WorkFlowDefLineSet.RemoveRange(row.Db_WorkFlowDefLine);
+                db.Db_WorkFlowDefinitionSet.Remove(row);
+
+                db.SaveChanges();
+
+            }
+        }
+
+        public string getIdString()
+        {
+            return this.Id;
+        }
+
+        public string getNameString()
+        {
+            return this.Caption;
+        }
     }
 
     /// <summary>
@@ -535,6 +572,8 @@ namespace monkey.service.WorkFlow
         }
     }
 
+
+
     /// <summary>
     /// 工作流步骤定义
     /// </summary>
@@ -561,6 +600,9 @@ namespace monkey.service.WorkFlow
             typeShowStrings.Add("complex", "复合结点");
         }
 
+
+        #region -- 属性
+
         /// <summary>
         /// 工作流步骤节点的ID
         /// </summary>
@@ -586,6 +628,18 @@ namespace monkey.service.WorkFlow
         /// </summary>
         public string typeZHString { get; set; }
 
+        /// <summary>
+        /// 是否会签
+        /// </summary>
+        public bool IsCountersign { get; set; }
+
+        /// <summary>
+        /// 工作流审批角色ID
+        /// </summary>
+        public string WorkFlowRoleId { get; set; }
+
+        #endregion
+
         #endregion
 
         /// <summary>
@@ -603,6 +657,10 @@ namespace monkey.service.WorkFlow
             this.typeString = this.type.ToString();
             this.typeZHString = typeShowStrings[this.typeString];
             this.DefinitionId = row.Db_WorkFlowDefinitionId;
+            this.WorkFlowRoleId = row.WorkFlowRoleId;
+            if (row.IsCountersign.HasValue) {
+                this.IsCountersign = row.IsCountersign.Value;
+            }
         }
 
         /// <summary>
@@ -635,6 +693,80 @@ namespace monkey.service.WorkFlow
                 result = rows.Select(p => new WorkFlowDefLineDetail(p.c, this, p.s)).ToList();
             }
             return result;
+        }
+
+        
+    }
+
+    /// <summary>
+    /// 工作流步骤定义详情
+    /// </summary>
+    public class WorkFlowDefSetpDetail : WorkFlowDefStep {
+
+        /// <summary>
+        /// 审批角色
+        /// </summary>
+        public WorkFlowRole WorkFlowRoleInfo { get; set; }
+
+        /// <summary>
+        /// 描述文本
+        /// </summary>
+        public string DescriptString { get; set; }
+
+        /// <summary>
+        /// 从数据库 步骤表 与 工作流角色表
+        /// </summary>
+        /// <param name="row">步骤表</param>
+        /// <param name="role">角色表</param>
+        public WorkFlowDefSetpDetail(Db_WorkFlowDefStep row, Db_WorkFlowRole role) : base(row) {
+            if (role != null) {
+                this.WorkFlowRoleInfo = new WorkFlowRole(role);
+                this.DescriptString = string.Format("{0},审批角色：[{1}]", this.IsCountersign ? "会签" : "非会签", this.WorkFlowRoleInfo.RoleName);
+            }
+        }
+
+        /// <summary>
+        /// 根据步骤获取工作流步骤详情(包含执行角色)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static WorkFlowDefSetpDetail GetDetailInstance(string id) {
+            using (var db = new DefaultContainer()) {
+                var row = (from c in db.Db_WorkFlowDefBaseUnitSet.OfType<Db_WorkFlowDefStep>()
+                           join r in db.Db_WorkFlowRoleSet on c.WorkFlowRoleId equals r.Id into temp
+                           from role in temp.DefaultIfEmpty()
+
+                           where c.Id == id
+
+                           select new { c, role }
+                           ).SingleOrDefault();
+
+                if (row == null) {
+                    throw new DataNotFundException(string.Format("传入的工作流步骤ID：[{0}] 有误，未能找到匹配的数据", id));
+                }
+                return new WorkFlowDefSetpDetail(row.c, row.role);
+            }
+            
+        }
+
+        /// <summary>
+        /// 保存到数据库 - 角色/会签 只有任务类型可以保存
+        /// </summary>
+        /// <returns></returns>
+        public WorkFlowDefSetpDetail EditStepApprovalInfo(WorkFlowDefStep condtion)
+        {
+            if (this.type != WorkFlowStepType.task)
+            {
+                throw new ValiDataException("只有类型为任务的接口可以编辑该信息");
+            }
+            using (var db = new DefaultContainer())
+            {
+                var row = db.Db_WorkFlowDefBaseUnitSet.OfType<Db_WorkFlowDefStep>().Single(p => p.Id == this.Id);
+                row.IsCountersign = condtion.IsCountersign;
+                row.WorkFlowRoleId = condtion.WorkFlowRoleId;
+                db.SaveChanges();
+                return GetDetailInstance(condtion.Id);
+            }
         }
     }
 

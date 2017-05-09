@@ -16,6 +16,7 @@ namespace monkey.service.Db
     {
         public int Type { get; set; }
         public string WorkFlowRoleId { get; set; }
+        public Nullable<bool> IsCountersign { get; set; }
         public string Db_WorkFlowDefinitionId { get; set; }
     
         public virtual Db_WorkFlowDefinition Db_WorkFlowDefinition { get; set; }

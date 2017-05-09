@@ -7,6 +7,7 @@ using System.Web.Http;
 using monkey.service;
 using monkey.service.WorkFlow;
 using monkey.service.Users;
+using monkey.service.Logs;
 
 namespace website.Controllers.WorkFlow
 {
@@ -45,11 +46,47 @@ namespace website.Controllers.WorkFlow
         /// <returns></returns>
         [HttpPost]
         [ApiAuthorize(RoleType = SysRolesType.后台)]
-        public BaseResponse EditWorkFlowDefinition(BaseBatchRequest<WorkFlowDefinition> condtion) {
+        public BaseResponse<List<WorkFlowDefinition>> EditWorkFlowDefinition(BaseBatchRequest<WorkFlowDefinition> condtion) {
 
-            int total = WorkFlowDefinition.EditDefs(condtion.rows);
-            string msg = string.Format("已新增/编辑{0}条数据", total);
-            return BaseResponse.getResult(msg);
+            var result = WorkFlowDefinition.EditDefs(condtion.rows);
+            string msg = string.Format("已新增/编辑{0}条数据", result.Count);
+
+            //记录到日志
+            string thisUserId = User.Identity.Name;
+            UserManager thisUser = UserManager.getUserById(thisUserId);
+            string logMsg = string.Empty;
+            foreach (var item in result) {
+                if (condtion.rows.Select(p=>p.Id).Contains(item.Id))
+                {
+                    logMsg = "编辑工作流定义名称/描述";
+                }
+                else {
+                    logMsg = "新增工作流定义";
+                }
+                UserLog.create(logMsg, "工作流定义", thisUser, item);
+            }
+            
+
+            return BaseResponse.getResult(result, msg);
+        }
+
+        /// <summary>
+        /// [后台角色权限]删除工作流定义（物理删除）
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
+        public BaseResponse DelWorkFlowDefinition(string id) {
+            var info = WorkFlowDefinition.GetInstance(id);
+            info.Delete();
+
+            //记录到日志
+            string thisUserId = User.Identity.Name;
+            UserManager thisUser = UserManager.getUserById(thisUserId);
+            UserLog.create("删除工作流定义（物理删除）", "工作流定义", thisUser, info);
+
+            return BaseResponse.getResult("删除成功");
         }
 
         /// <summary>
@@ -62,6 +99,12 @@ namespace website.Controllers.WorkFlow
         public BaseResponse<WorkFlowDefinition> EditWorkFlowDefUnits(WorkFlowDefEditRequest condtion) {
             var info = WorkFlowDefinition.GetInstance(condtion.Id);
             var result = info.EditDefUnit(condtion);
+
+            //记录到日志
+            string thisUserId = User.Identity.Name;
+            UserManager thisUser = UserManager.getUserById(thisUserId);
+            UserLog.create("编辑工作流定义流程详情", "工作流定义", thisUser, info);
+
             return BaseResponse.getResult(result, "保存成功");
         }
 
@@ -76,6 +119,27 @@ namespace website.Controllers.WorkFlow
             var info = WorkFlowDefStep.GetInstance(id);
             var result = info.GetNextLineDetails();
             return BaseResponse.getResult(result);
+        }
+
+        /// <summary>
+        /// [后台角色权限]编辑步骤审批信息
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
+        public BaseResponse<WorkFlowDefSetpDetail> EditStepApprovalInfo(WorkFlowDefStep condtion) {
+            
+            var info = WorkFlowDefSetpDetail.GetDetailInstance(condtion.Id);
+            var def = WorkFlowDefinition.GetInstance(info.DefinitionId);
+            var result = info.EditStepApprovalInfo(condtion);
+
+            //保存到日志
+            string thisUserId = User.Identity.Name;
+            UserManager thisUser = UserManager.getUserById(thisUserId);
+            UserLog.create(string.Format("编辑工作流步骤[{0}]的审批方式与角色配置信息", info.name), "工作流定义", thisUser, def);
+
+            return BaseResponse.getResult(result, "保存成功");
         }
     }
 }

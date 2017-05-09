@@ -36,5 +36,17 @@ namespace website.Areas.Admin.Controllers
             ViewBag.pageId = getPageId(pageId);
             return View();
         }
+
+        /// <summary>
+        /// 步骤详情（编辑 审批角色与方式 ）
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        public ActionResult DefStepDetail(string id, string pageId) {
+            var info = WorkFlowDefSetpDetail.GetDetailInstance(id);
+            ViewBag.pageId = getPageId(pageId);
+            return View(info);
+        }
     }
 }

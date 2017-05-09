@@ -1,0 +1,61 @@
+﻿@using monkey.service.WorkFlow
+@{
+    ViewBag.Title = "步骤详情";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    var pageId = ViewBag.pageId;
+    var roleListResponse = WorkFlowRole.GetRolsList(new BaseRequest() { page = 0 });
+    var roleList = roleListResponse.rows;
+}
+@model WorkFlowDefSetpDetail
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false" style="padding:5px;">
+
+        <div class="formtitle">基本信息</div>
+        <table class="formtable">
+            <tr>
+                <td class="t">ID</td>
+                <td colspan="3">@Model.Id</td>
+            </tr>
+            <tr>
+                <td class="t">节点名称</td>
+                <td>@Model.name</td>
+                <td class="t">节点类型</td>
+                <td>@Model.typeZHString</td>
+            </tr>
+        </table>
+        @if (Model.type == WorkFlowStepType.task)
+        {
+            //任务节点可配置审批方式和权限
+            <form id="@(pageId)apprForm">
+                <input type="hidden" value="@Model.Id" name="Id" />
+                <div class="formtitle">审批方式</div>
+                <table class="formtable">
+                    <tr>
+                        <td class="t">
+                            审批方式
+                        </td>
+                        <td>
+                            <input type="radio" name="IsCountersign" value="false" @(Model.IsCountersign ? "" : "checked='checked'") /> 非会签
+                            <input type="radio" name="IsCountersign" value="true" @(Model.IsCountersign ? "checked='checked'" : "") /> 会签
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="t">审批角色</td>
+                        <td>
+                            <select class="easyui-combobox" name="WorkFlowRoleId" data-options="required:true" panelHeight="200">
+                                @foreach (var item in roleList)
+                                {
+                                    <option value="@item.Id" @(item.Id == Model.WorkFlowRoleId ? "selected='selected'" : "")>@item.RoleName</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="t"></td>
+                        <td>请到工作流角色维护中进行维护</td>
+                    </tr>
+                </table>
+            </form>
+        }
+    </div>
+</div>

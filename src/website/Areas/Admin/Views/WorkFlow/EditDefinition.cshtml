@@ -4,6 +4,7 @@
     Layout = "~/Areas/Admin/Views/Shared/View_gooflowlayout.cshtml";
     string id = ViewBag.Id;
     string pageId = ViewBag.pageId;
+    string newPageId = SysHelps.getRandmonStirng();
 }
 
 <script type="text/javascript">
@@ -143,16 +144,41 @@
             },
             columns: [[
                 {
+                    field: 'Id', title: '节点ID'
+                },
+                {
                     field: 'name', title: '节点名称'
                 },
                 {
                     field: 'typeZHString', title: '节点类型'
                 },
                 {
-                    field: 'Id', title: '节点ID'
+                    field: 'DescriptString', title: '描述',width:200
                 },
             ]],
             toolbar: [
+                {
+                    text: "审批角色与方式设置",
+                    iconCls: "icon-man",
+                    handler: function () {
+                        var row = nodeGrid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('提示', "请先选中一行", 'info');
+                            return;
+                        }
+                        if (row.type != 2) {
+                            $.messager.alert('提示', "只有“任务节点”类型才可设置审批方式", 'info');
+                            return;
+                        }
+                        var url = "@Url.Action("DefStepDetail", new { pageId=newPageId})";
+                        url += "&id=" + row.Id;
+                        console.log(url);
+                        dialogWin.dialog({
+                            title: row.name,
+                            href: url
+                        }).dialog("open");
+                    }
+                },
                 {
                     text: "刷新",
                     iconCls: "icon-reload",
@@ -199,6 +225,49 @@
             ]],
         });
 
+        //步骤详情模态窗口
+        var dialogWin = $("#@(pageId)stepdd");
+        dialogWin.dialog({
+            closed: false,
+            cache: false,
+            modal: true,
+            closed: true,
+            inline: true,
+            toolbar: [
+                {
+                    text: '保存',
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        var btn = $(this);
+                        var form = $("#@(newPageId)apprForm");
+                        //验证表单
+                        var r = form.form("validate");
+                        if (r) {
+                            btn.linkbutton("disable");
+
+                            var request = form.serializeObject();
+                            console.log(request);
+                            //提交保存
+                            var url = "/api/WorkFlowDefinition/EditStepApprovalInfo";
+                            $.post(url, request, function (json) {
+                                showmsg(json);
+                                if (json.Message == 0) {
+                                    dialogWin.dialog("close");
+                                    //updaterow
+                                    var row = nodeGrid.datagrid("getSelected");
+                                    var rowIndex = nodeGrid.datagrid("getRowIndex", row);
+                                    nodeGrid.datagrid("updateRow", {
+                                        index: rowIndex,
+                                        row: json.item
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+            ]
+        });
+
         //jsondata = {
         //    title: "业务流程定义",
         //    nodes: {
@@ -219,7 +288,7 @@
 </script>
 
 <div class="easyui-layout" data-options="fit:true">
-    
+    <div id="@(pageId)stepdd" style="width:90%;height:90%; overflow:hidden">步骤详情</div>
     <div data-options="region:'center',border:false">
         <div id="@(pageId)tt" class="easyui-tabs" data-options="fit:true,border:false">
             <div title="流程图" id="@(pageId)WorkFlowDefBox" style="padding:0">

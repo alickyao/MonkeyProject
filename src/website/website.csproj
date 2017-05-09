@@ -809,6 +809,7 @@
     <Content Include="Areas\Admin\Views\Shared\View_gooflowlayout.cshtml" />
     <Content Include="Areas\Admin\Views\WorkFlow\EditDefinition.cshtml" />
     <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\设计器API说明书.doc" />
+    <Content Include="Areas\Admin\Views\WorkFlow\DefStepDetail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
