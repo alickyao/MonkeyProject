@@ -42,7 +42,7 @@
                     <tr>
                         <td class="t">审批角色</td>
                         <td>
-                            <select class="easyui-combobox" name="WorkFlowRoleId" data-options="required:true" panelHeight="200">
+                            <select class="easyui-combobox" name="WorkFlowRoleId" data-options="required:true" panelHeight="auto">
                                 @foreach (var item in roleList)
                                 {
                                     <option value="@item.Id" @(item.Id == Model.WorkFlowRoleId ? "selected='selected'" : "")>@item.RoleName</option>

@@ -143,6 +143,7 @@
       <DependentUpon>Default.edmx</DependentUpon>
     </Compile>
     <Compile Include="Frame\ManagerMenu.cs" />
+    <Compile Include="Frame\WorkOrder.cs" />
     <Compile Include="Fun\Doc\BaseDoc.cs" />
     <Compile Include="Fun\OA\LeaveService.cs" />
     <Compile Include="Logs\BaseLog.cs" />

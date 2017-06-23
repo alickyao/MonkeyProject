@@ -77,70 +77,36 @@ namespace monkey.service.WorkFlow
         /// <summary>
         /// 新增/编辑
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="rows"></param>
         /// <returns></returns>
-        public static WorkFlowRole Edit(WorkFlowRole item) {
-            ValiDatas.valiData(item);
-            WorkFlowRole result = null;
-            using (var db = new DefaultContainer()) {
-                if (string.IsNullOrEmpty(item.Id))
-                {
-                    Db_WorkFlowRole dbRole = new Db_WorkFlowRole()
-                    {
-                        CreatedOn = DateTime.Now,
-                        Descript = string.IsNullOrEmpty(item.Descript) ? null : item.Descript,
-                        Id = Guid.NewGuid().ToString(),
-                        RoleName = item.RoleName
-                    };
-                    db.Db_WorkFlowRoleSet.Add(dbRole);
-                    result = new WorkFlowRole(dbRole);
-                }
-                else {
-                    var row = db.Db_WorkFlowRoleSet.Single(p => p.Id == item.Id);
-                    row.RoleName = item.RoleName;
-                    row.Descript = item.Descript;
-                    result = new WorkFlowRole(row);
-                }
-                db.SaveChanges();
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 批量新增,编辑
-        /// </summary>
-        /// <param name="condtion"></param>
-        /// <returns></returns>
-        public static List<WorkFlowRole> Edit(BaseBatchRequest<WorkFlowRole> condtion) {
-            foreach (var item in condtion.rows) {
+        public static List<WorkFlowRole> Edit(List<WorkFlowRole> rows) {
+            List<WorkFlowRole> result = new List<WorkFlowRole>();
+            foreach (var item in rows) {
                 ValiDatas.valiData(item);
             }
-            List<WorkFlowRole> result = new List<WorkFlowRole>();
-            List<Db_WorkFlowRole> dbResult = new List<Db_WorkFlowRole>();
             using (var db = new DefaultContainer()) {
-                foreach (var item in condtion.rows) {
+                foreach (var item in rows)
+                {
                     if (string.IsNullOrEmpty(item.Id))
                     {
-                        Db_WorkFlowRole dbRole = new Db_WorkFlowRole() {
+                        Db_WorkFlowRole dbRole = new Db_WorkFlowRole()
+                        {
                             CreatedOn = DateTime.Now,
-                            Descript = string.IsNullOrEmpty(item.Descript)? null :item.Descript,
+                            Descript = string.IsNullOrEmpty(item.Descript) ? null : item.Descript,
                             Id = Guid.NewGuid().ToString(),
                             RoleName = item.RoleName
                         };
                         db.Db_WorkFlowRoleSet.Add(dbRole);
-                        dbResult.Add(dbRole);
+                        result.Add(new WorkFlowRole(dbRole));
                     }
                     else {
                         var row = db.Db_WorkFlowRoleSet.Single(p => p.Id == item.Id);
                         row.RoleName = item.RoleName;
                         row.Descript = item.Descript;
-                        dbResult.Add(row);
+                        result.Add(new WorkFlowRole(row));
                     }
                 }
                 db.SaveChanges();
-                foreach (var dbItem in dbResult) {
-                    result.Add(new WorkFlowRole(dbItem));
-                }
             }
             return result;
         }

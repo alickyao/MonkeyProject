@@ -1,0 +1,244 @@
+﻿
+@{
+    ViewBag.Title = "工作流审批角色列表";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string pageId = ViewBag.pageId;
+    string condtion = JsonConvert.SerializeObject(Model);
+    string newPageId = SysHelps.getRandmonStirng();
+}
+
+<script>
+    $(function () {
+        var request = $.parseJSON('@Html.Raw(condtion)');
+        var grid = $("#@(pageId)grid");
+
+
+        function loadGrid() {
+            console.log(request);
+            grid.datagrid("loading");
+            $.post("/api/WorkFlowRoles/GetWorkFlowRoleList", request, function (json) {
+                grid.datagrid("unselectAll");
+                grid.datagrid("acceptChanges");
+                totalEdit = 0;
+                setGridRows(json, grid);
+            });
+        }
+
+        var totalEdit = 0;
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: false,
+            striped: true,
+            pagination: true,
+            rownumbers: true,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            onDblClickRow: function (rowIndex, rowData) {
+                var url = "@Url.Action("EditDefinition", new { pageId = newPageId})";
+                url += "&Id=" + rowData.Id;
+                console.log(url);
+                dialogWin.dialog({
+                    content: getIframe(url)
+                }).dialog("open");
+            },
+            columns: [[
+                {
+                    field: 'CreateOnString', title: '创建时间', width: 120
+                },
+                {
+                    field: 'RoleName', title: '角色名称', width: 200, editor: { type: "textbox", options: { required: true } }
+                },
+                {
+                    field: 'Descript', title: '角色描述', width: 400, editor: { type: "textbox", options: { required: true } }
+                },
+            ]],
+            toolbar: [
+                {
+                    text: "新增",
+                    iconCls: "icon-add",
+                    handler: function () {
+                        grid.datagrid('insertRow', {
+                            index: 0,	// 索引从0开始
+                            row: {
+                                Id:"",
+                                Caption: '',
+                                Descript: '',
+                            }
+                        }).datagrid("beginEdit", 0);
+                        totalEdit++;
+                    }
+                },
+                {
+                    text: "编辑",
+                    iconCls: "icon-edit",
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                            return;
+                        }
+
+                        if (row.Id == "") {
+                            return
+                        }
+                        var rowIndex = grid.datagrid("getRowIndex", row);
+                        grid.datagrid("beginEdit", rowIndex);
+                        totalEdit++;
+                    }
+                },
+                {
+                    text: "撤销编辑",
+                    iconCls: "icon-undo",
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                            return;
+                        }
+                        var rowIndex = grid.datagrid("getRowIndex", row);
+                        if (row.Id == "") {
+                            grid.datagrid("deleteRow", rowIndex);
+                        }
+                        else {
+                            grid.datagrid("cancelEdit", rowIndex);
+                        }
+                        totalEdit--;
+                    }
+                },
+                {
+                    text: "保存",
+                    iconCls: "icon-save",
+                    handler: function () {
+                        var rows = grid.datagrid("getRows");
+                        if (rows.length == 0) {
+                            $.messager.alert('提示', "没有数据需要保存", 'info');
+                            return;
+                        }
+                        var Reg = true;
+                        for (var i = 0; i < rows.length; i++) {
+                            var rowIndex = grid.datagrid("getRowIndex", rows[i]);
+                            Reg = Reg && grid.datagrid("validateRow", rowIndex);
+                            if (Reg) {
+                                grid.datagrid("endEdit", rowIndex);
+                            }
+                        }
+                        if (Reg) {
+                            var insertRows = grid.datagrid("getChanges", "inserted");
+                            var updateRows = grid.datagrid("getChanges", "updated");
+                            var editRows = insertRows.concat(updateRows);
+                            console.log(editRows);
+
+                            if (editRows.length == 0) {
+                                $.messager.alert('提示', "没有数据需要保存", 'info');
+                                return;
+                            }
+                            //提交到保存
+                            grid.datagrid("loading");
+                            var url = "/api/WorkFlowRoles/EditWorkFlowRoleInfo";
+                            console.log(url);
+                            $.post(url, {
+                                rows:editRows
+                            }, function (json) {
+                                showmsg(json);
+                                if (json.Message == 0) {
+                                    loadGrid();
+                                }
+                                else {
+                                    grid.datagrid("loaded");
+                                }
+                            })
+                        }
+                        else {
+                            $.messager.alert('错误', "数据验证未通过", 'error');
+                        }
+                    }
+                },
+                {
+                    text: "删除",
+                    iconCls: "icon-remove",
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                        }
+                        else {
+                            console.log("当前正在编辑的行数量：" + totalEdit);
+                            var rowIndex = grid.datagrid("getRowIndex", row);
+                            if (row.Id == "") {
+                                grid.datagrid("deleteRow", rowIndex);
+                            }
+                            else {
+                                var msg = "请确认是否删除工作流角色[" + row.RoleName + "]？";
+                                if (totalEdit > 0) {
+                                    msg = msg += "<br />当前有正在编辑的行，删除操作会导致未保存的数据丢失，确认继续？";
+                                }
+                                $.messager.confirm('请确认', msg, function (r) {
+                                    if (r) {
+                                        var url = "/api/WorkFlowRoles/DelWorkFlowRoleInfo/" + row.Id;
+                                        $.getJSON(url, function (json) {
+                                            showmsg(json);
+                                            if (json.Message == 0) {
+                                                loadGrid();
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    }
+                },
+                '-',
+                {
+                    text: "查看操作日志",
+                    iconCls: "icon-search",
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                        }
+                        else {
+                            var url = "@Url.Action("userLogList","Logs", new { page=1,pageSize=20})";
+                            url += "&fkId=" + row.Id;
+                            console.log(url);
+                            dialogWin.dialog({
+                                title: "操作日志",
+                                content: getIframe(url)
+                            }).dialog("open");
+                        }
+                    }
+                },
+            ]
+        });
+
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            }
+        });
+        loadGrid();
+
+        var dialogWin = $('#@(pageId)dd');
+
+        dialogWin.dialog({
+            closed: false,
+            cache: false,
+            modal: true,
+            closed: true,
+            inline: true
+        });
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div id="@(pageId)dd" style="width:90%;height:90%; overflow:hidden">工作流角色用户详情</div>
+    <div data-options="region:'center',border:false">
+        <table id="@(pageId)grid"></table>
+    </div>
+</div>
+

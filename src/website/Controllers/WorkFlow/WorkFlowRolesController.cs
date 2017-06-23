@@ -23,8 +23,8 @@ namespace website.Controllers.WorkFlow
         /// <returns></returns>
         [HttpPost]
         [ApiAuthorize(RoleType = SysRolesType.后台)]
-        public BaseResponseList<WorkFlowRole> GetWorkFlowRoleList(BaseRequest condtion) {
-            return WorkFlowRole.GetRolsList(condtion);
+        public BaseResponse<BaseResponseList<WorkFlowRole>> GetWorkFlowRoleList(BaseRequest condtion) {
+            return BaseResponse.getResult(WorkFlowRole.GetRolsList(condtion));
         }
 
         /// <summary>
@@ -47,16 +47,26 @@ namespace website.Controllers.WorkFlow
         /// <returns></returns>
         [HttpPost]
         [ApiAuthorize(RoleType = SysRolesType.后台)]
-        public BaseResponse<WorkFlowRole> EditWorkFlowRoleInfo(WorkFlowRole condtion) {
-            var result = WorkFlowRole.Edit(condtion);
+        public BaseResponse<List<WorkFlowRole>> EditWorkFlowRoleInfo(BaseBatchRequest<WorkFlowRole> condtion) {
+            var result = WorkFlowRole.Edit(condtion.rows);
+            string msg = string.Format("已新增/编辑{0}条数据", result.Count);
 
             //记录到日志
-            UserManager thisUser = UserManager.getUserById(User.Identity.Name);
-            string keyWord = string.IsNullOrEmpty(condtion.Id) ? "创建" : "编辑";
-            string msg = string.Format("{0}工作流角色信息[{1}]", keyWord, result.RoleName);
-            UserLog.create(msg, "工作流角色", thisUser, result);
-
-            return BaseResponse.getResult(result, keyWord + "成功");
+            string thisUserId = User.Identity.Name;
+            UserManager thisUser = UserManager.getUserById(thisUserId);
+            string logMsg = string.Empty;
+            foreach (var item in result)
+            {
+                if (condtion.rows.Select(p => p.Id).Contains(item.Id))
+                {
+                    logMsg = string.Format("编辑工作流角色信息[{0}]", item.RoleName);
+                }
+                else {
+                    logMsg = string.Format("新增工作流角色信息[{0}]", item.RoleName);
+                }
+                UserLog.create(logMsg, "工作流角色", thisUser, item);
+            }
+            return BaseResponse.getResult(result, msg);
         }
 
         /// <summary>

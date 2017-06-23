@@ -50,7 +50,7 @@
           <ManagerMenu>
             <text>审批角色设置</text>
             <url>
-              <![CDATA[]]>
+              <![CDATA[/manager/WorkFlow/WorkFlowRoleList]]>
             </url>
           </ManagerMenu>
           <ManagerMenu>
