@@ -62,5 +62,21 @@ namespace website.Areas.Admin.Controllers
             BaseRequest condtion = new BaseRequest();
             return View(condtion);
         }
+
+        /// <summary>
+        /// 工作流审批角色用户设置
+        /// </summary>
+        /// <param name="Id">工作流角色的ID</param>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult WorkFlowUserRoleSet(string Id, string pageId)
+        {
+            ViewBag.pageId = getPageId(pageId);
+            var roleInfo = WorkFlowRole.GetInstance(Id);
+            roleInfo.GetDescripUserId();
+            ViewBag.selectedUserId = roleInfo.DescripUserId;
+            return View("SelectManagerUsers");
+        }
     }
 }

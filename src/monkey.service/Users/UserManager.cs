@@ -345,11 +345,20 @@ namespace monkey.service.Users
         public static BaseResponseList<UserManager> searchList(UserManagerSearchRequest condtion) {
             BaseResponseList<UserManager> result = new BaseResponseList<UserManager>();
 
+            List<string> wId = new List<string>();
+            if (condtion.wId != null) {
+                if (condtion.wId.rows != null) {
+                    wId = condtion.wId.rows;
+                }
+            }
+
             using (var db = new DefaultContainer()) {
-                var rows = (from c in db.Db_BaseUserSet.OfType<Db_ManagerUser>()
+                var rows = (from c in db.Db_BaseUserSet.OfType<Db_ManagerUser>().AsEnumerable()
                             where (c.isDeleted == false)
                             && (string.IsNullOrEmpty(condtion.q) ? true : (c.fullName.Contains(condtion.q) || (string.IsNullOrEmpty(c.mobilePhone) ? false : c.mobilePhone.Contains(condtion.q)) || (c.loginName.Contains(condtion.q))))
-                            &&(string.IsNullOrEmpty(condtion.role)? true :(c.Db_BaseUserRole.Select(x=> x.roleName).Contains(condtion.role)))
+                            && (string.IsNullOrEmpty(condtion.role) ? true : (c.Db_BaseUserRole.Select(x => x.roleName).Contains(condtion.role)))
+                            && (condtion.cId.rows == null ? true : condtion.cId.rows.Contains(c.Id))
+                            && (wId.Count == 0 ? true : !condtion.wId.rows.Contains(c.Id))
                             select c
                             );
                 result.total = rows.Count();
@@ -358,7 +367,7 @@ namespace monkey.service.Users
                     if (condtion.page > 0) {
                         rows = rows.Skip(condtion.getSkip()).Take(condtion.pageSize);
                     }
-                    result.rows = rows.AsEnumerable().Select(p => new UserManager(p)).ToList();
+                    result.rows = rows.Select(p => new UserManager(p)).ToList();
                 }
             }
 

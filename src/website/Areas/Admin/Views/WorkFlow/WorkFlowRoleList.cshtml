@@ -38,11 +38,11 @@
             singleSelect: true,
             idField: "Id",
             onDblClickRow: function (rowIndex, rowData) {
-                var url = "@Url.Action("EditDefinition", new { pageId = newPageId})";
+                var url = "@Url.Action("WorkFlowUserRoleSet", new { pageId = newPageId})";
                 url += "&Id=" + rowData.Id;
                 console.log(url);
                 dialogWin.dialog({
-                    content: getIframe(url)
+                    href: url
                 }).dialog("open");
             },
             columns: [[
@@ -64,7 +64,7 @@
                         grid.datagrid('insertRow', {
                             index: 0,	// 索引从0开始
                             row: {
-                                Id:"",
+                                Id: "",
                                 Caption: '',
                                 Descript: '',
                             }
@@ -141,7 +141,7 @@
                             var url = "/api/WorkFlowRoles/EditWorkFlowRoleInfo";
                             console.log(url);
                             $.post(url, {
-                                rows:editRows
+                                rows: editRows
                             }, function (json) {
                                 showmsg(json);
                                 if (json.Message == 0) {
@@ -193,6 +193,24 @@
                 },
                 '-',
                 {
+                    text: "查看角色用户",
+                    iconCls: "icon-man",
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                        }
+                        else {
+                            var url = "@Url.Action("WorkFlowUserRoleSet", new { pageId = newPageId})";
+                            url += "&Id=" + row.Id;
+                            console.log(url);
+                            dialogWin.dialog({
+                                href: url
+                            }).dialog("open");
+                        }
+                    }
+                },
+                {
                     text: "查看操作日志",
                     iconCls: "icon-search",
                     handler: function () {
@@ -230,7 +248,24 @@
             cache: false,
             modal: true,
             closed: true,
-            inline: true
+            inline: true,
+            title:'选择用户',
+            toolbar: [
+                {
+                    text: "保存",
+                    iconCls: "icon-save",
+                    handler: function () {
+                        
+                    }
+                },
+                {
+                    text: "关闭",
+                    iconCls: "icon-clear",
+                    handler: function () {
+                        dialogWin.dialog("close");
+                    }
+                }
+            ]
         });
     });
 </script>

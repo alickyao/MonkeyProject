@@ -100,6 +100,17 @@ namespace monkey.service.Users
         /// 用户 角色
         /// </summary>
         public string role { get; set; }
+
+        /// <summary>
+        /// 包含的用户ID
+        /// </summary>
+        public BaseBatchRequest<string> cId { get; set; }
+
+        /// <summary>
+        /// 排除的用户ID
+        /// </summary>
+
+        public BaseBatchRequest<string> wId { get; set; }
     }
 
     /// <summary>

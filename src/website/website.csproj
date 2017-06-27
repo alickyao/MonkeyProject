@@ -811,6 +811,7 @@
     <Content Include="Areas\Admin\Scripts\gooflow\GooFlow\设计器API说明书.doc" />
     <Content Include="Areas\Admin\Views\WorkFlow\DefStepDetail.cshtml" />
     <Content Include="Areas\Admin\Views\WorkFlow\WorkFlowRoleList.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\SelectManagerUsers.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -821,7 +822,6 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Scripts\kindeditor\attached\" />
-    <Folder Include="Areas\Admin\Views\BaseMangement\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\monkey.service\monkey.service.csproj">
