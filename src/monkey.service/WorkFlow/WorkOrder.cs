@@ -4,8 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace monkey.service.Frame
+namespace monkey.service.WorkFlow
 {
+    
+    /// <summary>
+    /// 工单类型
+    /// </summary>
+    public enum WorkOrderType
+    {
+        /// <summary>
+        /// 基础工单 - 无类具体类型
+        /// </summary>
+        无类型
+    }
+
     /// <summary>
     /// 基础工单
     /// </summary>
