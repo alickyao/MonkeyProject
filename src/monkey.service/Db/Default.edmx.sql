@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 05/04/2017 15:32:43
+-- Date Created: 06/28/2017 10:50:52
 -- Generated from EDMX file: D:\project\git\MonkeyProject\src\monkey.service\Db\Default.edmx
 -- --------------------------------------------------
 
@@ -34,6 +34,21 @@ IF OBJECT_ID(N'[dbo].[FK_Db_ManagerUser_inherits_Db_BaseUser]', 'F') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[FK_Db_UserLog_inherits_Db_BaseLog]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_BaseLogSet_Db_UserLog] DROP CONSTRAINT [FK_Db_UserLog_inherits_Db_BaseLog];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_WorkFlowDefArea_inherits_Db_WorkFlowDefBaseUnit]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea] DROP CONSTRAINT [FK_Db_WorkFlowDefArea_inherits_Db_WorkFlowDefBaseUnit];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_WorkFlowDefinitionDb_WorkFlowDefArea]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea] DROP CONSTRAINT [FK_Db_WorkFlowDefinitionDb_WorkFlowDefArea];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_WorkFlowDefinitionDb_WorkFlowDefLine]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_WorkFlowDefLineSet] DROP CONSTRAINT [FK_Db_WorkFlowDefinitionDb_WorkFlowDefLine];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_WorkFlowDefinitionDb_WorkFlowDefStep]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep] DROP CONSTRAINT [FK_Db_WorkFlowDefinitionDb_WorkFlowDefStep];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_WorkFlowDefStep_inherits_Db_WorkFlowDefBaseUnit]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep] DROP CONSTRAINT [FK_Db_WorkFlowDefStep_inherits_Db_WorkFlowDefBaseUnit];
 GO
 
 -- --------------------------------------------------
@@ -73,8 +88,20 @@ GO
 IF OBJECT_ID(N'[dbo].[Db_BaseUserSet_Db_ManagerUser]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser];
 GO
+IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefBaseUnitSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_WorkFlowDefBaseUnitSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea];
+GO
+IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep];
+GO
 IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefinitionSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_WorkFlowDefinitionSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefLineSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_WorkFlowDefLineSet];
 GO
 IF OBJECT_ID(N'[dbo].[Db_WorkFlowRoleDescriptSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_WorkFlowRoleDescriptSet];
@@ -204,10 +231,21 @@ CREATE TABLE [dbo].[Db_WorkFlowDefLineSet] (
     [Id] nvarchar(50)  NOT NULL,
     [From] nvarchar(50)  NOT NULL,
     [To] nvarchar(50)  NOT NULL,
-    [M] int  NULL,
+    [M] float  NULL,
     [Name] nvarchar(max)  NULL,
-    [Type] int  NOT NULL,
+    [Type] nvarchar(20)  NOT NULL,
     [Db_WorkFlowDefinitionId] nvarchar(50)  NOT NULL
+);
+GO
+
+-- Creating table 'Db_BaseWorkOrderSet'
+CREATE TABLE [dbo].[Db_BaseWorkOrderSet] (
+    [Id] nvarchar(50)  NOT NULL,
+    [CreatedOn] nvarchar(max)  NOT NULL,
+    [OrderType] tinyint  NOT NULL,
+    [WorkFlowDefinitionId] nvarchar(50)  NULL,
+    [WorkFlowBookMarkId] nvarchar(50)  NULL,
+    [Remark] nvarchar(max)  NULL
 );
 GO
 
@@ -223,6 +261,7 @@ GO
 CREATE TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep] (
     [Type] int  NOT NULL,
     [WorkFlowRoleId] nvarchar(50)  NULL,
+    [IsCountersign] bit  NULL,
     [Db_WorkFlowDefinitionId] nvarchar(50)  NOT NULL,
     [Id] nvarchar(50)  NOT NULL
 );
@@ -339,6 +378,12 @@ GO
 -- Creating primary key on [Id] in table 'Db_WorkFlowDefLineSet'
 ALTER TABLE [dbo].[Db_WorkFlowDefLineSet]
 ADD CONSTRAINT [PK_Db_WorkFlowDefLineSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_BaseWorkOrderSet'
+ALTER TABLE [dbo].[Db_BaseWorkOrderSet]
+ADD CONSTRAINT [PK_Db_BaseWorkOrderSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 

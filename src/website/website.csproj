@@ -745,6 +745,7 @@
     <Compile Include="Controllers\Tree\BaseTreeController.cs" />
     <Compile Include="Controllers\Users\UserManagerController.cs" />
     <Compile Include="Controllers\WorkFlow\WorkFlowDefinitionController.cs" />
+    <Compile Include="Controllers\WorkFlow\WorkFlowOrdersController.cs" />
     <Compile Include="Controllers\WorkFlow\WorkFlowRolesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -812,6 +813,7 @@
     <Content Include="Areas\Admin\Views\WorkFlow\DefStepDetail.cshtml" />
     <Content Include="Areas\Admin\Views\WorkFlow\WorkFlowRoleList.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\SelectManagerUsers.cshtml" />
+    <Content Include="Areas\Admin\Views\WorkFlow\WorkFlowBaseOrders.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

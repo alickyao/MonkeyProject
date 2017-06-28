@@ -118,6 +118,17 @@
           <Property Name="mobilePhone" Type="nvarchar" MaxLength="50" />
           <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="Db_BaseWorkOrderSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="OrderType" Type="tinyint" Nullable="false" />
+          <Property Name="WorkFlowDefinitionId" Type="nvarchar" MaxLength="50" />
+          <Property Name="WorkFlowBookMarkId" Type="nvarchar" MaxLength="50" />
+          <Property Name="Remark" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="Db_WorkFlowDefBaseUnitSet">
           <Key>
             <PropertyRef Name="Id" />
@@ -342,6 +353,7 @@
           <EntitySet Name="Db_BaseUserRoleSet" EntityType="Self.Db_BaseUserRoleSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_BaseUserSet" EntityType="Self.Db_BaseUserSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_BaseUserSet_Db_ManagerUser" EntityType="Self.Db_BaseUserSet_Db_ManagerUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Db_BaseWorkOrderSet" EntityType="Self.Db_BaseWorkOrderSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_WorkFlowDefBaseUnitSet" EntityType="Self.Db_WorkFlowDefBaseUnitSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" EntityType="Self.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" EntityType="Self.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" Schema="dbo" store:Type="Tables" />
@@ -431,6 +443,7 @@
             <End Role="Db_WorkFlowDefinition" EntitySet="Db_WorkFlowDefinitionSet" />
             <End Role="Db_WorkFlowDefStep" EntitySet="Db_WorkFlowDefBaseUnitSet" />
           </AssociationSet>
+          <EntitySet Name="Db_BaseWorkOrderSet" EntityType="Default.Db_BaseWorkOrder" />
         </EntityContainer>
         <EntityType Name="Db_BaseUser">
           <Key>
@@ -659,6 +672,17 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Db_BaseWorkOrder">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" />
+          <Property Name="OrderType" Type="Byte" Nullable="false" />
+          <Property Name="WorkFlowDefinitionId" Type="String" Nullable="true" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="WorkFlowBookMarkId" Type="String" Nullable="true" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="Remark" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -830,10 +854,10 @@
       </EntityTypeMapping>
       <EntityTypeMapping TypeName="IsTypeOf(Default.Db_WorkFlowDefStep)">
         <MappingFragment StoreEntitySet="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep">
-          <ScalarProperty Name="IsCountersign" ColumnName="IsCountersign" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="WorkFlowRoleId" ColumnName="WorkFlowRoleId" />
+          <ScalarProperty Name="IsCountersign" ColumnName="IsCountersign" />
           <ScalarProperty Name="Db_WorkFlowDefinitionId" ColumnName="Db_WorkFlowDefinitionId" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -848,6 +872,18 @@
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="Db_WorkFlowDefinitionId" ColumnName="Db_WorkFlowDefinitionId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Db_BaseWorkOrderSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Default.Db_BaseWorkOrder)">
+        <MappingFragment StoreEntitySet="Db_BaseWorkOrderSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="OrderType" ColumnName="OrderType" />
+          <ScalarProperty Name="WorkFlowDefinitionId" ColumnName="WorkFlowDefinitionId" />
+          <ScalarProperty Name="WorkFlowBookMarkId" ColumnName="WorkFlowBookMarkId" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

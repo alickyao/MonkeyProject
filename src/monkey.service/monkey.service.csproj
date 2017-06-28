@@ -94,6 +94,9 @@
     <Compile Include="Db\Db_BaseUserRole.cs">
       <DependentUpon>Default.tt</DependentUpon>
     </Compile>
+    <Compile Include="Db\Db_BaseWorkOrder.cs">
+      <DependentUpon>Default.tt</DependentUpon>
+    </Compile>
     <Compile Include="Db\Db_DocPic.cs">
       <DependentUpon>Default.tt</DependentUpon>
     </Compile>

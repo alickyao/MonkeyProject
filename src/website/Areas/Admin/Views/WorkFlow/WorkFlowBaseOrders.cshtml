@@ -1,0 +1,152 @@
+﻿@using monkey.service.WorkFlow;
+@{
+    ViewBag.Title = "所有工单列表";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string pageId = ViewBag.pageId;
+    string condtion = JsonConvert.SerializeObject(Model);
+    string newPageId = SysHelps.getRandmonStirng();
+}
+@model BaseWorkOrderSearchRequest
+
+<script>
+    $(function () {
+        var request = $.parseJSON('@Html.Raw(condtion)');
+        var grid = $("#@(pageId)grid");
+        function loadGrid() {
+            console.log(request);
+            grid.datagrid("loading");
+            $.post("/api/WorkFlowOrders/GetWorkFlowBaseOrdersList", request, function (json) {
+                grid.datagrid("unselectAll");
+                grid.datagrid("acceptChanges");
+                setGridRows(json, grid);
+            });
+        }
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: false,
+            striped: true,
+            pagination: true,
+            rownumbers: true,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            onDblClickRow: function (rowIndex, rowData) {
+               
+            },
+            columns: [[
+                {
+                    field: 'CreatedOnString', title: '创建时间', width: 130
+                },
+                {
+                    field: 'OrderTypeString', title: '工单类型', width: 120
+                },
+                {
+                    field: 'Remark', title: '工单备注', width: 300, editor: { type: "textbox", options: { required: true } }
+                },
+            ]],
+            toolbar: [
+                {
+                    text: "新增",
+                    iconCls: "icon-add",
+                    handler: function () {
+                        grid.datagrid('insertRow', {
+                            index: 0,	// 索引从0开始
+                            row: {
+                                Id: "",
+                                Remark: ''
+                            }
+                        }).datagrid("beginEdit", 0);
+                    }
+                },
+                {
+                    text: "保存",
+                    iconCls: "icon-save",
+                    handler: function () {
+                        var rows = grid.datagrid("getRows");
+                        if (rows.length == 0) {
+                            $.messager.alert('提示', "没有数据需要保存", 'info');
+                            return;
+                        }
+                        var Reg = true;
+                       
+                        for (var i = 0; i < rows.length; i++) {
+                            var rowIndex = grid.datagrid("getRowIndex", rows[i]);
+                            Reg = Reg && grid.datagrid("validateRow", rowIndex);
+                            if (Reg) {
+                                grid.datagrid("endEdit", rowIndex);
+                            }
+                        }
+                        if (Reg) {
+                            var insertRows = grid.datagrid("getChanges", "inserted");
+                            if (insertRows.length == 0) {
+                                $.messager.alert('提示', "没有数据需要保存", 'info');
+                                return;
+                            }
+                            var insertRequest = [];
+                            for (var i = 0; i < insertRows.length; i++) {
+                                insertRequest.push(insertRows[i].Remark);
+                            }
+                            grid.datagrid("loading");
+                            var url = "/api/WorkFlowOrders/CreateWorkFlowBaseOrders";
+                            console.log(url);
+                            console.log(insertRequest);
+                            $.post(url, {
+                                rows: insertRequest
+                            }, function (json) {
+                                showmsg(json);
+                                if (json.Message == 0) {
+                                    loadGrid();
+                                }
+                                else {
+                                    grid.datagrid("loaded");
+                                }
+                            });
+                        }
+                    }
+                },
+                '-',
+                {
+                    text: "查看操作日志",
+                    iconCls: "icon-search",
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                        }
+                        else {
+                            if (row.Id != "" && row.Id != null) {
+                                var url = "@Url.Action("userLogList","Logs", new { page=1,pageSize=20})";
+                                url += "&fkId=" + row.Id;
+                                console.log(url);
+                                dialogWin.dialog({
+                                    title: "操作日志",
+                                    content: getIframe(url)
+                                }).dialog("open");
+                            }
+                        }
+                    }
+                },
+            ]
+        });
+        var dialogWin = $('#@(pageId)dd');
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            }
+        });
+        loadGrid();
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div id="@(pageId)dd" style="width:90%;height:90%; overflow:hidden"></div>
+    <div data-options="region:'center',border:false">
+        <table id="@(pageId)grid"></table>
+    </div>
+</div>
+

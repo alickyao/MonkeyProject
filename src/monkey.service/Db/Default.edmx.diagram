@@ -16,11 +16,11 @@
         <EntityTypeShape EntityType="Default.Db_BaseUserRole" PointX="3" PointY="0.625" Width="2.5" />
         <AssociationConnector Association="Default.Db_BaseUserDb_BaseUserRole" />
         <EntityTypeShape EntityType="Default.Db_BaseTree" Width="1.5" PointX="0.75" PointY="6.5" />
-        <EntityTypeShape EntityType="Default.Db_BaseDoc" Width="1.5" PointX="0.75" PointY="12.5" />
+        <EntityTypeShape EntityType="Default.Db_BaseDoc" Width="2" PointX="0.75" PointY="12.5" />
         <EntityTypeShape EntityType="Default.Db_BaseFile" Width="1.5" PointX="0.75" PointY="9.25" />
-        <EntityTypeShape EntityType="Default.Db_BaseDocFile" Width="1.5" PointX="3.375" PointY="12.5" />
+        <EntityTypeShape EntityType="Default.Db_BaseDocFile" Width="2.125" PointX="3.375" PointY="12.5" />
         <AssociationConnector Association="Default.Db_BaseDocDb_BaseDocFile" />
-        <EntityTypeShape EntityType="Default.Db_DocPic" Width="1.5" PointX="0.75" PointY="16.25" />
+        <EntityTypeShape EntityType="Default.Db_DocPic" Width="2" PointX="0.75" PointY="16.25" />
         <InheritanceConnector EntityType="Default.Db_DocPic" />
         <EntityTypeShape EntityType="Default.Db_WorkFlowRole" Width="1.875" PointX="0.75" PointY="18.75" />
         <EntityTypeShape EntityType="Default.Db_WorkFlowRoleDescript" Width="2.25" PointX="3.75" PointY="18.75" />
@@ -34,6 +34,7 @@
         <AssociationConnector Association="Default.Db_WorkFlowDefinitionDb_WorkFlowDefArea" />
         <AssociationConnector Association="Default.Db_WorkFlowDefinitionDb_WorkFlowDefLine" />
         <AssociationConnector Association="Default.Db_WorkFlowDefinitionDb_WorkFlowDefStep" />
+        <EntityTypeShape EntityType="Default.Db_BaseWorkOrder" Width="2.25" PointX="0.5" PointY="30.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

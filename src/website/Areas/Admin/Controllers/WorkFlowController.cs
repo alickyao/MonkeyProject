@@ -78,5 +78,17 @@ namespace website.Areas.Admin.Controllers
             ViewBag.selectedUserId = roleInfo.DescripUserId;
             return View("SelectManagerUsers");
         }
+
+        /// <summary>
+        /// 所有工单列表
+        /// </summary>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult WorkFlowBaseOrders(string pageId) {
+            ViewBag.pageId = getPageId(pageId);
+            BaseWorkOrderSearchRequest condtion = new BaseWorkOrderSearchRequest();
+            return View(condtion);
+        }
     }
 }
