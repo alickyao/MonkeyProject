@@ -170,59 +170,26 @@ namespace monkey.service.WorkFlow
         }
 
         /// <summary>
-        /// 新增工作流角色下的用户ID
+        /// 更新角色的用户信息
         /// </summary>
-        /// <param name="userId"></param>
-        public void InsterDescriptUserId(List<string> userId) {
-            GetDescripUserId();
-            if (userId != null) {
-                if (userId.Count > 0) {
-
-                    if ((this.DescripUserId.Intersect(userId)).Count() > 0){
-                        throw new ValiDataException("存在重复的用户");
-                    }
-
-                    using (var db = new DefaultContainer()) {
-                        List<Db_WorkFlowRoleDescript> dbRows = new List<Db_WorkFlowRoleDescript>();
-                        foreach (var uid in userId) {
-                            dbRows.Add(new Db_WorkFlowRoleDescript() {
-                                CreatedOn = DateTime.Now,
-                                UserId = uid,
-                                WorkFlowRoleId = this.Id
-                            });
-                        }
-                        db.Db_WorkFlowRoleDescriptSet.AddRange(dbRows);
-                        db.SaveChanges();
-                    }
-
-                    return;
+        /// <param name="userIds"></param>
+        public void UpdataDescriptUsers(List<string> userIds) {
+            using (var db = new DefaultContainer()) {
+                //先清空在新增
+                var delRows = (from c in db.Db_WorkFlowRoleDescriptSet where c.WorkFlowRoleId == this.Id select c);
+                db.Db_WorkFlowRoleDescriptSet.RemoveRange(delRows);
+                List<Db_WorkFlowRoleDescript> newRows = new List<Db_WorkFlowRoleDescript>();
+                foreach (var item in userIds) {
+                    newRows.Add(new Db_WorkFlowRoleDescript()
+                    {
+                        CreatedOn = DateTime.Now,
+                        UserId = item,
+                        WorkFlowRoleId = this.Id
+                    });
                 }
+                db.Db_WorkFlowRoleDescriptSet.AddRange(newRows);
+                db.SaveChanges();
             }
-            throw new ValiDataException("用户ID不能为空");
-        }
-
-        /// <summary>
-        /// 移除工作流角色下的用户ID
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns>返回被删除的具体条目数量</returns>
-        public int RemoveDescriptUserId(List<string> userId) {
-            if (userId != null)
-            {
-                if (userId.Count > 0)
-                {
-                    List<Db_WorkFlowRoleDescript> dbRows = new List<Db_WorkFlowRoleDescript>();
-
-                    using (var db = new DefaultContainer()) {
-                        dbRows = (from c in db.Db_WorkFlowRoleDescriptSet where userId.Contains(c.UserId) && c.WorkFlowRoleId==this.Id select c).ToList();
-                        db.Db_WorkFlowRoleDescriptSet.RemoveRange(dbRows);
-                        db.SaveChanges();
-                    }
-
-                    return dbRows.Count;
-                }
-            }
-            throw new ValiDataException("用户ID不能为空");
         }
 
         public string getIdString()

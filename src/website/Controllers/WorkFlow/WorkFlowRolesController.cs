@@ -79,6 +79,11 @@ namespace website.Controllers.WorkFlow
         public BaseResponse DelWorkFlowRoleInfo(string id) {
             var info = WorkFlowRole.GetInstance(id);
             info.Delete();
+
+            string thisUserId = User.Identity.Name;
+            UserManager thisUser = UserManager.getUserById(thisUserId);
+            UserLog.create("删除工作流角色配置", "工作流角色", thisUser, info);
+
             return BaseResponse.getResult("删除成功");
         }
 
@@ -91,27 +96,20 @@ namespace website.Controllers.WorkFlow
         /// <returns></returns>
         [HttpPost]
         [ApiAuthorize(RoleType = SysRolesType.后台)]
-        public BaseResponse InsterWorkFlowRoleDescriptUser(string id, BaseBatchRequest<string> condtion)
+        public BaseResponse UpdataWorkFlowRoleDescriptUser(string id, BaseBatchRequest<string> condtion)
         {
             var info = WorkFlowRole.GetInstance(id);
-            info.InsterDescriptUserId(condtion.rows);
-            return BaseResponse.getResult("保存成功");
-        }
+            if (condtion == null) {
+                condtion = new BaseBatchRequest<string>() {
+                    rows = new List<string>()
+                };
+            }
+            info.UpdataDescriptUsers(condtion.rows);
 
-        /// <summary>
-        /// [后台角色权限]移除工作流角色下的用户
-        /// </summary>
-        /// <param name="id">工作流角色的ID</param>
-        /// <param name="condtion">用户的ID集合</param>
-        /// <returns></returns>
-        [HttpPost]
-        [ApiAuthorize(RoleType = SysRolesType.后台)]
-        public BaseResponse DelWorkFlowRoleDescriptUser(string id, BaseBatchRequest<string> condtion)
-        {
-            var info = WorkFlowRole.GetInstance(id);
-            var total = info.RemoveDescriptUserId(condtion.rows);
-            string msg = string.Format("已成功移除{0}个用户", total);
-            return BaseResponse.getResult(msg);
+            string thisUserId = User.Identity.Name;
+            UserManager thisUser = UserManager.getUserById(thisUserId);
+            UserLog.create("编辑角色用户", "工作流角色", thisUser, info);
+            return BaseResponse.getResult("保存成功");
         }
     }
 }

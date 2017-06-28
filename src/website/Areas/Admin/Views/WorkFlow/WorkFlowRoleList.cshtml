@@ -255,7 +255,24 @@
                     text: "保存",
                     iconCls: "icon-save",
                     handler: function () {
-                        
+                        var selectedGrid = $("#@(newPageId)selectedUsersGrid");
+                        var rows = selectedGrid.datagrid("getRows");
+                        var request = {
+                            rows: []
+                        };
+                        for (var i = 0; i < rows.length; i++) {
+                            request.rows.push(rows[i].Id);
+                        }
+                        console.log(request);
+                        var id = grid.datagrid('getSelected').Id;
+                        var url = "/api/WorkFlowRoles/UpdataWorkFlowRoleDescriptUser/" + id;
+                        console.log(url);
+                        $.post(url, request, function (json) {
+                            showmsg(json);
+                            if (json.Message == "0") {
+                                dialogWin.dialog("close");
+                            }
+                        });
                     }
                 },
                 {
