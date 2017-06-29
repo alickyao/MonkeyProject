@@ -324,6 +324,20 @@ namespace monkey.service.WorkFlow
         }
 
         /// <summary>
+        /// 获取流程组件的起点 - 要执行该方法 需要先执行 SetUnits() 方法 如果流程图没有起点则返回null
+        /// </summary>
+        /// <returns></returns>
+        public WorkFlowDefSetpDetail GetBegin() {
+            if (this.ArrayUnits.Steps != null)
+            {
+                return this.ArrayUnits.Steps.SingleOrDefault(p => p.type == WorkFlowStepType.start);
+            }
+            else {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// 编辑流程图结构
         /// </summary>
         /// <param name="condtion"></param>

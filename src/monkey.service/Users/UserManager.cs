@@ -53,6 +53,15 @@ namespace monkey.service.Users
             }
         }
 
+        /// <summary>
+        /// 空构造
+        /// </summary>
+        public UserManager() { }
+
+        /// <summary>
+        /// 数据库构造
+        /// </summary>
+        /// <param name="row"></param>
         public UserManager(Db_ManagerUser row) : base(row) {
             setValue(row);
         }
@@ -116,6 +125,19 @@ namespace monkey.service.Users
                 }
                 return new UserManager(row);
             }
+        }
+
+        /// <summary>
+        /// 获取系统管理员
+        /// </summary>
+        /// <returns></returns>
+        public static UserManager getSysAdminUser() {
+            return new UserManager()
+            {
+                Id = System.Configuration.ConfigurationManager.AppSettings["defaultAdminId"].ToString(),
+                fullName = "系统",
+                rolesString = "admin"
+            };
         }
 
         #region -- 编辑/创建

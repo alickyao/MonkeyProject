@@ -34,7 +34,7 @@
             singleSelect: true,
             idField: "Id",
             onDblClickRow: function (rowIndex, rowData) {
-               
+
             },
             columns: [[
                 {
@@ -44,7 +44,10 @@
                     field: 'OrderTypeString', title: '工单类型', width: 120
                 },
                 {
-                    field: 'Remark', title: '工单备注', width: 300, editor: { type: "textbox", options: { required: true } }
+                    field: 'OrderStatusString', title: '执行状态', width: 80,align:'center'
+                },
+                {
+                    field: 'Remark', title: '工单备注', width: 500, editor: { type: "textbox", options: { required: true } }
                 },
             ]],
             toolbar: [
@@ -71,7 +74,7 @@
                             return;
                         }
                         var Reg = true;
-                       
+
                         for (var i = 0; i < rows.length; i++) {
                             var rowIndex = grid.datagrid("getRowIndex", rows[i]);
                             Reg = Reg && grid.datagrid("validateRow", rowIndex);
@@ -109,6 +112,29 @@
                 },
                 '-',
                 {
+                    text: "提交",
+                    iconCls: "icon-ok",
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                        }
+                        else {
+                            if (row.Id != "" && row.Id != null) {
+                                beginDD.dialog("open");
+                            }
+                        }
+                    }
+                },
+                {
+                    text: "终止",
+                    iconCls: "icon-no",
+                    handler: function () {
+
+                    }
+                },
+                '-',
+                {
                     text: "查看操作日志",
                     iconCls: "icon-search",
                     handler: function () {
@@ -132,6 +158,14 @@
             ]
         });
         var dialogWin = $('#@(pageId)dd');
+
+        dialogWin.dialog({
+            cache: false,
+            modal: true,
+            closed: true,
+            inline: true,
+        });
+
         grid.datagrid('getPager').pagination({
             onSelectPage: function (pPageIndex, pPageSize) {
                 request.page = pPageIndex;
@@ -140,11 +174,56 @@
             }
         });
         loadGrid();
+
+
+        //提交相关
+        var beginDD = $("#@(pageId)SelectWorkFlowDefDD");
+
+        beginDD.dialog({
+            cache: false,
+            modal: true,
+            closed: true,
+            inline: true,
+            href: "@Url.Action("DefinitionSimpList", new { pageId = newPageId })",
+            title: '请选择执行流程',
+            toolbar: [
+                {
+                    text: "提交",
+                    iconCls: "icon-ok",
+                    handler: function () {
+                        var defGrid = $("#@(newPageId)grid");
+                        var row = defGrid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一个流程", 'error');
+                            return;
+                        }
+                        var id = grid.datagrid("getSelected").Id;
+                        var url = "/api/WorkFlowOrders/BeginWorkFlow/" + id + "?defId=" + row.Id;
+                        console.log(url);
+                        $.getJSON(url, function (json) {
+                            showmsg(json);
+                            if (json.Message == "0") {
+                                beginDD.dialog("close");
+                                loadGrid();
+                            }
+                        });
+                    }
+                },
+                {
+                    text: "关闭",
+                    iconCls: "icon-clear",
+                    handler: function () {
+                        beginDD.dialog("close");
+                    }
+                }
+            ]
+        });
     });
 </script>
 
 <div class="easyui-layout" data-options="fit:true">
     <div id="@(pageId)dd" style="width:90%;height:90%; overflow:hidden"></div>
+    <div id="@(pageId)SelectWorkFlowDefDD" style="width:90%;height:90%; overflow:hidden"></div>
     <div data-options="region:'center',border:false">
         <table id="@(pageId)grid"></table>
     </div>

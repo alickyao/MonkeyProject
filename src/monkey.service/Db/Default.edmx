@@ -125,6 +125,7 @@
           <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
           <Property Name="OrderType" Type="tinyint" Nullable="false" />
+          <Property Name="OrderStatus" Type="tinyint" Nullable="false" />
           <Property Name="WorkFlowDefinitionId" Type="nvarchar" MaxLength="50" />
           <Property Name="WorkFlowBookMarkId" Type="nvarchar" MaxLength="50" />
           <Property Name="Remark" Type="nvarchar(max)" />
@@ -677,8 +678,9 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="50" Unicode="true" FixedLength="false" />
-          <Property Name="CreatedOn" Type="DateTime" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="OrderType" Type="Byte" Nullable="false" />
+          <Property Name="OrderStatus" Type="Byte" Nullable="false" />
           <Property Name="WorkFlowDefinitionId" Type="String" Nullable="true" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="WorkFlowBookMarkId" Type="String" Nullable="true" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="Remark" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
@@ -878,7 +880,8 @@
     <EntitySetMapping Name="Db_BaseWorkOrderSet">
       <EntityTypeMapping TypeName="IsTypeOf(Default.Db_BaseWorkOrder)">
         <MappingFragment StoreEntitySet="Db_BaseWorkOrderSet">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="OrderStatus" ColumnName="OrderStatus" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
           <ScalarProperty Name="OrderType" ColumnName="OrderType" />
           <ScalarProperty Name="WorkFlowDefinitionId" ColumnName="WorkFlowDefinitionId" />

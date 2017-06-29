@@ -15,11 +15,25 @@ namespace website.Areas.Admin.Controllers
     public class WorkFlowController : BaseController
     {
         /// <summary>
-        /// 工作流程列表
+        /// 工作流程列表 （列表与编辑）
         /// </summary>
         /// <returns></returns>
         [SysAuthorize(RoleType = SysRolesType.后台)]
         public ActionResult DefinitionList(string pageId)
+        {
+            BaseRequest condtion = new BaseRequest();
+            ViewBag.pageId = getPageId(pageId);
+            return View(condtion);
+        }
+
+
+        /// <summary>
+        /// 工作流程列表 （网格列表）
+        /// </summary>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult DefinitionSimpList(string pageId)
         {
             BaseRequest condtion = new BaseRequest();
             ViewBag.pageId = getPageId(pageId);

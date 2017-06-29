@@ -47,5 +47,19 @@ namespace website.Controllers.WorkFlow
             }
             return BaseResponse.getResult(string.Format("已经成功新建{0}条工单信息", result.Count));
         }
+
+        /// <summary>
+        /// 后台角色权限]启动工作流
+        /// </summary>
+        /// <param name="id">被启动的工单的ID</param>
+        /// <param name="defId">启动的业务流程定义的ID</param>
+        /// <returns></returns>
+        [HttpGet]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
+        public BaseResponse BeginWorkFlow(string id, string defId) {
+            var info = new BaseWorkOrder(id);
+            info.WorkFlowBegin(defId, User.Identity.Name);
+            return BaseResponse.getResult("提交成功");
+        }
     }
 }

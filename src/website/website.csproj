@@ -814,6 +814,7 @@
     <Content Include="Areas\Admin\Views\WorkFlow\WorkFlowRoleList.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\SelectManagerUsers.cshtml" />
     <Content Include="Areas\Admin\Views\WorkFlow\WorkFlowBaseOrders.cshtml" />
+    <Content Include="Areas\Admin\Views\WorkFlow\DefinitionSimpList.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

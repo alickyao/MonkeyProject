@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewBag.Title = "业务流程简单列表";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string pageId = ViewBag.pageId;
+    string condtion = JsonConvert.SerializeObject(Model);
+    string newPageId = SysHelps.getRandmonStirng();
+}
+@model BaseRequest
+
+<script>
+    $(function () {
+        var request = $.parseJSON('@Html.Raw(condtion)');
+        var grid = $("#@(pageId)grid");
+
+
+        function loadGrid() {
+            console.log(request);
+            grid.datagrid("loading");
+            $.post("/api/WorkFlowDefinition/GetWorkFlowDefinitionList", request, function (json) {
+                setGridRows(json, grid);
+            });
+        }
+
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: true,
+            rownumbers: true,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            columns: [[
+                {
+                    field: 'CreatedOnString', title: '创建时间'
+                },
+                {
+                    field: 'Caption', title: '流程名称'
+                },
+                {
+                    field: 'Descript', title: '流程描述'
+                },
+            ]]
+        });
+
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            }
+        });
+        loadGrid();
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false">
+        <table id="@(pageId)grid"></table>
+    </div>
+</div>
+

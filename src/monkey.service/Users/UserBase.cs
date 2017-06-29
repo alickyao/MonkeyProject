@@ -184,7 +184,15 @@ namespace monkey.service.Users
 
         #endregion
 
+        /// <summary>
+        /// 空构造
+        /// </summary>
+        public UserBase() { }
 
+        /// <summary>
+        /// 数据库构造
+        /// </summary>
+        /// <param name="row"></param>
         public UserBase(Db_BaseUser row) {
             setValue(row);
         }

@@ -17,6 +17,7 @@ namespace monkey.service.Db
         public string Id { get; set; }
         public System.DateTime CreatedOn { get; set; }
         public byte OrderType { get; set; }
+        public byte OrderStatus { get; set; }
         public string WorkFlowDefinitionId { get; set; }
         public string WorkFlowBookMarkId { get; set; }
         public string Remark { get; set; }
