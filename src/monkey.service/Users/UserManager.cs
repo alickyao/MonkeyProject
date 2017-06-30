@@ -11,9 +11,30 @@ using monkey.service.Frame;
 namespace monkey.service.Users
 {
     /// <summary>
+    /// 可进行通信的 用户
+    /// </summary>
+    public interface ICommunicationable : ILogStringable {
+        /// <summary>
+        /// 获取姓名
+        /// </summary>
+        /// <returns></returns>
+        string getFullNameString();
+        /// <summary>
+        /// 获取手机号
+        /// </summary>
+        /// <returns></returns>
+        string getMobilePhone();
+        /// <summary>
+        /// 获取邮件地址
+        /// </summary>
+        /// <returns></returns>
+        string getEmail();
+    }
+
+    /// <summary>
     /// 后台用户
     /// </summary>
-    public class UserManager : UserBase, ILogStringable
+    public class UserManager : UserBase, ICommunicationable
     {
 
         #region -- 属性
@@ -357,6 +378,24 @@ namespace monkey.service.Users
 
         #endregion
 
+        #region -- 通信
+
+        public string getMobilePhone()
+        {
+            return this.mobilePhone;
+        }
+
+        public string getEmail()
+        {
+            return null;
+        }
+
+        public string getFullNameString() {
+            return this.fullName;
+        }
+
+        #endregion
+
         #region -- 检索
 
         /// <summary>
@@ -395,6 +434,8 @@ namespace monkey.service.Users
 
             return result;
         }
+
+        
 
         #endregion
     }

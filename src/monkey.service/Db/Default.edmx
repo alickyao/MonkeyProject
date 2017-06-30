@@ -118,6 +118,15 @@
           <Property Name="mobilePhone" Type="nvarchar" MaxLength="50" />
           <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="Db_BaseWorkOrderApprovalHistorySet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="WorkFlowDefLineId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="Db_BaseWorkOrderId" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="Db_BaseWorkOrderSet">
           <Key>
             <PropertyRef Name="Id" />
@@ -128,6 +137,22 @@
           <Property Name="OrderStatus" Type="tinyint" Nullable="false" />
           <Property Name="WorkFlowDefinitionId" Type="nvarchar" MaxLength="50" />
           <Property Name="WorkFlowBookMarkId" Type="nvarchar" MaxLength="50" />
+          <Property Name="Remark" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Db_BaseWorkOrderTaskUserSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Db_BaseWorkOrderId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Db_WorkFlowDefinitionId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Db_WorkFlowDefLineId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Db_WorkFlowDefStepId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="userName" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="IsConfirm" Type="bit" Nullable="false" />
+          <Property Name="ConfirmTime" Type="datetime" />
           <Property Name="Remark" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Db_WorkFlowDefBaseUnitSet">
@@ -219,6 +244,30 @@
             </Principal>
             <Dependent Role="Db_BaseUserRoleSet">
               <PropertyRef Name="Db_BaseUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory">
+          <End Role="Db_BaseWorkOrderSet" Type="Self.Db_BaseWorkOrderSet" Multiplicity="1" />
+          <End Role="Db_BaseWorkOrderApprovalHistorySet" Type="Self.Db_BaseWorkOrderApprovalHistorySet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Db_BaseWorkOrderSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Db_BaseWorkOrderApprovalHistorySet">
+              <PropertyRef Name="Db_BaseWorkOrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Db_BaseWorkOrderDb_BaseWorkOrderTaskUser">
+          <End Role="Db_BaseWorkOrderSet" Type="Self.Db_BaseWorkOrderSet" Multiplicity="1" />
+          <End Role="Db_BaseWorkOrderTaskUserSet" Type="Self.Db_BaseWorkOrderTaskUserSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Db_BaseWorkOrderSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Db_BaseWorkOrderTaskUserSet">
+              <PropertyRef Name="Db_BaseWorkOrderId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -354,7 +403,9 @@
           <EntitySet Name="Db_BaseUserRoleSet" EntityType="Self.Db_BaseUserRoleSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_BaseUserSet" EntityType="Self.Db_BaseUserSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_BaseUserSet_Db_ManagerUser" EntityType="Self.Db_BaseUserSet_Db_ManagerUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Db_BaseWorkOrderApprovalHistorySet" EntityType="Self.Db_BaseWorkOrderApprovalHistorySet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_BaseWorkOrderSet" EntityType="Self.Db_BaseWorkOrderSet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Db_BaseWorkOrderTaskUserSet" EntityType="Self.Db_BaseWorkOrderTaskUserSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_WorkFlowDefBaseUnitSet" EntityType="Self.Db_WorkFlowDefBaseUnitSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" EntityType="Self.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" EntityType="Self.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" Schema="dbo" store:Type="Tables" />
@@ -369,6 +420,14 @@
           <AssociationSet Name="FK_Db_BaseUserDb_BaseUserRole" Association="Self.FK_Db_BaseUserDb_BaseUserRole">
             <End Role="Db_BaseUserSet" EntitySet="Db_BaseUserSet" />
             <End Role="Db_BaseUserRoleSet" EntitySet="Db_BaseUserRoleSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory" Association="Self.FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory">
+            <End Role="Db_BaseWorkOrderSet" EntitySet="Db_BaseWorkOrderSet" />
+            <End Role="Db_BaseWorkOrderApprovalHistorySet" EntitySet="Db_BaseWorkOrderApprovalHistorySet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Db_BaseWorkOrderDb_BaseWorkOrderTaskUser" Association="Self.FK_Db_BaseWorkOrderDb_BaseWorkOrderTaskUser">
+            <End Role="Db_BaseWorkOrderSet" EntitySet="Db_BaseWorkOrderSet" />
+            <End Role="Db_BaseWorkOrderTaskUserSet" EntitySet="Db_BaseWorkOrderTaskUserSet" />
           </AssociationSet>
           <AssociationSet Name="FK_Db_DocPic_inherits_Db_BaseDoc" Association="Self.FK_Db_DocPic_inherits_Db_BaseDoc">
             <End Role="Db_BaseDocSet" EntitySet="Db_BaseDocSet" />
@@ -445,6 +504,16 @@
             <End Role="Db_WorkFlowDefStep" EntitySet="Db_WorkFlowDefBaseUnitSet" />
           </AssociationSet>
           <EntitySet Name="Db_BaseWorkOrderSet" EntityType="Default.Db_BaseWorkOrder" />
+          <EntitySet Name="Db_BaseWorkOrderTaskUserSet" EntityType="Default.Db_BaseWorkOrderTaskUser" />
+          <AssociationSet Name="Db_BaseWorkOrderDb_BaseWorkOrderTaskUser" Association="Default.Db_BaseWorkOrderDb_BaseWorkOrderTaskUser">
+            <End Role="Db_BaseWorkOrder" EntitySet="Db_BaseWorkOrderSet" />
+            <End Role="Db_BaseWorkOrderTaskUser" EntitySet="Db_BaseWorkOrderTaskUserSet" />
+          </AssociationSet>
+          <EntitySet Name="Db_BaseWorkOrderApprovalHistorySet" EntityType="Default.Db_BaseWorkOrderApprovalHistory" />
+          <AssociationSet Name="Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory" Association="Default.Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory">
+            <End Role="Db_BaseWorkOrder" EntitySet="Db_BaseWorkOrderSet" />
+            <End Role="Db_BaseWorkOrderApprovalHistory" EntitySet="Db_BaseWorkOrderApprovalHistorySet" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Db_BaseUser">
           <Key>
@@ -684,7 +753,60 @@
           <Property Name="WorkFlowDefinitionId" Type="String" Nullable="true" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="WorkFlowBookMarkId" Type="String" Nullable="true" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="Remark" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Db_BaseWorkOrderTaskUser" Relationship="Default.Db_BaseWorkOrderDb_BaseWorkOrderTaskUser" FromRole="Db_BaseWorkOrder" ToRole="Db_BaseWorkOrderTaskUser" />
+          <NavigationProperty Name="Db_BaseWorkOrderApprovalHistory" Relationship="Default.Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory" FromRole="Db_BaseWorkOrder" ToRole="Db_BaseWorkOrderApprovalHistory" />
         </EntityType>
+        <EntityType Name="Db_BaseWorkOrderTaskUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="Db_BaseWorkOrderId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Db_WorkFlowDefinitionId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Db_WorkFlowDefLineId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Db_WorkFlowDefStepId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="userName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsConfirm" Type="Boolean" Nullable="false" />
+          <Property Name="ConfirmTime" Type="DateTime" Nullable="true" Precision="3" />
+          <Property Name="Remark" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Db_BaseWorkOrder" Relationship="Default.Db_BaseWorkOrderDb_BaseWorkOrderTaskUser" FromRole="Db_BaseWorkOrderTaskUser" ToRole="Db_BaseWorkOrder" />
+        </EntityType>
+        <Association Name="Db_BaseWorkOrderDb_BaseWorkOrderTaskUser">
+          <End Type="Default.Db_BaseWorkOrder" Role="Db_BaseWorkOrder" Multiplicity="1" />
+          <End Type="Default.Db_BaseWorkOrderTaskUser" Role="Db_BaseWorkOrderTaskUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Db_BaseWorkOrder">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Db_BaseWorkOrderTaskUser">
+              <PropertyRef Name="Db_BaseWorkOrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Db_BaseWorkOrderApprovalHistory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="WorkFlowDefLineId" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Db_BaseWorkOrder" Relationship="Default.Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory" FromRole="Db_BaseWorkOrderApprovalHistory" ToRole="Db_BaseWorkOrder" />
+          <Property Name="Db_BaseWorkOrderId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory">
+          <End Type="Default.Db_BaseWorkOrder" Role="Db_BaseWorkOrder" Multiplicity="1" />
+          <End Type="Default.Db_BaseWorkOrderApprovalHistory" Role="Db_BaseWorkOrderApprovalHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Db_BaseWorkOrder">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Db_BaseWorkOrderApprovalHistory">
+              <PropertyRef Name="Db_BaseWorkOrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -880,13 +1002,40 @@
     <EntitySetMapping Name="Db_BaseWorkOrderSet">
       <EntityTypeMapping TypeName="IsTypeOf(Default.Db_BaseWorkOrder)">
         <MappingFragment StoreEntitySet="Db_BaseWorkOrderSet">
-          <ScalarProperty Name="OrderStatus" ColumnName="OrderStatus" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
           <ScalarProperty Name="OrderType" ColumnName="OrderType" />
+          <ScalarProperty Name="OrderStatus" ColumnName="OrderStatus" />
           <ScalarProperty Name="WorkFlowDefinitionId" ColumnName="WorkFlowDefinitionId" />
           <ScalarProperty Name="WorkFlowBookMarkId" ColumnName="WorkFlowBookMarkId" />
           <ScalarProperty Name="Remark" ColumnName="Remark" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Db_BaseWorkOrderTaskUserSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Default.Db_BaseWorkOrderTaskUser)">
+        <MappingFragment StoreEntitySet="Db_BaseWorkOrderTaskUserSet">
+          <ScalarProperty Name="userName" ColumnName="userName" />
+                <ScalarProperty Name="Db_WorkFlowDefStepId" ColumnName="Db_WorkFlowDefStepId" />
+                <ScalarProperty Name="Db_WorkFlowDefinitionId" ColumnName="Db_WorkFlowDefinitionId" />
+                <ScalarProperty Name="Db_WorkFlowDefLineId" ColumnName="Db_WorkFlowDefLineId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="IsConfirm" ColumnName="IsConfirm" />
+          <ScalarProperty Name="ConfirmTime" ColumnName="ConfirmTime" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="Db_BaseWorkOrderId" ColumnName="Db_BaseWorkOrderId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Db_BaseWorkOrderApprovalHistorySet">
+      <EntityTypeMapping TypeName="IsTypeOf(Default.Db_BaseWorkOrderApprovalHistory)">
+        <MappingFragment StoreEntitySet="Db_BaseWorkOrderApprovalHistorySet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="WorkFlowDefLineId" ColumnName="WorkFlowDefLineId" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="Db_BaseWorkOrderId" ColumnName="Db_BaseWorkOrderId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

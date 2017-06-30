@@ -14,6 +14,13 @@ namespace monkey.service.Db
     
     public partial class Db_BaseWorkOrder
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Db_BaseWorkOrder()
+        {
+            this.Db_BaseWorkOrderTaskUser = new HashSet<Db_BaseWorkOrderTaskUser>();
+            this.Db_BaseWorkOrderApprovalHistory = new HashSet<Db_BaseWorkOrderApprovalHistory>();
+        }
+    
         public string Id { get; set; }
         public System.DateTime CreatedOn { get; set; }
         public byte OrderType { get; set; }
@@ -21,5 +28,10 @@ namespace monkey.service.Db
         public string WorkFlowDefinitionId { get; set; }
         public string WorkFlowBookMarkId { get; set; }
         public string Remark { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Db_BaseWorkOrderTaskUser> Db_BaseWorkOrderTaskUser { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Db_BaseWorkOrderApprovalHistory> Db_BaseWorkOrderApprovalHistory { get; set; }
     }
 }

@@ -35,6 +35,10 @@
         <AssociationConnector Association="Default.Db_WorkFlowDefinitionDb_WorkFlowDefLine" />
         <AssociationConnector Association="Default.Db_WorkFlowDefinitionDb_WorkFlowDefStep" />
         <EntityTypeShape EntityType="Default.Db_BaseWorkOrder" Width="2.25" PointX="0.5" PointY="30.75" />
+        <EntityTypeShape EntityType="Default.Db_BaseWorkOrderTaskUser" Width="2.875" PointX="3.875" PointY="29.5" />
+        <AssociationConnector Association="Default.Db_BaseWorkOrderDb_BaseWorkOrderTaskUser" />
+        <EntityTypeShape EntityType="Default.Db_BaseWorkOrderApprovalHistory" Width="3.5" PointX="7.375" PointY="31.5" />
+        <AssociationConnector Association="Default.Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

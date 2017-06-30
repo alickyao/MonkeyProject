@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 06/28/2017 10:50:52
+-- Date Created: 06/30/2017 10:24:17
 -- Generated from EDMX file: D:\project\git\MonkeyProject\src\monkey.service\Db\Default.edmx
 -- --------------------------------------------------
 
@@ -87,6 +87,9 @@ IF OBJECT_ID(N'[dbo].[Db_BaseUserSet]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[Db_BaseUserSet_Db_ManagerUser]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser];
+GO
+IF OBJECT_ID(N'[dbo].[Db_BaseWorkOrderSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseWorkOrderSet];
 GO
 IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefBaseUnitSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_WorkFlowDefBaseUnitSet];
@@ -241,11 +244,33 @@ GO
 -- Creating table 'Db_BaseWorkOrderSet'
 CREATE TABLE [dbo].[Db_BaseWorkOrderSet] (
     [Id] nvarchar(50)  NOT NULL,
-    [CreatedOn] nvarchar(max)  NOT NULL,
+    [CreatedOn] datetime  NOT NULL,
     [OrderType] tinyint  NOT NULL,
+    [OrderStatus] tinyint  NOT NULL,
     [WorkFlowDefinitionId] nvarchar(50)  NULL,
     [WorkFlowBookMarkId] nvarchar(50)  NULL,
     [Remark] nvarchar(max)  NULL
+);
+GO
+
+-- Creating table 'Db_BaseWorkOrderTaskUserSet'
+CREATE TABLE [dbo].[Db_BaseWorkOrderTaskUserSet] (
+    [Id] nvarchar(50)  NOT NULL,
+    [UserId] nvarchar(50)  NOT NULL,
+    [CreatedOn] datetime  NOT NULL,
+    [IsConfirm] bit  NOT NULL,
+    [ConfirmTime] datetime  NULL,
+    [Remark] nvarchar(max)  NULL,
+    [Db_BaseWorkOrderId] nvarchar(50)  NOT NULL
+);
+GO
+
+-- Creating table 'Db_BaseWorkOrderApprovalHistorySet'
+CREATE TABLE [dbo].[Db_BaseWorkOrderApprovalHistorySet] (
+    [Id] nvarchar(50)  NOT NULL,
+    [WorkFlowDefLineId] nvarchar(50)  NOT NULL,
+    [CreatedOn] datetime  NOT NULL,
+    [Db_BaseWorkOrderId] nvarchar(50)  NOT NULL
 );
 GO
 
@@ -387,6 +412,18 @@ ADD CONSTRAINT [PK_Db_BaseWorkOrderSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
+-- Creating primary key on [Id] in table 'Db_BaseWorkOrderTaskUserSet'
+ALTER TABLE [dbo].[Db_BaseWorkOrderTaskUserSet]
+ADD CONSTRAINT [PK_Db_BaseWorkOrderTaskUserSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_BaseWorkOrderApprovalHistorySet'
+ALTER TABLE [dbo].[Db_BaseWorkOrderApprovalHistorySet]
+ADD CONSTRAINT [PK_Db_BaseWorkOrderApprovalHistorySet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
 -- Creating primary key on [Id] in table 'Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea'
 ALTER TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea]
 ADD CONSTRAINT [PK_Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea]
@@ -500,6 +537,36 @@ GO
 CREATE INDEX [IX_FK_Db_WorkFlowDefinitionDb_WorkFlowDefStep]
 ON [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep]
     ([Db_WorkFlowDefinitionId]);
+GO
+
+-- Creating foreign key on [Db_BaseWorkOrderId] in table 'Db_BaseWorkOrderTaskUserSet'
+ALTER TABLE [dbo].[Db_BaseWorkOrderTaskUserSet]
+ADD CONSTRAINT [FK_Db_BaseWorkOrderDb_BaseWorkOrderTaskUser]
+    FOREIGN KEY ([Db_BaseWorkOrderId])
+    REFERENCES [dbo].[Db_BaseWorkOrderSet]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_Db_BaseWorkOrderDb_BaseWorkOrderTaskUser'
+CREATE INDEX [IX_FK_Db_BaseWorkOrderDb_BaseWorkOrderTaskUser]
+ON [dbo].[Db_BaseWorkOrderTaskUserSet]
+    ([Db_BaseWorkOrderId]);
+GO
+
+-- Creating foreign key on [Db_BaseWorkOrderId] in table 'Db_BaseWorkOrderApprovalHistorySet'
+ALTER TABLE [dbo].[Db_BaseWorkOrderApprovalHistorySet]
+ADD CONSTRAINT [FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory]
+    FOREIGN KEY ([Db_BaseWorkOrderId])
+    REFERENCES [dbo].[Db_BaseWorkOrderSet]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory'
+CREATE INDEX [IX_FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory]
+ON [dbo].[Db_BaseWorkOrderApprovalHistorySet]
+    ([Db_BaseWorkOrderId]);
 GO
 
 -- Creating foreign key on [Id] in table 'Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea'

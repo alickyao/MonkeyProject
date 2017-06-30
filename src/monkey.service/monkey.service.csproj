@@ -97,6 +97,12 @@
     <Compile Include="Db\Db_BaseWorkOrder.cs">
       <DependentUpon>Default.tt</DependentUpon>
     </Compile>
+    <Compile Include="Db\Db_BaseWorkOrderApprovalHistory.cs">
+      <DependentUpon>Default.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Db\Db_BaseWorkOrderTaskUser.cs">
+      <DependentUpon>Default.tt</DependentUpon>
+    </Compile>
     <Compile Include="Db\Db_DocPic.cs">
       <DependentUpon>Default.tt</DependentUpon>
     </Compile>

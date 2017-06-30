@@ -17,16 +17,30 @@ namespace website.Controllers.WorkFlow
     public class WorkFlowOrdersController : ApiController
     {
         /// <summary>
-        /// [后台角色权限]获取所有工单信息
+        /// [后台角色权限]检索所有工单信息
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
         [HttpPost]
         [ApiAuthorize(RoleType = SysRolesType.后台)]
-        public BaseResponse<BaseResponseList<BaseWorkOrder>> GetWorkFlowBaseOrdersList(BaseWorkOrderSearchRequest condtion)
+        public BaseResponse<BaseResponseList<BaseWorkOrderListDetail>> GetWorkFlowBaseOrdersList(BaseWorkOrderSearchRequest condtion)
         {
-            return BaseResponse.getResult(BaseWorkOrder.SearchBaseWorkOrderList(condtion));
+            return BaseResponse.getResult(BaseWorkOrderListDetail.SearchBaseWorkOrderList(condtion));
         }
+
+        /// <summary>
+        /// [登录权限]获取我的已审/待审工单信息
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ApiAuthorize]
+        public BaseResponse<BaseResponseList<BaseWorkOrderListDetail>> GetMyWorkFlowBaseOrdersList(BaseWorkOrderSearchRequest condtion)
+        {
+            condtion.TaskUserId = User.Identity.Name;
+            return BaseResponse.getResult(BaseWorkOrderListDetail.SearchBaseWorkOrderList(condtion));
+        }
+
 
         /// <summary>
         /// [后台角色权限]批量新增基础工单
@@ -49,7 +63,7 @@ namespace website.Controllers.WorkFlow
         }
 
         /// <summary>
-        /// 后台角色权限]启动工作流
+        /// [后台角色权限]启动工作流
         /// </summary>
         /// <param name="id">被启动的工单的ID</param>
         /// <param name="defId">启动的业务流程定义的ID</param>
@@ -58,7 +72,7 @@ namespace website.Controllers.WorkFlow
         [ApiAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse BeginWorkFlow(string id, string defId) {
             var info = new BaseWorkOrder(id);
-            info.WorkFlowBegin(defId, User.Identity.Name);
+            info.WorkFlowBegin(defId, UserManager.getUserById(User.Identity.Name));
             return BaseResponse.getResult("提交成功");
         }
     }

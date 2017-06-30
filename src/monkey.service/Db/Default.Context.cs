@@ -38,5 +38,7 @@ namespace monkey.service.Db
         public virtual DbSet<Db_WorkFlowDefBaseUnit> Db_WorkFlowDefBaseUnitSet { get; set; }
         public virtual DbSet<Db_WorkFlowDefLine> Db_WorkFlowDefLineSet { get; set; }
         public virtual DbSet<Db_BaseWorkOrder> Db_BaseWorkOrderSet { get; set; }
+        public virtual DbSet<Db_BaseWorkOrderTaskUser> Db_BaseWorkOrderTaskUserSet { get; set; }
+        public virtual DbSet<Db_BaseWorkOrderApprovalHistory> Db_BaseWorkOrderApprovalHistorySet { get; set; }
     }
 }
