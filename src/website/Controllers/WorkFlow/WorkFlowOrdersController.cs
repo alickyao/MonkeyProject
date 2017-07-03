@@ -75,5 +75,18 @@ namespace website.Controllers.WorkFlow
             info.WorkFlowBegin(defId, UserManager.getUserById(User.Identity.Name));
             return BaseResponse.getResult("提交成功");
         }
+
+        /// <summary>
+        /// [后台角色权限]用户审批工作流
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
+        public BaseResponse WorkFlowUserConfim(BaseWorkOrderUserConfirmReqeust condtion) {
+            var info = new BaseWorkOrder(condtion.Id);
+            info.DoWorkFlowUserConfirm(condtion, UserManager.getUserById(User.Identity.Name));
+            return BaseResponse.getResult("审批成功");
+        }
     }
 }

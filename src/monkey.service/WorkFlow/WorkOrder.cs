@@ -78,6 +78,22 @@ namespace monkey.service.WorkFlow
     }
 
     /// <summary>
+    /// 工单用户审核请求
+    /// </summary>
+    public class BaseWorkOrderUserConfirmReqeust {
+
+        /// <summary>
+        /// 审批的工单ID
+        /// </summary>
+        public string Id { get; set; }
+
+        /// <summary>
+        /// 备注信息
+        /// </summary>
+        public string Remark { get; set; }
+    }
+
+    /// <summary>
     /// 基础工单
     /// </summary>
     public class BaseWorkOrder : ILogStringable
@@ -85,7 +101,7 @@ namespace monkey.service.WorkFlow
 
         #region
         /// <summary>
-        /// 记录的ID
+        /// 工单记录的ID
         /// </summary>
         public string Id { get; set; }
 
@@ -448,6 +464,105 @@ namespace monkey.service.WorkFlow
         #endregion
 
 
+        #region -- 工单审核
+
+        /// <summary>
+        /// 【具体业务根据需要重写】工单用户审批前 - 默认为权限验证
+        /// </summary>
+        /// <param name="condtion">审批请求</param>
+        /// <param name="nowTaskUsers">当前步骤审批人列表</param>
+        /// <param name="userInfo">当前审批人</param>
+        /// <param name="stepInfo">步骤信息</param>
+        /// <returns></returns>
+        protected virtual bool DoWorkFlowUserConfirmBefore(BaseWorkOrderUserConfirmReqeust condtion,List<BaseWorkOrderTaskUserInfo> nowTaskUsers, ICommunicationable userInfo, WorkFlowDefStep stepInfo) {
+            //权限验证
+            string userId = userInfo.getIdString();
+            if (!nowTaskUsers.Select(p => p.UserId).Contains(userId))
+            {
+                throw new ValiDataException("您没有审批该流程的权限");
+            }
+            if (nowTaskUsers.Where(p => !p.IsConfirm).Select(p => p.UserId).Contains(userId))
+            {
+                return true;
+            }
+            else {
+                throw new ValiDataException("您已经审批过了");
+            }
+        }
+
+        /// <summary>
+        /// 【具体业务根据需要重写】工单用户审批后 - 默认为判断是否会签 并执行下一步
+        /// </summary>
+        /// <param name="condtion">审批请求</param>
+        /// <param name="nowTaskUsers">步骤全部审批人</param>
+        /// <param name="taskUserInfo">步骤当前审批人</param>
+        /// <param name="stepInfo">步骤信息</param>
+        /// <param name="nextLines">步骤的下一步信息</param>
+        /// <param name="userInfo">当前步骤审批人的其他信息</param>
+        protected virtual void DoWorkFlowUserConfirmAfter(BaseWorkOrderUserConfirmReqeust condtion, List<BaseWorkOrderTaskUserInfo> nowTaskUsers, BaseWorkOrderTaskUserInfo taskUserInfo, WorkFlowDefStep stepInfo,List<WorkFlowDefLineDetail> nextLines,ICommunicationable userInfo) {
+            if (nextLines.Count > 0)
+            {
+                if (!stepInfo.IsCountersign)
+                {
+                    UserLog.create("非会签任务节点，开始执行下一步", "工作流", adminUser, this);
+                    //不是会签执行下一步
+                    DoWorkFlowConfim(nextLines.First());
+                }
+                else {
+                    //是会签
+                    //判断是否都已经审批过了 如果是 执行下一步
+                    if (!nowTaskUsers.Any(p => p.IsConfirm == false))
+                    {
+                        UserLog.create("会签节点，全部用户完成审批，开始执行下一步", "工作流", adminUser, this);
+                        DoWorkFlowConfim(nextLines.First());
+                    }
+                    else {
+                        UserLog.create("会签节点，等待其他用户审批", "工作流", adminUser, this);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 工单用户审核
+        /// </summary>
+        /// <param name="condtion">审批请求</param>
+        /// <param name="userInfo">审批用户信息</param>
+        public void DoWorkFlowUserConfirm(BaseWorkOrderUserConfirmReqeust condtion,ICommunicationable userInfo) {
+            //权限验证
+            var nowTaskUsers = GetTaskUsersByStepId(this.WorkFlowBookMarkId);
+            string userId = userInfo.getIdString();
+            var stepInfo = WorkFlowDefStep.GetInstance(this.WorkFlowBookMarkId);
+
+            if (DoWorkFlowUserConfirmBefore(condtion, nowTaskUsers, userInfo, stepInfo))
+            {
+                var taskUserInfo = nowTaskUsers.Single(p => p.UserId == userId);
+                taskUserInfo.IsConfirm = true;
+                taskUserInfo.ConfirmTime = DateTime.Now;
+                taskUserInfo.ConfirmTimeString = taskUserInfo.ConfirmTime.Value.ToString("yyyy-MM-dd HH:mm");
+                taskUserInfo.Remark = condtion.Remark;
+                taskUserInfo.SaveConfirm();
+                string msg = string.Format("工作流用户审批，步骤：[{0}],备注：[{1}]", stepInfo.name, condtion.Remark);
+                UserLog.create(msg, "工作流", userInfo, this);
+
+                //执行下一步
+                var next = stepInfo.GetNextLineDetails();
+                DoWorkFlowUserConfirmAfter(condtion, nowTaskUsers, taskUserInfo, stepInfo, next, userInfo);
+            }
+            else {
+                throw new ValiDataException("用户审批前置验证失败，无法进行审批");
+            }
+
+            if (!nowTaskUsers.Select(p => p.UserId).Contains(userId)) {
+                throw new ValiDataException("您没有审批该流程的权限");
+            }
+        }
+
+        
+
+        #endregion
+
+
         #region -- 终止工作流
 
         /// <summary>
@@ -530,6 +645,26 @@ namespace monkey.service.WorkFlow
             }
         }
 
+        /// <summary>
+        /// 获取某个节点下 用户审核的情况
+        /// </summary>
+        /// <param name="stepId">任务节点的ID</param>
+        /// <returns></returns>
+        public List<BaseWorkOrderTaskUserInfo> GetTaskUsersByStepId(string stepId) {
+            List<BaseWorkOrderTaskUserInfo> result = new List<BaseWorkOrderTaskUserInfo>();
+            using (var db = new DefaultContainer()) {
+                var rows = (from c in db.Db_BaseWorkOrderTaskUserSet
+                            where c.Db_WorkFlowDefStepId == stepId
+                            && c.Db_BaseWorkOrderId == this.Id
+                            select c
+                            );
+                if (rows.Count() > 0) {
+                    result = rows.AsEnumerable().Select(p => new BaseWorkOrderTaskUserInfo(p)).ToList();
+                }
+            }
+            return result;
+        }
+
         #endregion
 
         public string getIdString()
@@ -554,12 +689,22 @@ namespace monkey.service.WorkFlow
         public string TaskUserNames { get; set; }
 
         /// <summary>
+        /// 当前等待执行步骤的ID
+        /// </summary>
+        public string NowTaskSetpId { get; set; }
+
+        /// <summary>
+        /// 当前等待执行步骤的名称
+        /// </summary>
+        public string NowTaskStepName { get; set; }
+
+        /// <summary>
         /// 从数据库构造
         /// </summary>
         /// <param name="row">工单</param>
         /// <param name="def">执行的流程</param>
         /// <param name="users">当前待审的用户</param>
-        public BaseWorkOrderListDetail(Db_BaseWorkOrder row,Db_WorkFlowDefinition def,List<Db_BaseWorkOrderTaskUser> users) : base(row) {
+        public BaseWorkOrderListDetail(Db_BaseWorkOrder row,Db_WorkFlowDefinition def,List<Db_BaseWorkOrderTaskUser> users, Db_WorkFlowDefStep step) : base(row) {
             if (this.OrderStatus != WorkOrderStatus.待提交) {
                 //修改执行状态文本
                 this.OrderStatusString = string.Format("{0}[{1}]", this.OrderStatus.ToString(), def.Caption);
@@ -572,6 +717,10 @@ namespace monkey.service.WorkFlow
                     if (users.Count > 5) {
                         this.TaskUserNames += string.Format(",等{0}个用户", users.Count);
                     }
+                }
+                if (step != null) {
+                    this.NowTaskSetpId = step.Id;
+                    this.NowTaskStepName = step.Name;
                 }
             }
         }
@@ -597,19 +746,21 @@ namespace monkey.service.WorkFlow
                                     join o in db.Db_BaseWorkOrderSet on u.Db_BaseWorkOrderId equals o.Id
                                     where u.UserId == condtion.TaskUserId
                                     && (condtion.TaskUserConfirmType == WorkOrderUserConfirmType.已审 ? u.IsConfirm == true : u.IsConfirm == false)
-                                    orderby o.CreatedOn descending
-                                    group u.Db_BaseWorkOrderId by u.Db_BaseWorkOrderId into g
-                                    select g.Key).Skip(0).Take(200).ToList();
+                                    group new { u.Db_BaseWorkOrderId, u.CreatedOn } by new { u.Db_BaseWorkOrderId, u.CreatedOn } into g
+                                    orderby g.Key.CreatedOn descending
+                                    select g.Key.Db_BaseWorkOrderId).Skip(0).Take(200).ToList();
                 }
                 var rows = (from c in db.Db_BaseWorkOrderSet
                             join d in db.Db_WorkFlowDefinitionSet on c.WorkFlowDefinitionId equals d.Id into temp
                             from x in temp.DefaultIfEmpty()
+                            join s in db.Db_WorkFlowDefBaseUnitSet.OfType<Db_WorkFlowDefStep>() on c.WorkFlowBookMarkId equals s.Id into temp1 from step in temp1.DefaultIfEmpty()
                             where (string.IsNullOrEmpty(condtion.TaskUserId) ? true : usersOrderId.Contains(c.Id))
                             select new
                             {
                                 c,
                                 x,
-                                users = (from u in c.Db_BaseWorkOrderTaskUser where u.Db_WorkFlowDefStepId == c.WorkFlowBookMarkId select u)
+                                users = (from u in c.Db_BaseWorkOrderTaskUser where u.Db_WorkFlowDefStepId == c.WorkFlowBookMarkId select u),
+                                step
                             }
                             );
                 result.total = rows.Count();
@@ -620,11 +771,120 @@ namespace monkey.service.WorkFlow
                         rows = rows.OrderByDescending(p => p.c.CreatedOn).Skip(condtion.getSkip()).Take(condtion.pageSize);
                     }
 
-                    result.rows = rows.AsEnumerable().OrderByDescending(p => p.c.CreatedOn).Select(p => new BaseWorkOrderListDetail(p.c, p.x, p.users.ToList())).ToList();
+                    result.rows = rows.AsEnumerable().OrderByDescending(p => p.c.CreatedOn).Select(p => new BaseWorkOrderListDetail(p.c, p.x, p.users.ToList(),p.step)).ToList();
                 }
             }
 
             return result;
+        }
+    }
+
+    /// <summary>
+    /// 工单用户审核信息
+    /// </summary>
+    public class BaseWorkOrderTaskUserInfo {
+
+        #region
+
+        /// <summary>
+        /// 工单用户审核信息ID
+        /// </summary>
+        public string Id { get; set; }
+
+        /// <summary>
+        /// 对应的工单ID
+        /// </summary>
+        public string BaseWorkOrderId { get; set; }
+
+        /// <summary>
+        /// 对应的工作流ID
+        /// </summary>
+        public string WorkFlowDefinitionId { get; set; }
+
+        /// <summary>
+        /// 对应的工作流 线 （指向节点的来路）
+        /// </summary>
+        public string WorkFlowDefLineId { get; set; }
+
+        /// <summary>
+        /// 对应的工作流 节点
+        /// </summary>
+        public string WorkFlowDefStepId { get; set; }
+
+        /// <summary>
+        /// 审批用户ID
+        /// </summary>
+        public string UserId { get; set; }
+
+        /// <summary>
+        /// 审批用户姓名
+        /// </summary>
+        public string userName { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreatedOn { get; set; }
+
+        /// <summary>
+        /// 创建时间 - 文本
+        /// </summary>
+        public string CreatedOnString { get; set; }
+
+        /// <summary>
+        /// 是否已审核
+        /// </summary>
+        public bool IsConfirm { get; set; }
+
+        /// <summary>
+        /// 审核时间
+        /// </summary>
+        public DateTime? ConfirmTime { get; set; }
+
+        /// <summary>
+        /// 审核时间 - 文本
+        /// </summary>
+        public string ConfirmTimeString { get; set; }
+
+        /// <summary>
+        /// 审核备注
+        /// </summary>
+        public string Remark { get; set; }
+
+        #endregion
+
+        /// <summary>
+        /// 从数据库构造
+        /// </summary>
+        /// <param name="row"></param>
+        public BaseWorkOrderTaskUserInfo(Db_BaseWorkOrderTaskUser row) {
+            this.Id = row.Id;
+            this.BaseWorkOrderId = row.Db_BaseWorkOrderId;
+            this.WorkFlowDefinitionId = row.Db_WorkFlowDefinitionId;
+            this.WorkFlowDefLineId = row.Db_WorkFlowDefLineId;
+            this.WorkFlowDefStepId = row.Db_WorkFlowDefStepId;
+            this.UserId = row.UserId;
+            this.userName = row.userName;
+            this.CreatedOn = row.CreatedOn;
+            this.CreatedOnString = this.CreatedOn.ToString("yyyy-MM-dd HH:mm");
+            this.IsConfirm = row.IsConfirm;
+            this.ConfirmTime = row.ConfirmTime;
+            if (this.ConfirmTime.HasValue) {
+                this.ConfirmTimeString = this.ConfirmTime.Value.ToString("yyyy-MM-dd HH:mm");
+            }
+        }
+
+        /// <summary>
+        /// 保存审批状态
+        /// </summary>
+        public void SaveConfirm() {
+            using (var db = new DefaultContainer()) {
+                var row = db.Db_BaseWorkOrderTaskUserSet.Single(p => p.Id == this.Id);
+                row.ConfirmTime = this.ConfirmTime;
+                row.Remark = this.Remark;
+                row.IsConfirm = this.IsConfirm;
+                db.SaveChanges();
+            }
         }
     }
 }
