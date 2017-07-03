@@ -10,6 +10,8 @@ using monkey.service.Logs;
 namespace monkey.service.WorkFlow
 {
 
+    #region - 类型枚举
+
     /// <summary>
     /// 工单类型
     /// </summary>
@@ -61,6 +63,10 @@ namespace monkey.service.WorkFlow
         已审
     }
 
+    #endregion
+
+    #region -- 请求对象
+
     /// <summary>
     /// 工单检索请求
     /// </summary>
@@ -78,7 +84,7 @@ namespace monkey.service.WorkFlow
     }
 
     /// <summary>
-    /// 工单用户审核请求
+    /// 工单用户审核/终止请求
     /// </summary>
     public class BaseWorkOrderUserConfirmReqeust {
 
@@ -92,6 +98,8 @@ namespace monkey.service.WorkFlow
         /// </summary>
         public string Remark { get; set; }
     }
+
+    #endregion
 
     /// <summary>
     /// 基础工单
@@ -476,17 +484,23 @@ namespace monkey.service.WorkFlow
         /// <returns></returns>
         protected virtual bool DoWorkFlowUserConfirmBefore(BaseWorkOrderUserConfirmReqeust condtion,List<BaseWorkOrderTaskUserInfo> nowTaskUsers, ICommunicationable userInfo, WorkFlowDefStep stepInfo) {
             //权限验证
-            string userId = userInfo.getIdString();
-            if (!nowTaskUsers.Select(p => p.UserId).Contains(userId))
+            if (this.OrderStatus == WorkOrderStatus.执行中)
             {
-                throw new ValiDataException("您没有审批该流程的权限");
-            }
-            if (nowTaskUsers.Where(p => !p.IsConfirm).Select(p => p.UserId).Contains(userId))
-            {
-                return true;
+                string userId = userInfo.getIdString();
+                if (!nowTaskUsers.Select(p => p.UserId).Contains(userId))
+                {
+                    throw new ValiDataException("您没有审批该流程的权限");
+                }
+                if (nowTaskUsers.Where(p => !p.IsConfirm).Select(p => p.UserId).Contains(userId))
+                {
+                    return true;
+                }
+                else {
+                    throw new ValiDataException("您已经审批过了，不能再审批该流程");
+                }
             }
             else {
-                throw new ValiDataException("您已经审批过了");
+                throw new ValiDataException("当前工作流不是执行中的状态，无法进行审批");
             }
         }
 
@@ -568,17 +582,22 @@ namespace monkey.service.WorkFlow
         /// <summary>
         /// 工作流终止（停止流程执行并设置为终止状态）
         /// </summary>
-        public BaseWorkOrder WorkFlowTermination(ICommunicationable user, string remark) {
+        public BaseWorkOrder WorkFlowTermination(ICommunicationable user, BaseWorkOrderUserConfirmReqeust condtion) {
             if (this.OrderStatus == WorkOrderStatus.执行中)
             {
-                if (!DoWorkFlowTerminationBefore(user)) {
+                var nowTaskUsers = GetTaskUsersByStepId(this.WorkFlowBookMarkId);
+                var stepInfo = WorkFlowDefStep.GetInstance(this.WorkFlowBookMarkId);
+                string userId = user.getIdString();
+                if (!DoWorkFlowTerminationBefore(condtion, nowTaskUsers, user, stepInfo))
+                {
                     throw new ValiDataException("改流程不能被终止");
                 }
+                var taskUserInfo = nowTaskUsers.Single(p => p.UserId == userId);
                 var result = DoWorkFlowTermination();
                 //记录到日志
-                UserLog.create(string.Format("流程被终止，原因：[{0}]", remark), "工作流", user, this);
+                UserLog.create(string.Format("流程被终止，原因：[{0}]", condtion.Remark), "工作流", user, this);
                 //后续操作
-                DoWorkFlowTerminationAfter(user);
+                DoWorkFlowTerminationAfter(condtion, nowTaskUsers, taskUserInfo, stepInfo, user);
                 return result;
             }
             else {
@@ -595,26 +614,51 @@ namespace monkey.service.WorkFlow
             {
                 var row = db.Db_BaseWorkOrderSet.Single(p => p.Id == this.Id);
                 row.OrderStatus = (byte)WorkOrderStatus.已终止.GetHashCode();
+                row.WorkFlowBookMarkId = null;
                 db.SaveChanges();
                 return new BaseWorkOrder(row);
             }
         }
 
         /// <summary>
-        /// 【具体业务根据需要重写】执行工作流终止操作前 - 默认返回为 True
+        /// 【具体业务根据需要重写】执行工作流终止操作前 - 默认为验证用户是否有审批权限
         /// </summary>
-        /// <param name="user">终止工作流的用户</param>
+        /// <param name="condtion">审批请求</param>
+        /// <param name="nowTaskUsers">当前步骤审批人列表</param>
+        /// <param name="userInfo">当前审批人</param>
+        /// <param name="stepInfo">步骤信息</param>
         /// <returns></returns>
-        protected virtual bool DoWorkFlowTerminationBefore(ICommunicationable user)
+        protected virtual bool DoWorkFlowTerminationBefore(BaseWorkOrderUserConfirmReqeust condtion, List<BaseWorkOrderTaskUserInfo> nowTaskUsers, ICommunicationable userInfo, WorkFlowDefStep stepInfo)
         {
-            return true;
+            if (this.OrderStatus == WorkOrderStatus.执行中)
+            {
+                string userId = userInfo.getIdString();
+                if (!nowTaskUsers.Select(p => p.UserId).Contains(userId))
+                {
+                    throw new ValiDataException("您没有终止该流程的权限");
+                }
+                if (nowTaskUsers.Where(p => !p.IsConfirm).Select(p => p.UserId).Contains(userId))
+                {
+                    return true;
+                }
+                else {
+                    throw new ValiDataException("您已经审批过了，不能再终止该流程");
+                }
+            }
+            else {
+                throw new ValiDataException("当前工作流不是执行中的状态，不能终止");
+            }
         }
 
         /// <summary>
         /// 【具体业务根据需要重写】执行工作流终止操作后 - 默认什么也没做
         /// </summary>
-        /// <param name="user">终止工作流的用户</param>
-        protected virtual void DoWorkFlowTerminationAfter(ICommunicationable user) {
+        /// <param name="condtion">审批请求</param>
+        /// <param name="nowTaskUsers">步骤全部审批人</param>
+        /// <param name="taskUserInfo">步骤当前审批人</param>
+        /// <param name="stepInfo">步骤信息</param>
+        /// <param name="userInfo">当前步骤审批人的其他信息</param>
+        protected virtual void DoWorkFlowTerminationAfter(BaseWorkOrderUserConfirmReqeust condtion, List<BaseWorkOrderTaskUserInfo> nowTaskUsers, BaseWorkOrderTaskUserInfo taskUserInfo, WorkFlowDefStep stepInfo, ICommunicationable userInfo) {
             return;
         }
 
@@ -628,6 +672,7 @@ namespace monkey.service.WorkFlow
             {
                 var row = db.Db_BaseWorkOrderSet.Single(p => p.Id == this.Id);
                 row.OrderStatus = (byte)WorkOrderStatus.已完成.GetHashCode();
+                row.WorkFlowBookMarkId = null;
                 db.SaveChanges();
             }
         }
@@ -704,6 +749,7 @@ namespace monkey.service.WorkFlow
         /// <param name="row">工单</param>
         /// <param name="def">执行的流程</param>
         /// <param name="users">当前待审的用户</param>
+        /// <param name="step">当前等待执行步骤</param>
         public BaseWorkOrderListDetail(Db_BaseWorkOrder row,Db_WorkFlowDefinition def,List<Db_BaseWorkOrderTaskUser> users, Db_WorkFlowDefStep step) : base(row) {
             if (this.OrderStatus != WorkOrderStatus.待提交) {
                 //修改执行状态文本
@@ -745,7 +791,7 @@ namespace monkey.service.WorkFlow
                     usersOrderId = (from u in db.Db_BaseWorkOrderTaskUserSet
                                     join o in db.Db_BaseWorkOrderSet on u.Db_BaseWorkOrderId equals o.Id
                                     where u.UserId == condtion.TaskUserId
-                                    && (condtion.TaskUserConfirmType == WorkOrderUserConfirmType.已审 ? u.IsConfirm == true : u.IsConfirm == false)
+                                    && (condtion.TaskUserConfirmType == WorkOrderUserConfirmType.已审 ? u.IsConfirm == true : (u.IsConfirm == false))
                                     group new { u.Db_BaseWorkOrderId, u.CreatedOn } by new { u.Db_BaseWorkOrderId, u.CreatedOn } into g
                                     orderby g.Key.CreatedOn descending
                                     select g.Key.Db_BaseWorkOrderId).Skip(0).Take(200).ToList();

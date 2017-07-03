@@ -44,7 +44,19 @@
                     field: 'OrderTypeString', title: '工单类型', width: 120
                 },
                 {
-                    field: 'OrderStatusString', title: '执行状态', width: 150,align:'left'
+                    field: 'OrderStatusString', title: '执行状态', width: 150, align: 'left', styler: function (value, row, index) {
+                        switch (row.OrderStatus) {
+                            case 1:
+                                return "color:#ff6600";
+                                break;
+                            case 2:
+                                return "color:blue";
+                                break;
+                            case 3:
+                                return "color:red";
+                                break;
+                        }
+                    }
                 },
                 {
                     field: 'NowTaskStepName', title: '当前审批步骤', width: 150, align: 'left'
