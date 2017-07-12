@@ -1,0 +1,34 @@
+﻿
+@{
+    ViewBag.Title = "工单审批- 默认表单 - 提交";
+    Layout = null;
+    string pageId = ViewBag.pageId;
+}
+
+<script>
+    $(function () {
+        $("#@(pageId)WorkFlowConfirmBtn").linkbutton({
+            onClick: function () {
+                console.log("同意");
+            }
+        });
+        $("#@(pageId)WorkFlowTerminationBtn").linkbutton({
+            onClick: function () {
+                console.log("终止");
+            }
+        });
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false" style="padding:5px;">
+        <div>
+            <input class="easyui-textbox" name="Remark" data-options="multiline:true,required:true,prompt:'请填写意见'" style="width:100%;height:50px;">
+        </div>
+        <div style="margin-top:5px; background-color:#efefef; padding:5px;">
+            <a id="@(pageId)WorkFlowConfirmBtn" href="javascript:void(0)" class="easyui-linkbutton WorkFlowBtn" data-options="iconCls:'icon-ok'">同意</a>
+            <a id="@(pageId)WorkFlowTerminationBtn" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-no'">终止</a>
+        </div>
+    </div>
+</div>
+

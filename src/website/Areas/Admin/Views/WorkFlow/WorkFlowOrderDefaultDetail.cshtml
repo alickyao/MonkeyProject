@@ -1,0 +1,19 @@
+﻿@using monkey.service.WorkFlow;
+@{
+    ViewBag.Title = "工单审批- 默认详情 - 展示";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string pageId = ViewBag.pageId;
+}
+@model BaseWorkOrder
+<script>
+    $(function () {
+        
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false" style="padding:5px;">
+        工单审批 @Model.Id
+    </div>
+</div>
+

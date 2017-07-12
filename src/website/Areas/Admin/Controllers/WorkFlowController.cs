@@ -104,5 +104,58 @@ namespace website.Areas.Admin.Controllers
             BaseWorkOrderSearchRequest condtion = new BaseWorkOrderSearchRequest();
             return View(condtion);
         }
+
+        /// <summary>
+        /// 获取当前登录用户待审核的网格列表
+        /// </summary>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult WorkFlowMyOrders(string pageId) {
+            ViewBag.pageId = getPageId(pageId);
+            BaseWorkOrderSearchRequest condtion = new BaseWorkOrderSearchRequest()
+            {
+                TaskUserId = User.Identity.Name,
+                TaskUserConfirmType = WorkOrderUserConfirmType.待审
+            };
+            return View(condtion);
+        }
+
+        /// <summary>
+        /// 工单详情
+        /// </summary>
+        /// <param name="id">工单的ID</param>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        public ActionResult WorkFlowOrderInfo(string id,string pageId) {
+            ViewBag.pageId = getPageId(pageId);
+            var info = new BaseWorkOrder(id);
+            return View(info);
+        }
+
+        /// <summary>
+        /// 工单审批 - 默认页面
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        public ActionResult WorkFlowOrderDefaultApproval(string id, string pageId) {
+            ViewBag.pageId = getPageId(pageId);
+            ViewBag.id = id;
+            return View();
+        }
+
+        /// <summary>
+        /// 工单详情展示 - 默认工单
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        public ActionResult WorkFlowOrderDefaultDetail(string id, string pageId)
+        {
+            ViewBag.pageId = getPageId(pageId);
+            var info = new BaseWorkOrder(id);
+            return View(info);
+        }
     }
 }

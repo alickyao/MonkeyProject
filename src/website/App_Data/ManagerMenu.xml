@@ -9,6 +9,12 @@
     </roles>
     <children>
       <ManagerMenu>
+        <text>工单审批</text>
+        <url>
+          <![CDATA[/manager/WorkFlow/WorkFlowMyOrders]]>
+        </url>
+      </ManagerMenu>
+      <ManagerMenu>
         <text>所有工单</text>
         <url>
           <![CDATA[/manager/WorkFlow/WorkFlowBaseOrders]]>

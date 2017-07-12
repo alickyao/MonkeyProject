@@ -1510,7 +1510,7 @@ GooFlow.prototype={
 			if(this.onItemMark!=null&&!this.onItemMark(id,"line",mark))	return;
 			this.$lineData[id].marked=mark||false;
 			if(GooFlow.prototype.useSVG!=""){
-				if(mark){
+			    if (mark) {
 					this.$nodeDom[id].childNodes[1].setAttribute("stroke","#ff3300");
 					this.$nodeDom[id].childNodes[1].setAttribute("marker-end","url(#arrow2)");
 				}else{

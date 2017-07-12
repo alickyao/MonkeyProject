@@ -815,6 +815,10 @@
     <Content Include="Areas\Admin\Views\Shared\SelectManagerUsers.cshtml" />
     <Content Include="Areas\Admin\Views\WorkFlow\WorkFlowBaseOrders.cshtml" />
     <Content Include="Areas\Admin\Views\WorkFlow\DefinitionSimpList.cshtml" />
+    <Content Include="Areas\Admin\Views\WorkFlow\WorkFlowMyOrders.cshtml" />
+    <Content Include="Areas\Admin\Views\WorkFlow\WorkFlowOrderInfo.cshtml" />
+    <Content Include="Areas\Admin\Views\WorkFlow\WorkFlowOrderDefaultApproval.cshtml" />
+    <Content Include="Areas\Admin\Views\WorkFlow\WorkFlowOrderDefaultDetail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

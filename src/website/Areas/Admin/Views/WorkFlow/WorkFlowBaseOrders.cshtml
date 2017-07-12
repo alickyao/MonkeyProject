@@ -1,7 +1,7 @@
 ﻿@using monkey.service.WorkFlow;
 @{
     ViewBag.Title = "所有工单列表";
-    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/View_gooflowlayout.cshtml";
     string pageId = ViewBag.pageId;
     string condtion = JsonConvert.SerializeObject(Model);
     string newPageId = SysHelps.getRandmonStirng();

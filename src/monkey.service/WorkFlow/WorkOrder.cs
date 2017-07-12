@@ -349,9 +349,11 @@ namespace monkey.service.WorkFlow
                         userIdList.Add(item.getIdString());
                         userFullNameList.Add(item.getFullNameString());
                     }
-                    if (!userIdList.Contains(adminUser.Id)) {
-                        userList.Add(adminUser);
-                    }
+
+                    //if (!userIdList.Contains(adminUser.Id)) {
+                    //    userList.Add(adminUser);
+                    //}
+
                     //保存到数据库
                     using (var db = new DefaultContainer()) {
                         List<Db_BaseWorkOrderTaskUser> taskDbUsers = new List<Db_BaseWorkOrderTaskUser>();
@@ -709,6 +711,35 @@ namespace monkey.service.WorkFlow
             }
             return result;
         }
+        
+        /// <summary>
+        /// 获取当前当前流程历史记录 - lines Id
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetApprovalHistoryLines() {
+            List<string> result = new List<string>();
+            using (var db = new DefaultContainer()) {
+                var row = db.Db_BaseWorkOrderSet.Single(p => p.Id == this.Id);
+                result = row.Db_BaseWorkOrderApprovalHistory.Select(p => p.WorkFlowDefLineId).ToList();
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 获取审批页面地址
+        /// </summary>
+        /// <returns></returns>
+        public virtual string GetApprovalPageUrl() {
+            return "/manager/WorkFlow/WorkFlowOrderDefaultApproval?pageId={0}&id={1}";
+        }
+
+        /// <summary>
+        /// 获取工单展示页面地址
+        /// </summary>
+        /// <returns></returns>
+        public virtual string GetOrderDetailPageUrl() {
+            return "/manager/WorkFlow/WorkFlowOrderDefaultDetail?pageId={0}&id={1}";
+        }
 
         #endregion
 
@@ -791,7 +822,7 @@ namespace monkey.service.WorkFlow
                     usersOrderId = (from u in db.Db_BaseWorkOrderTaskUserSet
                                     join o in db.Db_BaseWorkOrderSet on u.Db_BaseWorkOrderId equals o.Id
                                     where u.UserId == condtion.TaskUserId
-                                    && (condtion.TaskUserConfirmType == WorkOrderUserConfirmType.已审 ? u.IsConfirm == true : (u.IsConfirm == false))
+                                    && (condtion.TaskUserConfirmType == WorkOrderUserConfirmType.已审 ? u.IsConfirm == true : (u.IsConfirm == false && u.Db_WorkFlowDefStepId == o.WorkFlowBookMarkId && o.OrderStatus == (byte)WorkOrderStatus.执行中))
                                     group new { u.Db_BaseWorkOrderId, u.CreatedOn } by new { u.Db_BaseWorkOrderId, u.CreatedOn } into g
                                     orderby g.Key.CreatedOn descending
                                     select g.Key.Db_BaseWorkOrderId).Skip(0).Take(200).ToList();
