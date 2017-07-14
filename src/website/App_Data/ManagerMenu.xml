@@ -47,7 +47,7 @@
   </ManagerMenu>
   <ManagerMenu>
     <text>管理</text>
-    <icon>icon-man</icon>
+    <icon>icon-page</icon>
     <roles>
       <string>admin</string>
     </roles>

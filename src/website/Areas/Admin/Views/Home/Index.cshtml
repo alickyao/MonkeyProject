@@ -5,7 +5,28 @@
     string userMenu = JsonConvert.SerializeObject(Model.userMenu);
 }
 @model UserManager
-
+<style>
+    #MainBlueTitle {
+        background:#34a1e9;
+        padding:0;
+        height:100%;
+        background-image:url('/Areas/Admin/Content/images/manager_log.png');
+        background-repeat:no-repeat;
+        background-position:left top;
+        padding-left:300px;
+    }
+        #MainBlueTitle table {
+            width:100%;
+            height:40px;
+            
+        }
+        #MainBlueTitle .l-btn-plain-selected {
+            background:#085471;
+        }
+        #MainBlueTitle .LeftMenuChange {
+            color:#fff;
+        }
+</style>
 <script>
     $(function () {
         //用户菜单
@@ -69,60 +90,77 @@
             inline: true
         });
 
-        //修改密码弹出框
-        $("#UserChangePwdBtn").click(function () {
-            dialogWin.dialog({
-                title:"修改密码",
-                href: "@Url.Action("changePwd","Login")",
-                toolbar:[{
-                    text:'修改密码',
-                    iconCls:'icon-save',
-                    handler: function () {
-                        var btn = $(this);
-                        if (btn.linkbutton("options").disabled == false) {
-                            var from = $("#UserChangePwdForm");
-                            var Reg = from.form('enableValidation').form('validate');
-                            if (Reg) {
-                                btn.linkbutton("disable");
-                                var d = from.serializeObject();
-                                d.oldPwd = md5(d.oldPwd);
-                                d.newPwd = md5(d.newPwd);
-                                console.log(d);
-                                $.post("/api/UserManager/changePwd", d, function (json) {
-                                    showmsg(json);
-                                    btn.linkbutton("enable");
-                                    if (json.Message == 0) {
+        $("#userBtn").linkbutton({
+            onClick: function () {
+                $('#UserMM').menu('show', {
+                    left: $(document).width()-120,
+                    top: 40
+                });
+            }
+        });
+        $("#UserMM").menu({
+            onClick: function (item) {
+                console.log(item);
+                switch (item.name) {
+                    case "userInfo":
+                        dialogWin.dialog({
+                            title:"我的资料",
+                            href: "@Url.Action("userInfo", "UserManager")",
+                            toolbar:null
+                        }).dialog("open");
+                        break;
+                    case "userPwd":
+                        dialogWin.dialog({
+                            title:"修改密码",
+                            href: "@Url.Action("changePwd", "Login")",
+                            toolbar:[{
+                                text:'修改密码',
+                                iconCls:'icon-save',
+                                handler: function () {
+                                        var btn = $(this);
+                                        if (btn.linkbutton("options").disabled == false) {
+                                            var from = $("#UserChangePwdForm");
+                                            var Reg = from.form('enableValidation').form('validate');
+                                            if (Reg) {
+                                                btn.linkbutton("disable");
+                                                var d = from.serializeObject();
+                                                d.oldPwd = md5(d.oldPwd);
+                                                d.newPwd = md5(d.newPwd);
+                                                console.log(d);
+                                                $.post("/api/UserManager/changePwd", d, function (json) {
+                                                    showmsg(json);
+                                                    btn.linkbutton("enable");
+                                                    if (json.Message == 0) {
+                                                        dialogWin.dialog("close");
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                },
+                                {
+                                    text:'关闭窗口',
+                                    iconCls:'icon-cancel',
+                                    handler: function () {
                                         dialogWin.dialog("close");
                                     }
-                                });
-                            }
-                        }
-                    }
-                },{
-                    text:'关闭窗口',
-                    iconCls:'icon-cancel',
-                    handler: function () {
-                        dialogWin.dialog("close");
-                    }
-                }]
-            }).dialog("open");
-        });
-
-        //查看我的资料弹出框
-        $("#userInfoBtn").click(function () {
-            dialogWin.dialog({
-                title:"我的资料",
-                href: "@Url.Action("userInfo", "UserManager")",
-                toolbar:null
-            }).dialog("open");
+                                }]
+                            }).dialog("open");
+                        break;
+                    case "exit":
+                        console.log("执行退出");
+                        window.location.href = "@Url.Action("logout","Login")";
+                        break;
+                }
+            }
         });
     });
 </script>
-<div id="dd" style="width:80%;height:80%">系统模态窗口</div>
+<div id="dd" style="width:80%;height:80%;">系统模态窗口</div>
 <audio id="sysNoticePlayer" style="display:none;">
     <source src="~/Areas/Admin/Content/music/prompt.mp3" type="audio/ogg">
 </audio>
-<div data-options="region:'north',border:false" style="height: 63px;">
+@*<div data-options="region:'north',border:false" style="height: 63px;">
     <div id="MainTitle">
         <div id="TopLogo"><img src="~/Areas/Admin/Content/images/manager_log.png" /></div>
         <div id="TopNav">
@@ -140,6 +178,31 @@
                 <a href="@Url.Action("logout","Login")" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-back'">退出登录</a>
             </div>
         </div>
+    </div>
+</div>*@
+
+<div id="UserMM" class="easyui-menu" style="width:120px; display:none;">
+    <div data-options="iconCls:'icon-man',name:'userInfo'">我的信息</div>
+    <div data-options="iconCls:'icon-edit',name:'userPwd'">修改密码</div>
+    <div class="menu-sep"></div>
+    <div data-options="iconCls:'icon-back',name:'exit'">退出登录</div>
+</div>
+
+<div data-options="region:'north',border:false" style="height: 40px; padding:0;">
+    <div id="MainBlueTitle">
+        <table>
+            <tr>
+                <td>
+                    @{int i = 0; }
+                    @foreach (var m in Model.userMenu)
+                    {
+                    <a href="#" class="easyui-linkbutton LeftMenuChange" menuIndex="@i" data-options="group:'TopMenu',toggle:true,plain:true,selected:false,iconCls:'@m.icon'">@m.text</a>
+                    i++;
+                    }
+                </td>
+                <td style="text-align:right;"><a href="javascript:void(0);" style="color:#000;" id="userBtn" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-man'">欢迎：<span>@(Model.fullName)</span></a></td>
+            </tr>
+        </table>
     </div>
 </div>
 <div data-options="region:'west',split:true,title:'导航'" style="width: 200px; padding: 10px;">
