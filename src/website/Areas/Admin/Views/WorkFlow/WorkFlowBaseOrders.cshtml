@@ -1,13 +1,12 @@
 ﻿@using monkey.service.WorkFlow;
 @{
     ViewBag.Title = "所有工单列表";
-    Layout = "~/Areas/Admin/Views/Shared/View_gooflowlayout.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
     string pageId = ViewBag.pageId;
     string condtion = JsonConvert.SerializeObject(Model);
     string newPageId = SysHelps.getRandmonStirng();
 }
 @model BaseWorkOrderSearchRequest
-
 <script>
     $(function () {
         var request = $.parseJSON('@Html.Raw(condtion)');
@@ -33,9 +32,6 @@
             pageSize: request.pageSize,
             singleSelect: true,
             idField: "Id",
-            onDblClickRow: function (rowIndex, rowData) {
-
-            },
             columns: [[
                 {
                     field: 'CreatedOnString', title: '创建时间', width: 130
@@ -153,7 +149,7 @@
                 },
                 '-',
                 {
-                    text: "查看操作日志",
+                    text: "查看详情",
                     iconCls: "icon-search",
                     handler: function () {
                         var row = grid.datagrid("getSelected");
@@ -162,18 +158,27 @@
                         }
                         else {
                             if (row.Id != "" && row.Id != null) {
-                                var url = "@Url.Action("userLogList","Logs", new { page=1,pageSize=20})";
-                                url += "&fkId=" + row.Id;
+                                var url = "@Url.Action("WorkFlowOrderInfo",new { pageId = pageId })";
+                                url += "&id=" + row.Id;
                                 console.log(url);
                                 dialogWin.dialog({
-                                    title: "操作日志",
-                                    content: getIframe(url)
+                                    title: "工单详情",
+                                    href: url
                                 }).dialog("open");
                             }
                         }
                     }
                 },
-            ]
+            ],
+            onDblClickRow: function (index, row) {
+                var url = "@Url.Action("WorkFlowOrderInfo",new { pageId = pageId })";
+                url += "&id=" + row.Id;
+                console.log(url);
+                dialogWin.dialog({
+                    title: "工单详情",
+                    href: url
+                }).dialog("open");
+            }
         });
         var dialogWin = $('#@(pageId)dd');
 
@@ -238,12 +243,11 @@
         });
     });
 </script>
-
 <div class="easyui-layout" data-options="fit:true">
-    <div id="@(pageId)dd" style="width:90%;height:90%; overflow:hidden"></div>
-    <div id="@(pageId)SelectWorkFlowDefDD" style="width:90%;height:90%; overflow:hidden"></div>
     <div data-options="region:'center',border:false">
-        <table id="@(pageId)grid"></table>
+    <div id="@(pageId)dd" style="width:90%;height:90%; overflow:hidden;"></div>
+    <div id="@(pageId)SelectWorkFlowDefDD" style="width:90%;height:90%; overflow:hidden;"></div>
+    <table id="@(pageId)grid"></table>
     </div>
 </div>
 

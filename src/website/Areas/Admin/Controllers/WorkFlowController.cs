@@ -98,7 +98,7 @@ namespace website.Areas.Admin.Controllers
         /// </summary>
         /// <param name="pageId"></param>
         /// <returns></returns>
-        [SysAuthorize(RoleType = SysRolesType.后台)]
+        [SysAuthorize(Roles = "admin")]
         public ActionResult WorkFlowBaseOrders(string pageId) {
             ViewBag.pageId = getPageId(pageId);
             BaseWorkOrderSearchRequest condtion = new BaseWorkOrderSearchRequest();
@@ -106,7 +106,7 @@ namespace website.Areas.Admin.Controllers
         }
 
         /// <summary>
-        /// 获取当前登录用户待审核的网格列表
+        /// 获取当前登录用户[待审核]的网格列表
         /// </summary>
         /// <param name="pageId"></param>
         /// <returns></returns>
@@ -122,12 +122,41 @@ namespace website.Areas.Admin.Controllers
         }
 
         /// <summary>
+        /// 获取当前登录用户[已审核]的工单列表
+        /// </summary>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult WorkFlowMyApprovalHistoryOrders(string pageId)
+        {
+            ViewBag.pageId = getPageId(pageId);
+            BaseWorkOrderSearchRequest condtion = new BaseWorkOrderSearchRequest()
+            {
+                TaskUserId = User.Identity.Name,
+                TaskUserConfirmType = WorkOrderUserConfirmType.已审
+            };
+            return View("WorkFlowMyOrders", condtion);
+        }
+
+        /// <summary>
         /// 工单详情
         /// </summary>
         /// <param name="id">工单的ID</param>
         /// <param name="pageId"></param>
         /// <returns></returns>
         public ActionResult WorkFlowOrderInfo(string id,string pageId) {
+            ViewBag.pageId = getPageId(pageId);
+            var info = new BaseWorkOrder(id);
+            return View(info);
+        }
+
+        /// <summary>
+        /// 工单历史流程图 - 展示流程历史记录图形
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        public ActionResult WorkFlowOrderWorkFlowDefInfo(string id, string pageId) {
             ViewBag.pageId = getPageId(pageId);
             var info = new BaseWorkOrder(id);
             return View(info);

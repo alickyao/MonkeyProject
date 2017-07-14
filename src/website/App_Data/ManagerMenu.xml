@@ -9,16 +9,30 @@
     </roles>
     <children>
       <ManagerMenu>
-        <text>工单审批</text>
-        <url>
-          <![CDATA[/manager/WorkFlow/WorkFlowMyOrders]]>
-        </url>
-      </ManagerMenu>
-      <ManagerMenu>
-        <text>所有工单</text>
-        <url>
-          <![CDATA[/manager/WorkFlow/WorkFlowBaseOrders]]>
-        </url>
+        <text>工单</text>
+        <children>
+          <ManagerMenu>
+            <text>工单审批</text>
+            <url>
+              <![CDATA[/manager/WorkFlow/WorkFlowMyOrders]]>
+            </url>
+          </ManagerMenu>
+          <ManagerMenu>
+            <text>历史审批</text>
+            <url>
+              <![CDATA[/manager/WorkFlow/WorkFlowMyApprovalHistoryOrders]]>
+            </url>
+          </ManagerMenu>
+          <ManagerMenu>
+            <text>所有工单</text>
+            <roles>
+              <string>admin</string>
+            </roles>
+            <url>
+              <![CDATA[/manager/WorkFlow/WorkFlowBaseOrders]]>
+            </url>
+          </ManagerMenu>
+        </children>
       </ManagerMenu>
       <ManagerMenu>
         <text>办公管理</text>

@@ -367,7 +367,7 @@ namespace monkey.service.WorkFlow
                                 Db_WorkFlowDefLineId = line.Id,
                                 Db_WorkFlowDefinitionId = this.WorkFlowDefinitionId,
                                 Db_WorkFlowDefStepId = line.ToStep.Id,
-                                userName = item.getNameString()
+                                userName = item.getFullNameString()
                             });
                         }
                         db.Db_BaseWorkOrderTaskUserSet.AddRange(taskDbUsers);
@@ -592,10 +592,10 @@ namespace monkey.service.WorkFlow
                 string userId = user.getIdString();
                 if (!DoWorkFlowTerminationBefore(condtion, nowTaskUsers, user, stepInfo))
                 {
-                    throw new ValiDataException("改流程不能被终止");
+                    throw new ValiDataException("该流程不能被终止");
                 }
                 var taskUserInfo = nowTaskUsers.Single(p => p.UserId == userId);
-                var result = DoWorkFlowTermination();
+                var result = DoWorkFlowTermination(user,condtion.Remark);
                 //记录到日志
                 UserLog.create(string.Format("流程被终止，原因：[{0}]", condtion.Remark), "工作流", user, this);
                 //后续操作
@@ -611,12 +611,18 @@ namespace monkey.service.WorkFlow
         /// 执行工作流终止操作
         /// </summary>
         /// <returns></returns>
-        protected BaseWorkOrder DoWorkFlowTermination() {
+        protected BaseWorkOrder DoWorkFlowTermination(ICommunicationable user,string remark) {
             using (var db = new DefaultContainer())
             {
                 var row = db.Db_BaseWorkOrderSet.Single(p => p.Id == this.Id);
                 row.OrderStatus = (byte)WorkOrderStatus.已终止.GetHashCode();
                 row.WorkFlowBookMarkId = null;
+                var tu = row.Db_BaseWorkOrderTaskUser.FirstOrDefault(p => p.UserId == user.getIdString());
+                if (tu != null) {
+                    tu.IsConfirm = true;
+                    tu.ConfirmTime = DateTime.Now;
+                    tu.Remark = remark;
+                }
                 db.SaveChanges();
                 return new BaseWorkOrder(row);
             }

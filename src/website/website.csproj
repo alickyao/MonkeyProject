@@ -819,6 +819,7 @@
     <Content Include="Areas\Admin\Views\WorkFlow\WorkFlowOrderInfo.cshtml" />
     <Content Include="Areas\Admin\Views\WorkFlow\WorkFlowOrderDefaultApproval.cshtml" />
     <Content Include="Areas\Admin\Views\WorkFlow\WorkFlowOrderDefaultDetail.cshtml" />
+    <Content Include="Areas\Admin\Views\WorkFlow\WorkFlowOrderWorkFlowDefInfo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

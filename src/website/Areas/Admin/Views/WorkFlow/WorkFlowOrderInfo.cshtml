@@ -1,111 +1,64 @@
 ﻿@using monkey.service.WorkFlow;
 @{
     ViewBag.Title = "工单详情";
-    Layout = "~/Areas/Admin/Views/Shared/View_gooflowlayout.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
     string pageId = ViewBag.pageId;
     string newPageId = SysHelps.getRandmonStirng();
     var historyLineList = Model.GetApprovalHistoryLines();
     string histroyLines = JsonConvert.SerializeObject(historyLineList);
+    List<BaseWorkOrderTaskUserInfo> taskUserList = new List<BaseWorkOrderTaskUserInfo>();
+    WorkFlowDefSetpDetail stepInfo = null;
+    if (!string.IsNullOrEmpty(Model.WorkFlowBookMarkId)) {
+        taskUserList = Model.GetTaskUsersByStepId(Model.WorkFlowBookMarkId);
+        stepInfo = WorkFlowDefSetpDetail.GetDetailInstance(Model.WorkFlowBookMarkId);
+    }
+    string userId = User.Identity.Name;//当前登录的用户
+    bool showApprovalPage = false;
+    if (taskUserList.Where(p=>p.IsConfirm == false).Select(p => p.UserId).Contains(userId)) {
+        showApprovalPage = true;//等待当前用户审核
+    }
 }
 @model BaseWorkOrder
 
 <script>
     $(function () {
-        var defId = "@Model.WorkFlowDefinitionId";
-        if (defId != "") {
-
-            var ifr = $("#@(pageId)WorkFlowDefBox");
-            var property = {
-                width: ifr.width(),
-                height: ifr.height(),
-                toolBtns: [],
-                haveHead: true,
-                headBtns: [],//如果haveHead=true，则定义HEAD区的按钮
-                haveTool: false,
-                haveGroup: true,
-                useOperStack: true
-            };
-            var WorkFlowDef;
-            WorkFlowDef = $.createGooFlow($("#@(pageId)WorkFlowDef"), property);
-
-            //获取流程定义
-            $.getJSON("/api/WorkFlowDefinition/GetWorkFlowDefinitionById/" + defId, function (json) {
-                if (json.Message == 0) {
-                    var defInfo = json.item.DictionaryUnits;
-                    defInfo.title = json.item.Caption;
-                    WorkFlowDef.$max = 9;
-
-                    //处理nodes 的 type
-                    $.each(defInfo.nodes, function (i, n) {
-                        n.type = n.typeString;
-                    });
-
-                    
-                    var historyLines = $.parseJSON('@Html.Raw(histroyLines)');
-                    console.log("历史记录信息");
-                    console.log(historyLines);
-
-                    
-
-                    console.log("流程图信息");
-                    console.log(defInfo);
-
-                    WorkFlowDef.loadData(defInfo);//流程图
-
-                    window.setTimeout(function () {
-
-                        //已经走过的流程进行着色
-                        for (var i = 0; i < historyLines.length; i++) {
-                            try {
-                                var l = defInfo.lines[historyLines[i]];
-                                if (l != null) {
-                                    var n = defInfo.nodes[l.from];
-                                    if (n != null) {
-                                        WorkFlowDef.markItem(n.Id, "node", true);
-                                        n.marked = true;
-                                        console.log("标注节点:[" + n.Id + "]");
-                                    }
-                                    l.marked = true;
-                                    console.log("标注线条:[" + l.Id + "]");
-                                    //这方法有问题 暂时不用
-                                    //WorkFlowDef.markItem(l.Id, "line", true);
-                                    //直接将线条标注为红色
-                                    var lineDom = $("#" + l.Id);
-                                    lineDom[0].childNodes[1].setAttribute("stroke", "#ff3300");
-                                    lineDom[0].childNodes[1].setAttribute("marker-end", "url(#arrow2)");
-                                }
-                            }
-                            catch (e) {
-                                console.log(e);
-                            }
-                        }
-
-                    }, 300);
-                    
-
-                }
-                else {
-                    $.messager.alert(getErrorTitle(json.Message), "错误提示：<br />" + json.MessageDetail, 'error');
-                }
-            });
-        }
+        
     });
 </script>
 
 <div class="easyui-layout" data-options="fit:true">
     <div data-options="region:'center',border:false">
         <div id="@(pageId)WorkOrderTT" class="easyui-tabs" data-options="fit:true,border:false">
+            <div title="流程展现" id="@(pageId)WorkFlowDefBox" style="padding:0;overflow:hidden">
+                <iframe src="@Url.Action("WorkFlowOrderWorkFlowDefInfo",new { id = Model.Id })" style="width:100%; height:100%; overflow:hidden; border:none;"></iframe>
+            </div>
             <div title="工单信息">
                 <div class="easyui-layout" data-options="fit:true">
                     <div data-options="region:'center',border:false,href:'@string.Format(Model.GetOrderDetailPageUrl(),pageId,Model.Id)'"></div>
-                    <div data-options="region:'south',title:'工单审批',split:true,border:false,href:'@string.Format(Model.GetApprovalPageUrl(),pageId,Model.Id)'" style="height:150px;"></div>
+                    @if (showApprovalPage)
+                    {
+                        <div data-options="region:'south',title:'工单审批',split:true,border:false,href:'@string.Format(Model.GetApprovalPageUrl(), pageId, Model.Id)'" style="height:150px;"></div>
+                    }
+                    else {
+                        <div data-options="region:'south',title:'工单执行状态',split:true,border:false" style="height:150px; padding:5px;">
+                            <div>工单状态：@Model.OrderStatusString</div>
+                            @if (Model.OrderStatus == WorkOrderStatus.执行中)
+                            {
+                                <div>
+                                    @if (taskUserList.Count > 0)
+                                    {
+                                        <span>等待下列用户审批：[ @(string.Join(",", taskUserList.Where(p => p.IsConfirm == false).Select(p => p.userName))) ] @(stepInfo == null ? "" : stepInfo.IsCountersign ? "会签" : "非会签")</span>
+                                    }
+                                    else {
+                                        <span>未分配审批用户，等待系统自动触发执行</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
                 </div>
             </div>
-            <div title="流程展现">
-                <div title="流程图" id="@(pageId)WorkFlowDefBox" style="padding:0">
-                    <div id="@(pageId)WorkFlowDef"></div>
-                </div>
-            </div>
+            
             <div title="日志记录" data-options="href:'@Url.Action("userLogList","Logs", new { page = 1, pageSize = 20, fkId = Model.Id })'">
             </div>
         </div>  

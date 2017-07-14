@@ -1,7 +1,7 @@
 ﻿@using monkey.service.WorkFlow;
 @{
-    ViewBag.Title = "待当前用户审核的工单列表";
-    Layout = "~/Areas/Admin/Views/Shared/View_gooflowlayout.cshtml";
+    ViewBag.Title = "用户待审或已审的工单列表";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
     string pageId = ViewBag.pageId;
     string condtion = JsonConvert.SerializeObject(Model);
     string newPageId = SysHelps.getRandmonStirng();
@@ -33,9 +33,6 @@
             pageSize: request.pageSize,
             singleSelect: true,
             idField: "Id",
-            onDblClickRow: function (rowIndex, rowData) {
-
-            },
             columns: [[
                 {
                     field: 'CreatedOnString', title: '创建时间', width: 130
@@ -70,7 +67,7 @@
             ]],
             toolbar: [
                 {
-                    text: "查看操作日志",
+                    text: "查看详情",
                     iconCls: "icon-search",
                     handler: function () {
                         var row = grid.datagrid("getSelected");
@@ -79,7 +76,7 @@
                         }
                         else {
                             if (row.Id != "" && row.Id != null) {
-                                var url = "@Url.Action("WorkFlowOrderInfo",new { pageId = newPageId })";
+                                var url = "@Url.Action("WorkFlowOrderInfo",new { pageId = pageId })";
                                 url += "&id=" + row.Id;
                                 console.log(url);
                                 dialogWin.dialog({
@@ -92,7 +89,7 @@
                 },
             ],
             onDblClickRow: function (index, row) {
-                var url = "@Url.Action("WorkFlowOrderInfo",new { pageId = newPageId })";
+                var url = "@Url.Action("WorkFlowOrderInfo",new { pageId = pageId })";
                 url += "&id=" + row.Id;
                 console.log(url);
                 dialogWin.dialog({
@@ -123,8 +120,8 @@
 </script>
 
 <div class="easyui-layout" data-options="fit:true">
-    <div id="@(pageId)dd" style="width:90%;height:90%; overflow:hidden"></div>
     <div data-options="region:'center',border:false">
+        <div id="@(pageId)dd" style="width:90%;height:90%; overflow:hidden"></div>
         <table id="@(pageId)grid"></table>
     </div>
 </div>

@@ -3,18 +3,58 @@
     ViewBag.Title = "工单审批- 默认表单 - 提交";
     Layout = null;
     string pageId = ViewBag.pageId;
+    string id = ViewBag.id;//工单的ID
 }
 
 <script>
     $(function () {
+        var form = $("#@(pageId)WorkFlowOrderApprovalForm");
+        var dialogWin = $('#@(pageId)dd');//当前模态窗口的ID
         $("#@(pageId)WorkFlowConfirmBtn").linkbutton({
             onClick: function () {
                 console.log("同意");
+                var btn = $(this);
+                if (!form.form("validate")) {
+                    return;
+                }
+                var d = form.serializeObject();
+                console.log(d);
+                $.messager.confirm('请确认', '确认审批？', function (r) {
+                    if (r) {
+                        btn.linkbutton("disable");
+                        $.post("/api/WorkFlowOrders/WorkFlowUserConfim", d, function (json) {
+                            showmsg(json);
+                            if (json.Message == "0") {
+                                //刷新当前模态窗口
+                                dialogWin.dialog("refresh");
+                            }
+                        });
+                    }
+                });
             }
         });
         $("#@(pageId)WorkFlowTerminationBtn").linkbutton({
             onClick: function () {
                 console.log("终止");
+                var btn = $(this);
+                if (!form.form("validate")) {
+                    return;
+                }
+                var d = form.serializeObject();
+                console.log(d);
+
+                $.messager.confirm('请确认', '请确认要【<span style="font-weight:bold;color:red;padding:0 3px">终止</span>】该工单工作流？', function (r) {
+                    if (r) {
+                        btn.linkbutton("disable");
+                        $.post("/api/WorkFlowOrders/WorkFlowUserTermination", d, function (json) {
+                            showmsg(json);
+                            if (json.Message == "0") {
+                                //刷新当前模态窗口
+                                dialogWin.dialog("refresh");
+                            }
+                        });
+                    }
+                });
             }
         });
     });
@@ -22,13 +62,16 @@
 
 <div class="easyui-layout" data-options="fit:true">
     <div data-options="region:'center',border:false" style="padding:5px;">
-        <div>
-            <input class="easyui-textbox" name="Remark" data-options="multiline:true,required:true,prompt:'请填写意见'" style="width:100%;height:50px;">
-        </div>
-        <div style="margin-top:5px; background-color:#efefef; padding:5px;">
-            <a id="@(pageId)WorkFlowConfirmBtn" href="javascript:void(0)" class="easyui-linkbutton WorkFlowBtn" data-options="iconCls:'icon-ok'">同意</a>
-            <a id="@(pageId)WorkFlowTerminationBtn" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-no'">终止</a>
-        </div>
+        <form id="@(pageId)WorkFlowOrderApprovalForm">
+            <input type="hidden" name="Id" value="@id" />
+            <div>
+                <input class="easyui-textbox" name="Remark" data-options="multiline:true,required:true,prompt:'请填写意见'" style="width:100%;height:50px;">
+            </div>
+            <div style="margin-top:5px; background-color:#0094ff; padding:5px;">
+                <a id="@(pageId)WorkFlowConfirmBtn" href="javascript:void(0)" class="easyui-linkbutton WorkFlowBtn" data-options="iconCls:'icon-ok'">同意</a>
+                <a id="@(pageId)WorkFlowTerminationBtn" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-no'">终止</a>
+            </div>
+        </form>
     </div>
 </div>
 
