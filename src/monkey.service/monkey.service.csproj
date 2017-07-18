@@ -112,6 +112,9 @@
     <Compile Include="Db\Db_ManagerUser.cs">
       <DependentUpon>Default.tt</DependentUpon>
     </Compile>
+    <Compile Include="Db\Db_OA_Leave.cs">
+      <DependentUpon>Default.tt</DependentUpon>
+    </Compile>
     <Compile Include="Db\Db_UserLog.cs">
       <DependentUpon>Default.tt</DependentUpon>
     </Compile>

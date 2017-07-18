@@ -2,6 +2,7 @@
 using monkey.service.Users;
 using monkey.service.WorkFlow;
 using monkey.service.Logs;
+using monkey.service.Fun.OA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,6 +86,9 @@ namespace website.Controllers.WorkFlow
         [ApiAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse WorkFlowUserConfim(BaseWorkOrderUserConfirmReqeust condtion) {
             var info = new BaseWorkOrder(condtion.Id);
+            if (info.OrderType == WorkOrderType.请假申请) {
+                info = new LeaveInfo(condtion.Id);
+            }
             info.DoWorkFlowUserConfirm(condtion, UserManager.getUserById(User.Identity.Name));
             return BaseResponse.getResult("审批成功");
         }

@@ -39,6 +39,8 @@
         <AssociationConnector Association="Default.Db_BaseWorkOrderDb_BaseWorkOrderTaskUser" />
         <EntityTypeShape EntityType="Default.Db_BaseWorkOrderApprovalHistory" Width="3.5" PointX="7.375" PointY="31.5" />
         <AssociationConnector Association="Default.Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory" />
+        <EntityTypeShape EntityType="Default.Db_OA_Leave" Width="2.25" PointX="0.5" PointY="35.875" IsExpanded="true" />
+        <InheritanceConnector EntityType="Default.Db_OA_Leave" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

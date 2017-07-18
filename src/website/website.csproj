@@ -739,6 +739,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
+    <Compile Include="Controllers\Fun\OA\OA_LeaveController.cs" />
     <Compile Include="Controllers\Logs\LogsController.cs" />
     <Compile Include="Controllers\SysBase\FileController.cs" />
     <Compile Include="Controllers\SysBase\TimerController.cs" />

@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 06/30/2017 10:24:17
+-- Date Created: 07/14/2017 16:49:58
 -- Generated from EDMX file: D:\project\git\MonkeyProject\src\monkey.service\Db\Default.edmx
 -- --------------------------------------------------
 
@@ -22,6 +22,12 @@ IF OBJECT_ID(N'[dbo].[FK_Db_BaseDocDb_BaseDocFile]', 'F') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[FK_Db_BaseUserDb_BaseUserRole]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_BaseUserRoleSet] DROP CONSTRAINT [FK_Db_BaseUserDb_BaseUserRole];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_BaseWorkOrderApprovalHistorySet] DROP CONSTRAINT [FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_BaseWorkOrderDb_BaseWorkOrderTaskUser]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_BaseWorkOrderTaskUserSet] DROP CONSTRAINT [FK_Db_BaseWorkOrderDb_BaseWorkOrderTaskUser];
 GO
 IF OBJECT_ID(N'[dbo].[FK_Db_DocPic_inherits_Db_BaseDoc]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_BaseDocSet_Db_DocPic] DROP CONSTRAINT [FK_Db_DocPic_inherits_Db_BaseDoc];
@@ -88,8 +94,14 @@ GO
 IF OBJECT_ID(N'[dbo].[Db_BaseUserSet_Db_ManagerUser]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser];
 GO
+IF OBJECT_ID(N'[dbo].[Db_BaseWorkOrderApprovalHistorySet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseWorkOrderApprovalHistorySet];
+GO
 IF OBJECT_ID(N'[dbo].[Db_BaseWorkOrderSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseWorkOrderSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_BaseWorkOrderTaskUserSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseWorkOrderTaskUserSet];
 GO
 IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefBaseUnitSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_WorkFlowDefBaseUnitSet];
@@ -256,12 +268,16 @@ GO
 -- Creating table 'Db_BaseWorkOrderTaskUserSet'
 CREATE TABLE [dbo].[Db_BaseWorkOrderTaskUserSet] (
     [Id] nvarchar(50)  NOT NULL,
+    [Db_BaseWorkOrderId] nvarchar(50)  NOT NULL,
+    [Db_WorkFlowDefinitionId] nvarchar(50)  NOT NULL,
+    [Db_WorkFlowDefLineId] nvarchar(50)  NOT NULL,
+    [Db_WorkFlowDefStepId] nvarchar(50)  NOT NULL,
     [UserId] nvarchar(50)  NOT NULL,
+    [userName] nvarchar(200)  NOT NULL,
     [CreatedOn] datetime  NOT NULL,
     [IsConfirm] bit  NOT NULL,
     [ConfirmTime] datetime  NULL,
-    [Remark] nvarchar(max)  NULL,
-    [Db_BaseWorkOrderId] nvarchar(50)  NOT NULL
+    [Remark] nvarchar(max)  NULL
 );
 GO
 
@@ -326,6 +342,17 @@ GO
 CREATE TABLE [dbo].[Db_BaseDocSet_Db_DocPic] (
     [Descript] nvarchar(max)  NULL,
     [Content] nvarchar(max)  NULL,
+    [Id] nvarchar(50)  NOT NULL
+);
+GO
+
+-- Creating table 'Db_BaseWorkOrderSet_Db_OA_Leave'
+CREATE TABLE [dbo].[Db_BaseWorkOrderSet_Db_OA_Leave] (
+    [LeaveType] tinyint  NOT NULL,
+    [BeginTime] datetime  NOT NULL,
+    [EndTime] datetime  NOT NULL,
+    [Descript] nvarchar(max)  NOT NULL,
+    [UserId] nvarchar(50)  NOT NULL,
     [Id] nvarchar(50)  NOT NULL
 );
 GO
@@ -457,6 +484,12 @@ GO
 -- Creating primary key on [Id] in table 'Db_BaseDocSet_Db_DocPic'
 ALTER TABLE [dbo].[Db_BaseDocSet_Db_DocPic]
 ADD CONSTRAINT [PK_Db_BaseDocSet_Db_DocPic]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_BaseWorkOrderSet_Db_OA_Leave'
+ALTER TABLE [dbo].[Db_BaseWorkOrderSet_Db_OA_Leave]
+ADD CONSTRAINT [PK_Db_BaseWorkOrderSet_Db_OA_Leave]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -619,6 +652,15 @@ ALTER TABLE [dbo].[Db_BaseDocSet_Db_DocPic]
 ADD CONSTRAINT [FK_Db_DocPic_inherits_Db_BaseDoc]
     FOREIGN KEY ([Id])
     REFERENCES [dbo].[Db_BaseDocSet]
+        ([Id])
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [Id] in table 'Db_BaseWorkOrderSet_Db_OA_Leave'
+ALTER TABLE [dbo].[Db_BaseWorkOrderSet_Db_OA_Leave]
+ADD CONSTRAINT [FK_Db_OA_Leave_inherits_Db_BaseWorkOrder]
+    FOREIGN KEY ([Id])
+    REFERENCES [dbo].[Db_BaseWorkOrderSet]
         ([Id])
     ON DELETE CASCADE ON UPDATE NO ACTION;
 GO

@@ -20,7 +20,8 @@ namespace monkey.service.WorkFlow
         /// <summary>
         /// 基础工单 - 无类具体类型
         /// </summary>
-        无类型
+        无类型,
+        请假申请
     }
 
     /// <summary>

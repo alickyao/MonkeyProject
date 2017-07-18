@@ -4,469 +4,499 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Default.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="Db_BaseDocFileSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="FileId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Seq" Type="int" Nullable="false" />
-          <Property Name="Caption" Type="nvarchar(max)" />
-          <Property Name="Descript" Type="nvarchar(max)" />
-          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
-          <Property Name="Db_BaseDocId" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_BaseDocSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="DocType" Type="int" Nullable="false" />
-          <Property Name="Caption" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="Code" Type="nvarchar" MaxLength="50" />
-          <Property Name="TreeId" Type="nvarchar" MaxLength="50" />
-          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
-          <Property Name="Seq" Type="int" Nullable="false" />
-          <Property Name="IsDeleted" Type="bit" Nullable="false" />
-          <Property Name="IsDisabled" Type="bit" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_BaseDocSet_Db_DocPic">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Descript" Type="nvarchar(max)" />
-          <Property Name="Content" Type="nvarchar(max)" />
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_BaseFileSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Path" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="FileName" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="ExName" Type="nvarchar" MaxLength="50" />
-          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_BaseLogSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="logType" Type="tinyint" Nullable="false" />
-          <Property Name="createdOn" Type="datetime" Nullable="false" />
-          <Property Name="message" Type="nvarchar(max)" />
-        </EntityType>
-        <EntityType Name="Db_BaseLogSet_Db_ExceptionLog">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="code" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="stackTrace" Type="nvarchar(max)" />
-          <Property Name="codeString" Type="nvarchar" MaxLength="200" Nullable="false" />
-          <Property Name="Id" Type="bigint" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_BaseLogSet_Db_UserLog">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="code" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="userId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="userName" Type="nvarchar" MaxLength="500" Nullable="false" />
-          <Property Name="fkId" Type="nvarchar" MaxLength="50" />
-          <Property Name="fkName" Type="nvarchar" MaxLength="500" />
-          <Property Name="Id" Type="bigint" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_BaseTreeSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Seq" Type="int" Nullable="false" />
-          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="ParentId" Type="nvarchar" MaxLength="50" />
-          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_BaseUserRoleSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="roleName" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="Db_BaseUserId" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_BaseUserSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="createdOn" Type="datetime" Nullable="false" />
-          <Property Name="lastLoginTime" Type="datetime" />
-          <Property Name="lastLoginIpAddress" Type="nvarchar" MaxLength="50" />
-          <Property Name="isDeleted" Type="bit" Nullable="false" />
-          <Property Name="isDisabled" Type="bit" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_BaseUserSet_Db_ManagerUser">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="loginName" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="passWord" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="fullName" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="mobilePhone" Type="nvarchar" MaxLength="50" />
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_BaseWorkOrderApprovalHistorySet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="WorkFlowDefLineId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
-          <Property Name="Db_BaseWorkOrderId" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_BaseWorkOrderSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
-          <Property Name="OrderType" Type="tinyint" Nullable="false" />
-          <Property Name="OrderStatus" Type="tinyint" Nullable="false" />
-          <Property Name="WorkFlowDefinitionId" Type="nvarchar" MaxLength="50" />
-          <Property Name="WorkFlowBookMarkId" Type="nvarchar" MaxLength="50" />
-          <Property Name="Remark" Type="nvarchar(max)" />
-        </EntityType>
-        <EntityType Name="Db_BaseWorkOrderTaskUserSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Db_BaseWorkOrderId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Db_WorkFlowDefinitionId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Db_WorkFlowDefLineId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Db_WorkFlowDefStepId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="UserId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="userName" Type="nvarchar" MaxLength="200" Nullable="false" />
-          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
-          <Property Name="IsConfirm" Type="bit" Nullable="false" />
-          <Property Name="ConfirmTime" Type="datetime" />
-          <Property Name="Remark" Type="nvarchar(max)" />
-        </EntityType>
-        <EntityType Name="Db_WorkFlowDefBaseUnitSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Name" Type="nvarchar(max)" />
-          <Property Name="Height" Type="int" Nullable="false" />
-          <Property Name="Width" Type="int" Nullable="false" />
-          <Property Name="Left" Type="int" Nullable="false" />
-          <Property Name="Top" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Color" Type="nvarchar" MaxLength="50" />
-          <Property Name="Db_WorkFlowDefinitionId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Type" Type="int" Nullable="false" />
-          <Property Name="WorkFlowRoleId" Type="nvarchar" MaxLength="50" />
-          <Property Name="IsCountersign" Type="bit" />
-          <Property Name="Db_WorkFlowDefinitionId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_WorkFlowDefinitionSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Caption" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="Descript" Type="nvarchar(max)" />
-          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_WorkFlowDefLineSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="From" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="To" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="M" Type="float" />
-          <Property Name="Name" Type="nvarchar(max)" />
-          <Property Name="Type" Type="nvarchar" MaxLength="20" Nullable="false" />
-          <Property Name="Db_WorkFlowDefinitionId" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_WorkFlowRoleDescriptSet">
-          <Key>
-            <PropertyRef Name="WorkFlowRoleId" />
-            <PropertyRef Name="UserId" />
-          </Key>
-          <Property Name="WorkFlowRoleId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="UserId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_WorkFlowRoleSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="RoleName" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="Descript" Type="nvarchar(max)" />
-          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
-        </EntityType>
-        <Association Name="FK_Db_BaseDocDb_BaseDocFile">
-          <End Role="Db_BaseDocSet" Type="Self.Db_BaseDocSet" Multiplicity="1" />
-          <End Role="Db_BaseDocFileSet" Type="Self.Db_BaseDocFileSet" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Db_BaseDocSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_BaseDocFileSet">
-              <PropertyRef Name="Db_BaseDocId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_BaseUserDb_BaseUserRole">
-          <End Role="Db_BaseUserSet" Type="Self.Db_BaseUserSet" Multiplicity="1" />
-          <End Role="Db_BaseUserRoleSet" Type="Self.Db_BaseUserRoleSet" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Db_BaseUserSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_BaseUserRoleSet">
-              <PropertyRef Name="Db_BaseUserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory">
-          <End Role="Db_BaseWorkOrderSet" Type="Self.Db_BaseWorkOrderSet" Multiplicity="1" />
-          <End Role="Db_BaseWorkOrderApprovalHistorySet" Type="Self.Db_BaseWorkOrderApprovalHistorySet" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Db_BaseWorkOrderSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_BaseWorkOrderApprovalHistorySet">
-              <PropertyRef Name="Db_BaseWorkOrderId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_BaseWorkOrderDb_BaseWorkOrderTaskUser">
-          <End Role="Db_BaseWorkOrderSet" Type="Self.Db_BaseWorkOrderSet" Multiplicity="1" />
-          <End Role="Db_BaseWorkOrderTaskUserSet" Type="Self.Db_BaseWorkOrderTaskUserSet" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Db_BaseWorkOrderSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_BaseWorkOrderTaskUserSet">
-              <PropertyRef Name="Db_BaseWorkOrderId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_DocPic_inherits_Db_BaseDoc">
-          <End Role="Db_BaseDocSet" Type="Self.Db_BaseDocSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_BaseDocSet_Db_DocPic" Type="Self.Db_BaseDocSet_Db_DocPic" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_BaseDocSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_BaseDocSet_Db_DocPic">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_ExceptionLog_inherits_Db_BaseLog">
-          <End Role="Db_BaseLogSet" Type="Self.Db_BaseLogSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_BaseLogSet_Db_ExceptionLog" Type="Self.Db_BaseLogSet_Db_ExceptionLog" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_BaseLogSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_BaseLogSet_Db_ExceptionLog">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_ManagerUser_inherits_Db_BaseUser">
-          <End Role="Db_BaseUserSet" Type="Self.Db_BaseUserSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_BaseUserSet_Db_ManagerUser" Type="Self.Db_BaseUserSet_Db_ManagerUser" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_BaseUserSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_BaseUserSet_Db_ManagerUser">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_UserLog_inherits_Db_BaseLog">
-          <End Role="Db_BaseLogSet" Type="Self.Db_BaseLogSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_BaseLogSet_Db_UserLog" Type="Self.Db_BaseLogSet_Db_UserLog" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_BaseLogSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_BaseLogSet_Db_UserLog">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_WorkFlowDefArea_inherits_Db_WorkFlowDefBaseUnit">
-          <End Role="Db_WorkFlowDefBaseUnitSet" Type="Self.Db_WorkFlowDefBaseUnitSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" Type="Self.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_WorkFlowDefBaseUnitSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_WorkFlowDefinitionDb_WorkFlowDefArea">
-          <End Role="Db_WorkFlowDefinitionSet" Type="Self.Db_WorkFlowDefinitionSet" Multiplicity="1" />
-          <End Role="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" Type="Self.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Db_WorkFlowDefinitionSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea">
-              <PropertyRef Name="Db_WorkFlowDefinitionId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_WorkFlowDefinitionDb_WorkFlowDefLine">
-          <End Role="Db_WorkFlowDefinitionSet" Type="Self.Db_WorkFlowDefinitionSet" Multiplicity="1" />
-          <End Role="Db_WorkFlowDefLineSet" Type="Self.Db_WorkFlowDefLineSet" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Db_WorkFlowDefinitionSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_WorkFlowDefLineSet">
-              <PropertyRef Name="Db_WorkFlowDefinitionId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_WorkFlowDefinitionDb_WorkFlowDefStep">
-          <End Role="Db_WorkFlowDefinitionSet" Type="Self.Db_WorkFlowDefinitionSet" Multiplicity="1" />
-          <End Role="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" Type="Self.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Db_WorkFlowDefinitionSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep">
-              <PropertyRef Name="Db_WorkFlowDefinitionId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_WorkFlowDefStep_inherits_Db_WorkFlowDefBaseUnit">
-          <End Role="Db_WorkFlowDefBaseUnitSet" Type="Self.Db_WorkFlowDefBaseUnitSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" Type="Self.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_WorkFlowDefBaseUnitSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="DefaultStoreContainer">
-          <EntitySet Name="Db_BaseDocFileSet" EntityType="Self.Db_BaseDocFileSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseDocSet" EntityType="Self.Db_BaseDocSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseDocSet_Db_DocPic" EntityType="Self.Db_BaseDocSet_Db_DocPic" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseFileSet" EntityType="Self.Db_BaseFileSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseLogSet" EntityType="Self.Db_BaseLogSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseLogSet_Db_ExceptionLog" EntityType="Self.Db_BaseLogSet_Db_ExceptionLog" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseLogSet_Db_UserLog" EntityType="Self.Db_BaseLogSet_Db_UserLog" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseTreeSet" EntityType="Self.Db_BaseTreeSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseUserRoleSet" EntityType="Self.Db_BaseUserRoleSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseUserSet" EntityType="Self.Db_BaseUserSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseUserSet_Db_ManagerUser" EntityType="Self.Db_BaseUserSet_Db_ManagerUser" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseWorkOrderApprovalHistorySet" EntityType="Self.Db_BaseWorkOrderApprovalHistorySet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseWorkOrderSet" EntityType="Self.Db_BaseWorkOrderSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_BaseWorkOrderTaskUserSet" EntityType="Self.Db_BaseWorkOrderTaskUserSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_WorkFlowDefBaseUnitSet" EntityType="Self.Db_WorkFlowDefBaseUnitSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" EntityType="Self.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" EntityType="Self.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_WorkFlowDefinitionSet" EntityType="Self.Db_WorkFlowDefinitionSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_WorkFlowDefLineSet" EntityType="Self.Db_WorkFlowDefLineSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_WorkFlowRoleDescriptSet" EntityType="Self.Db_WorkFlowRoleDescriptSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_WorkFlowRoleSet" EntityType="Self.Db_WorkFlowRoleSet" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_Db_BaseDocDb_BaseDocFile" Association="Self.FK_Db_BaseDocDb_BaseDocFile">
-            <End Role="Db_BaseDocSet" EntitySet="Db_BaseDocSet" />
-            <End Role="Db_BaseDocFileSet" EntitySet="Db_BaseDocFileSet" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_BaseUserDb_BaseUserRole" Association="Self.FK_Db_BaseUserDb_BaseUserRole">
-            <End Role="Db_BaseUserSet" EntitySet="Db_BaseUserSet" />
-            <End Role="Db_BaseUserRoleSet" EntitySet="Db_BaseUserRoleSet" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory" Association="Self.FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory">
-            <End Role="Db_BaseWorkOrderSet" EntitySet="Db_BaseWorkOrderSet" />
-            <End Role="Db_BaseWorkOrderApprovalHistorySet" EntitySet="Db_BaseWorkOrderApprovalHistorySet" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_BaseWorkOrderDb_BaseWorkOrderTaskUser" Association="Self.FK_Db_BaseWorkOrderDb_BaseWorkOrderTaskUser">
-            <End Role="Db_BaseWorkOrderSet" EntitySet="Db_BaseWorkOrderSet" />
-            <End Role="Db_BaseWorkOrderTaskUserSet" EntitySet="Db_BaseWorkOrderTaskUserSet" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_DocPic_inherits_Db_BaseDoc" Association="Self.FK_Db_DocPic_inherits_Db_BaseDoc">
-            <End Role="Db_BaseDocSet" EntitySet="Db_BaseDocSet" />
-            <End Role="Db_BaseDocSet_Db_DocPic" EntitySet="Db_BaseDocSet_Db_DocPic" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_ExceptionLog_inherits_Db_BaseLog" Association="Self.FK_Db_ExceptionLog_inherits_Db_BaseLog">
-            <End Role="Db_BaseLogSet" EntitySet="Db_BaseLogSet" />
-            <End Role="Db_BaseLogSet_Db_ExceptionLog" EntitySet="Db_BaseLogSet_Db_ExceptionLog" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_ManagerUser_inherits_Db_BaseUser" Association="Self.FK_Db_ManagerUser_inherits_Db_BaseUser">
-            <End Role="Db_BaseUserSet" EntitySet="Db_BaseUserSet" />
-            <End Role="Db_BaseUserSet_Db_ManagerUser" EntitySet="Db_BaseUserSet_Db_ManagerUser" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_UserLog_inherits_Db_BaseLog" Association="Self.FK_Db_UserLog_inherits_Db_BaseLog">
-            <End Role="Db_BaseLogSet" EntitySet="Db_BaseLogSet" />
-            <End Role="Db_BaseLogSet_Db_UserLog" EntitySet="Db_BaseLogSet_Db_UserLog" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_WorkFlowDefArea_inherits_Db_WorkFlowDefBaseUnit" Association="Self.FK_Db_WorkFlowDefArea_inherits_Db_WorkFlowDefBaseUnit">
-            <End Role="Db_WorkFlowDefBaseUnitSet" EntitySet="Db_WorkFlowDefBaseUnitSet" />
-            <End Role="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" EntitySet="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_WorkFlowDefinitionDb_WorkFlowDefArea" Association="Self.FK_Db_WorkFlowDefinitionDb_WorkFlowDefArea">
-            <End Role="Db_WorkFlowDefinitionSet" EntitySet="Db_WorkFlowDefinitionSet" />
-            <End Role="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" EntitySet="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_WorkFlowDefinitionDb_WorkFlowDefLine" Association="Self.FK_Db_WorkFlowDefinitionDb_WorkFlowDefLine">
-            <End Role="Db_WorkFlowDefinitionSet" EntitySet="Db_WorkFlowDefinitionSet" />
-            <End Role="Db_WorkFlowDefLineSet" EntitySet="Db_WorkFlowDefLineSet" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_WorkFlowDefinitionDb_WorkFlowDefStep" Association="Self.FK_Db_WorkFlowDefinitionDb_WorkFlowDefStep">
-            <End Role="Db_WorkFlowDefinitionSet" EntitySet="Db_WorkFlowDefinitionSet" />
-            <End Role="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" EntitySet="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_WorkFlowDefStep_inherits_Db_WorkFlowDefBaseUnit" Association="Self.FK_Db_WorkFlowDefStep_inherits_Db_WorkFlowDefBaseUnit">
-            <End Role="Db_WorkFlowDefBaseUnitSet" EntitySet="Db_WorkFlowDefBaseUnitSet" />
-            <End Role="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" EntitySet="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema></edmx:StorageModels>
+    <Schema Namespace="Default.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="DefaultStoreContainer">
+    <EntitySet Name="Db_BaseUserSet" EntityType="Default.Store.Db_BaseUserSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseLogSet" EntityType="Default.Store.Db_BaseLogSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseUserRoleSet" EntityType="Default.Store.Db_BaseUserRoleSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseTreeSet" EntityType="Default.Store.Db_BaseTreeSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseDocSet" EntityType="Default.Store.Db_BaseDocSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseFileSet" EntityType="Default.Store.Db_BaseFileSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseDocFileSet" EntityType="Default.Store.Db_BaseDocFileSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_WorkFlowRoleSet" EntityType="Default.Store.Db_WorkFlowRoleSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_WorkFlowRoleDescriptSet" EntityType="Default.Store.Db_WorkFlowRoleDescriptSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_WorkFlowDefinitionSet" EntityType="Default.Store.Db_WorkFlowDefinitionSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_WorkFlowDefBaseUnitSet" EntityType="Default.Store.Db_WorkFlowDefBaseUnitSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_WorkFlowDefLineSet" EntityType="Default.Store.Db_WorkFlowDefLineSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseWorkOrderSet" EntityType="Default.Store.Db_BaseWorkOrderSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseWorkOrderTaskUserSet" EntityType="Default.Store.Db_BaseWorkOrderTaskUserSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseWorkOrderApprovalHistorySet" EntityType="Default.Store.Db_BaseWorkOrderApprovalHistorySet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" EntityType="Default.Store.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" EntityType="Default.Store.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseUserSet_Db_ManagerUser" EntityType="Default.Store.Db_BaseUserSet_Db_ManagerUser" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseLogSet_Db_ExceptionLog" EntityType="Default.Store.Db_BaseLogSet_Db_ExceptionLog" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseLogSet_Db_UserLog" EntityType="Default.Store.Db_BaseLogSet_Db_UserLog" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseDocSet_Db_DocPic" EntityType="Default.Store.Db_BaseDocSet_Db_DocPic" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseWorkOrderSet_Db_OA_Leave" EntityType="Default.Store.Db_BaseWorkOrderSet_Db_OA_Leave" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="Db_BaseUserDb_BaseUserRole" Association="Default.Store.Db_BaseUserDb_BaseUserRole">
+      <End Role="Db_BaseUser" EntitySet="Db_BaseUserSet" />
+      <End Role="Db_BaseUserRole" EntitySet="Db_BaseUserRoleSet" />
+    </AssociationSet>
+    <AssociationSet Name="Db_BaseDocDb_BaseDocFile" Association="Default.Store.Db_BaseDocDb_BaseDocFile">
+      <End Role="Db_BaseDoc" EntitySet="Db_BaseDocSet" />
+      <End Role="Db_BaseDocFile" EntitySet="Db_BaseDocFileSet" />
+    </AssociationSet>
+    <AssociationSet Name="Db_WorkFlowDefinitionDb_WorkFlowDefArea" Association="Default.Store.Db_WorkFlowDefinitionDb_WorkFlowDefArea">
+      <End Role="Db_WorkFlowDefinition" EntitySet="Db_WorkFlowDefinitionSet" />
+      <End Role="Db_WorkFlowDefArea" EntitySet="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" />
+    </AssociationSet>
+    <AssociationSet Name="Db_WorkFlowDefinitionDb_WorkFlowDefLine" Association="Default.Store.Db_WorkFlowDefinitionDb_WorkFlowDefLine">
+      <End Role="Db_WorkFlowDefinition" EntitySet="Db_WorkFlowDefinitionSet" />
+      <End Role="Db_WorkFlowDefLine" EntitySet="Db_WorkFlowDefLineSet" />
+    </AssociationSet>
+    <AssociationSet Name="Db_WorkFlowDefinitionDb_WorkFlowDefStep" Association="Default.Store.Db_WorkFlowDefinitionDb_WorkFlowDefStep">
+      <End Role="Db_WorkFlowDefinition" EntitySet="Db_WorkFlowDefinitionSet" />
+      <End Role="Db_WorkFlowDefStep" EntitySet="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" />
+    </AssociationSet>
+    <AssociationSet Name="Db_BaseWorkOrderDb_BaseWorkOrderTaskUser" Association="Default.Store.Db_BaseWorkOrderDb_BaseWorkOrderTaskUser">
+      <End Role="Db_BaseWorkOrder" EntitySet="Db_BaseWorkOrderSet" />
+      <End Role="Db_BaseWorkOrderTaskUser" EntitySet="Db_BaseWorkOrderTaskUserSet" />
+    </AssociationSet>
+    <AssociationSet Name="Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory" Association="Default.Store.Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory">
+      <End Role="Db_BaseWorkOrder" EntitySet="Db_BaseWorkOrderSet" />
+      <End Role="Db_BaseWorkOrderApprovalHistory" EntitySet="Db_BaseWorkOrderApprovalHistorySet" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_WorkFlowDefArea_inherits_Db_WorkFlowDefBaseUnit" Association="Default.Store.FK_Db_WorkFlowDefArea_inherits_Db_WorkFlowDefBaseUnit">
+      <End Role="Db_WorkFlowDefBaseUnit" EntitySet="Db_WorkFlowDefBaseUnitSet" />
+      <End Role="Db_WorkFlowDefArea" EntitySet="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_WorkFlowDefStep_inherits_Db_WorkFlowDefBaseUnit" Association="Default.Store.FK_Db_WorkFlowDefStep_inherits_Db_WorkFlowDefBaseUnit">
+      <End Role="Db_WorkFlowDefBaseUnit" EntitySet="Db_WorkFlowDefBaseUnitSet" />
+      <End Role="Db_WorkFlowDefStep" EntitySet="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_ManagerUser_inherits_Db_BaseUser" Association="Default.Store.FK_Db_ManagerUser_inherits_Db_BaseUser">
+      <End Role="Db_BaseUser" EntitySet="Db_BaseUserSet" />
+      <End Role="Db_ManagerUser" EntitySet="Db_BaseUserSet_Db_ManagerUser" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_ExceptionLog_inherits_Db_BaseLog" Association="Default.Store.FK_Db_ExceptionLog_inherits_Db_BaseLog">
+      <End Role="Db_BaseLog" EntitySet="Db_BaseLogSet" />
+      <End Role="Db_ExceptionLog" EntitySet="Db_BaseLogSet_Db_ExceptionLog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_UserLog_inherits_Db_BaseLog" Association="Default.Store.FK_Db_UserLog_inherits_Db_BaseLog">
+      <End Role="Db_BaseLog" EntitySet="Db_BaseLogSet" />
+      <End Role="Db_UserLog" EntitySet="Db_BaseLogSet_Db_UserLog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_DocPic_inherits_Db_BaseDoc" Association="Default.Store.FK_Db_DocPic_inherits_Db_BaseDoc">
+      <End Role="Db_BaseDoc" EntitySet="Db_BaseDocSet" />
+      <End Role="Db_DocPic" EntitySet="Db_BaseDocSet_Db_DocPic" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_OA_Leave_inherits_Db_BaseWorkOrder" Association="Default.Store.FK_Db_OA_Leave_inherits_Db_BaseWorkOrder">
+      <End Role="Db_BaseWorkOrder" EntitySet="Db_BaseWorkOrderSet" />
+      <End Role="Db_OA_Leave" EntitySet="Db_BaseWorkOrderSet_Db_OA_Leave" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Db_BaseUserSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="createdOn" Type="datetime" Nullable="false" />
+    <Property Name="lastLoginTime" Type="datetime" Nullable="true" />
+    <Property Name="lastLoginIpAddress" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="isDeleted" Type="bit" Nullable="false" />
+    <Property Name="isDisabled" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_BaseLogSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="logType" Type="tinyint" Nullable="false" />
+    <Property Name="createdOn" Type="datetime" Nullable="false" />
+    <Property Name="message" Type="nvarchar(max)" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Db_BaseUserRoleSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="roleName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Db_BaseUserId" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_BaseTreeSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ParentId" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Seq" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_BaseDocSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="DocType" Type="int" Nullable="false" />
+    <Property Name="Caption" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Code" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="TreeId" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="Seq" Type="int" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="IsDisabled" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_BaseFileSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Path" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="FileName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ExName" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_BaseDocFileSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="FileId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Seq" Type="int" Nullable="false" />
+    <Property Name="Caption" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Descript" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="Db_BaseDocId" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_WorkFlowRoleSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="RoleName" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="Descript" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_WorkFlowRoleDescriptSet">
+    <Key>
+      <PropertyRef Name="WorkFlowRoleId" />
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="WorkFlowRoleId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="UserId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_WorkFlowDefinitionSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Caption" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="Descript" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_WorkFlowDefBaseUnitSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Height" Type="int" Nullable="false" />
+    <Property Name="Width" Type="int" Nullable="false" />
+    <Property Name="Left" Type="int" Nullable="false" />
+    <Property Name="Top" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_WorkFlowDefLineSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="From" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="To" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="M" Type="float" Nullable="true" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Type" Type="nvarchar" Nullable="false" MaxLength="20" />
+    <Property Name="Db_WorkFlowDefinitionId" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_BaseWorkOrderSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="OrderType" Type="tinyint" Nullable="false" />
+    <Property Name="OrderStatus" Type="tinyint" Nullable="false" />
+    <Property Name="WorkFlowDefinitionId" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="WorkFlowBookMarkId" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="Remark" Type="nvarchar(max)" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Db_BaseWorkOrderTaskUserSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Db_BaseWorkOrderId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Db_WorkFlowDefinitionId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Db_WorkFlowDefLineId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Db_WorkFlowDefStepId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="UserId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="userName" Type="nvarchar" Nullable="false" MaxLength="200" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="IsConfirm" Type="bit" Nullable="false" />
+    <Property Name="ConfirmTime" Type="datetime" Nullable="true" />
+    <Property Name="Remark" Type="nvarchar(max)" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Db_BaseWorkOrderApprovalHistorySet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="WorkFlowDefLineId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="Db_BaseWorkOrderId" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Color" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="Db_WorkFlowDefinitionId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Type" Type="int" Nullable="false" />
+    <Property Name="WorkFlowRoleId" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="IsCountersign" Type="bit" Nullable="true" />
+    <Property Name="Db_WorkFlowDefinitionId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_BaseUserSet_Db_ManagerUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="loginName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="passWord" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="fullName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="mobilePhone" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_BaseLogSet_Db_ExceptionLog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="code" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="stackTrace" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="codeString" Type="nvarchar" Nullable="false" MaxLength="200" />
+    <Property Name="Id" Type="bigint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_BaseLogSet_Db_UserLog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="code" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="userId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="userName" Type="nvarchar" Nullable="false" MaxLength="500" />
+    <Property Name="fkId" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="fkName" Type="nvarchar" Nullable="true" MaxLength="500" />
+    <Property Name="Id" Type="bigint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_BaseDocSet_Db_DocPic">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Descript" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Content" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_BaseWorkOrderSet_Db_OA_Leave">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="LeaveType" Type="tinyint" Nullable="false" />
+    <Property Name="BeginTime" Type="datetime" Nullable="false" />
+    <Property Name="EndTime" Type="datetime" Nullable="false" />
+    <Property Name="Descript" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="UserId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <Association Name="Db_BaseUserDb_BaseUserRole">
+    <End Role="Db_BaseUser" Type="Default.Store.Db_BaseUserSet" Multiplicity="1" />
+    <End Role="Db_BaseUserRole" Type="Default.Store.Db_BaseUserRoleSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Db_BaseUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_BaseUserRole">
+        <PropertyRef Name="Db_BaseUserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="Db_BaseDocDb_BaseDocFile">
+    <End Role="Db_BaseDoc" Type="Default.Store.Db_BaseDocSet" Multiplicity="1" />
+    <End Role="Db_BaseDocFile" Type="Default.Store.Db_BaseDocFileSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Db_BaseDoc">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_BaseDocFile">
+        <PropertyRef Name="Db_BaseDocId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="Db_WorkFlowDefinitionDb_WorkFlowDefArea">
+    <End Role="Db_WorkFlowDefinition" Type="Default.Store.Db_WorkFlowDefinitionSet" Multiplicity="1" />
+    <End Role="Db_WorkFlowDefArea" Type="Default.Store.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Db_WorkFlowDefinition">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_WorkFlowDefArea">
+        <PropertyRef Name="Db_WorkFlowDefinitionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="Db_WorkFlowDefinitionDb_WorkFlowDefLine">
+    <End Role="Db_WorkFlowDefinition" Type="Default.Store.Db_WorkFlowDefinitionSet" Multiplicity="1" />
+    <End Role="Db_WorkFlowDefLine" Type="Default.Store.Db_WorkFlowDefLineSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Db_WorkFlowDefinition">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_WorkFlowDefLine">
+        <PropertyRef Name="Db_WorkFlowDefinitionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="Db_WorkFlowDefinitionDb_WorkFlowDefStep">
+    <End Role="Db_WorkFlowDefinition" Type="Default.Store.Db_WorkFlowDefinitionSet" Multiplicity="1" />
+    <End Role="Db_WorkFlowDefStep" Type="Default.Store.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Db_WorkFlowDefinition">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_WorkFlowDefStep">
+        <PropertyRef Name="Db_WorkFlowDefinitionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="Db_BaseWorkOrderDb_BaseWorkOrderTaskUser">
+    <End Role="Db_BaseWorkOrder" Type="Default.Store.Db_BaseWorkOrderSet" Multiplicity="1" />
+    <End Role="Db_BaseWorkOrderTaskUser" Type="Default.Store.Db_BaseWorkOrderTaskUserSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Db_BaseWorkOrder">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_BaseWorkOrderTaskUser">
+        <PropertyRef Name="Db_BaseWorkOrderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory">
+    <End Role="Db_BaseWorkOrder" Type="Default.Store.Db_BaseWorkOrderSet" Multiplicity="1" />
+    <End Role="Db_BaseWorkOrderApprovalHistory" Type="Default.Store.Db_BaseWorkOrderApprovalHistorySet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Db_BaseWorkOrder">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_BaseWorkOrderApprovalHistory">
+        <PropertyRef Name="Db_BaseWorkOrderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_WorkFlowDefArea_inherits_Db_WorkFlowDefBaseUnit">
+    <End Role="Db_WorkFlowDefBaseUnit" Type="Default.Store.Db_WorkFlowDefBaseUnitSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_WorkFlowDefArea" Type="Default.Store.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_WorkFlowDefBaseUnit">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_WorkFlowDefArea">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_WorkFlowDefStep_inherits_Db_WorkFlowDefBaseUnit">
+    <End Role="Db_WorkFlowDefBaseUnit" Type="Default.Store.Db_WorkFlowDefBaseUnitSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_WorkFlowDefStep" Type="Default.Store.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_WorkFlowDefBaseUnit">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_WorkFlowDefStep">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_ManagerUser_inherits_Db_BaseUser">
+    <End Role="Db_BaseUser" Type="Default.Store.Db_BaseUserSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_ManagerUser" Type="Default.Store.Db_BaseUserSet_Db_ManagerUser" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_BaseUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_ManagerUser">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_ExceptionLog_inherits_Db_BaseLog">
+    <End Role="Db_BaseLog" Type="Default.Store.Db_BaseLogSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_ExceptionLog" Type="Default.Store.Db_BaseLogSet_Db_ExceptionLog" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_BaseLog">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_ExceptionLog">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_UserLog_inherits_Db_BaseLog">
+    <End Role="Db_BaseLog" Type="Default.Store.Db_BaseLogSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_UserLog" Type="Default.Store.Db_BaseLogSet_Db_UserLog" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_BaseLog">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_UserLog">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_DocPic_inherits_Db_BaseDoc">
+    <End Role="Db_BaseDoc" Type="Default.Store.Db_BaseDocSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_DocPic" Type="Default.Store.Db_BaseDocSet_Db_DocPic" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_BaseDoc">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_DocPic">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_OA_Leave_inherits_Db_BaseWorkOrder">
+    <End Role="Db_BaseWorkOrder" Type="Default.Store.Db_BaseWorkOrderSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_OA_Leave" Type="Default.Store.Db_BaseWorkOrderSet_Db_OA_Leave" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_BaseWorkOrder">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_OA_Leave">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="Default" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
@@ -807,6 +837,13 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Db_OA_Leave" BaseType="Default.Db_BaseWorkOrder" >
+          <Property Name="LeaveType" Type="Byte" Nullable="false" />
+          <Property Name="BeginTime" Type="DateTime" Nullable="false" />
+          <Property Name="EndTime" Type="DateTime" Nullable="false" />
+          <Property Name="Descript" Type="String" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="50" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1011,21 +1048,31 @@
           <ScalarProperty Name="Remark" ColumnName="Remark" />
         </MappingFragment>
       </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(Default.Db_OA_Leave)">
+        <MappingFragment StoreEntitySet="Db_BaseWorkOrderSet_Db_OA_Leave">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="LeaveType" ColumnName="LeaveType" />
+          <ScalarProperty Name="BeginTime" ColumnName="BeginTime" />
+          <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+          <ScalarProperty Name="Descript" ColumnName="Descript" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+        </MappingFragment>
+      </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="Db_BaseWorkOrderTaskUserSet">
       <EntityTypeMapping TypeName="IsTypeOf(Default.Db_BaseWorkOrderTaskUser)">
         <MappingFragment StoreEntitySet="Db_BaseWorkOrderTaskUserSet">
-          <ScalarProperty Name="userName" ColumnName="userName" />
-                <ScalarProperty Name="Db_WorkFlowDefStepId" ColumnName="Db_WorkFlowDefStepId" />
-                <ScalarProperty Name="Db_WorkFlowDefinitionId" ColumnName="Db_WorkFlowDefinitionId" />
-                <ScalarProperty Name="Db_WorkFlowDefLineId" ColumnName="Db_WorkFlowDefLineId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Db_BaseWorkOrderId" ColumnName="Db_BaseWorkOrderId" />
+          <ScalarProperty Name="Db_WorkFlowDefinitionId" ColumnName="Db_WorkFlowDefinitionId" />
+          <ScalarProperty Name="Db_WorkFlowDefLineId" ColumnName="Db_WorkFlowDefLineId" />
+          <ScalarProperty Name="Db_WorkFlowDefStepId" ColumnName="Db_WorkFlowDefStepId" />
           <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="userName" ColumnName="userName" />
           <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
           <ScalarProperty Name="IsConfirm" ColumnName="IsConfirm" />
           <ScalarProperty Name="ConfirmTime" ColumnName="ConfirmTime" />
           <ScalarProperty Name="Remark" ColumnName="Remark" />
-          <ScalarProperty Name="Db_BaseWorkOrderId" ColumnName="Db_BaseWorkOrderId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
