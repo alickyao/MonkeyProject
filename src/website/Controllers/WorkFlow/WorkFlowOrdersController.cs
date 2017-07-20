@@ -103,8 +103,23 @@ namespace website.Controllers.WorkFlow
         public BaseResponse WorkFlowUserTermination(BaseWorkOrderUserConfirmReqeust condtion)
         {
             var info = new BaseWorkOrder(condtion.Id);
-            info.WorkFlowTermination(UserManager.getUserById(User.Identity.Name),condtion);
+            info.WorkFlowTermination(UserManager.getUserById(User.Identity.Name), condtion);
             return BaseResponse.getResult("审批成功");
+        }
+
+        /// <summary>
+        /// [管理员角色权限]删除各类工单 （物理删除，包含子类的数据）
+        /// </summary>
+        /// <param name="id">工单的ID</param>
+        /// <returns></returns>
+        [HttpGet]
+        [ApiAuthorize(Roles ="admin")]
+        public BaseResponse WorkFlowDelOrder(string id) {
+            var userInfo = UserManager.getUserById(User.Identity.Name);
+            var info = new BaseWorkOrder(id);
+            info.Del();
+            UserLog.create(string.Format("删除工单，类型[{0}]",info.OrderTypeString), "基础工单", userInfo, info);
+            return BaseResponse.getResult("删除成功");
         }
     }
 }

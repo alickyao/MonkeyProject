@@ -38,8 +38,8 @@
         <text>办公管理</text>
         <children>
           <ManagerMenu>
-            <text>请假申请</text>
-            <url></url>
+            <text>我的请假申请</text>
+            <url><![CDATA[/manager/OA/MyLeavesList]]></url>
           </ManagerMenu>
         </children>
       </ManagerMenu>

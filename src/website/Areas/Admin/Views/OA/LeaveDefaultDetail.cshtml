@@ -1,0 +1,42 @@
+﻿@using monkey.service.WorkFlow;
+@using monkey.service.Fun.OA;
+@{
+    ViewBag.Title = "请假申请 默认详情页面 - 展示";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string pageId = ViewBag.pageId;
+    var userInfo = UserManager.getUserById(Model.UserId);
+}
+@model LeaveInfo
+<script>
+    $(function () {
+        
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false" style="padding:5px;">
+        <table class="formtable" style="width:100%;">
+            <tr>
+                <td class="t" style="width:120px;">类型</td>
+                <td>@Model.TypeString</td>
+            </tr>
+            <tr>
+                <td class="t">开始时间</td>
+                <td>@Model.BeginTimeString</td>
+            </tr>
+            <tr>
+                <td class="t">结束时间</td>
+                <td>@Model.EndTimeString</td>
+            </tr>
+            <tr>
+                <td class="t">请假人</td>
+                <td>@userInfo.getFullNameString()</td>
+            </tr>
+            <tr>
+                <td class="t">事由</td>
+                <td>@Model.Descript</td>
+            </tr>
+        </table>
+    </div>
+</div>
+

@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using monkey.service;
 using monkey.service.Users;
 using monkey.service.WorkFlow;
+using monkey.service.Fun.OA;
 
 namespace website.Areas.Admin.Controllers
 {
@@ -144,9 +145,12 @@ namespace website.Areas.Admin.Controllers
         /// <param name="id">工单的ID</param>
         /// <param name="pageId"></param>
         /// <returns></returns>
-        public ActionResult WorkFlowOrderInfo(string id,string pageId) {
+        public ActionResult WorkFlowOrderInfo(string id, string pageId) {
             ViewBag.pageId = getPageId(pageId);
             var info = new BaseWorkOrder(id);
+            if (info.OrderType == WorkOrderType.请假申请) {
+                info = new LeaveInfo(id);
+            }
             return View(info);
         }
 

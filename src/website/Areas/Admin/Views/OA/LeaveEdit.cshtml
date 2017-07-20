@@ -1,0 +1,55 @@
+﻿@using monkey.service.WorkFlow;
+@using monkey.service.Fun.OA;
+@{
+    ViewBag.Title = "请假申请 编辑界面";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string pageId = ViewBag.pageId;
+    //请假类型选择集合
+    var leaveTypeList = SysHelps.getEnumTypeList(typeof(LeaveType));
+}
+@model LeaveInfo
+<script>
+    $(function () {
+        
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false" style="padding:5px;">
+        <form id="@(pageId)LeaveEditForm">
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <table class="formtable" style="width:100%;">
+                <tr>
+                    <td class="t" style="width:120px;">类型</td>
+                    <td>
+                        <select class="easyui-combobox" panelHeight="auto" name="Type" data-options="editable:false">
+                            @foreach (var item in leaveTypeList)
+                            {
+                                <option value="@item.value" @(item.value == Model.Type.GetHashCode().ToString() ? "selected=\"selected\"" : "")>@item.text</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="t">开始时间</td>
+                    <td>
+                        <input class="easyui-datetimebox" name="BeginTime"
+                               data-options="required:true,showSeconds:false" value="@Model.BeginTimeString" style="width:150px">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="t">结束时间</td>
+                    <td>
+                        <input class="easyui-datetimebox" name="EndTime"
+                               data-options="required:true,showSeconds:false" value="@Model.EndTimeString" style="width:150px">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="t">事由</td>
+                    <td><input class="easyui-textbox" name="Descript" value="@Model.Descript" data-options="required:true,multiline:true" style="width:80%;height:200px;"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+

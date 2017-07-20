@@ -26,6 +26,11 @@ namespace monkey.service.Fun.OA
     public class LeaveInfoEditRequest {
 
         /// <summary>
+        /// 被编辑的请假申请的ID 新增时不填
+        /// </summary>
+        public string Id { get; set; }
+
+        /// <summary>
         /// 请假类型
         /// </summary>
         public LeaveType Type { get; set; }
@@ -72,10 +77,23 @@ namespace monkey.service.Fun.OA
         public DateTime BeginTime { get; set; }
 
         /// <summary>
+        /// 请假开始时间 - 文本
+        /// </summary>
+        public string BeginTimeString { get; set; }
+
+        /// <summary>
         /// 请假结束时间
         /// </summary>
         public DateTime EndTime { get; set; }
 
+        /// <summary>
+        /// 请假结束时间 - 文本
+        /// </summary>
+        public string EndTimeString { get; set; }
+
+        /// <summary>
+        /// 请假小时
+        /// </summary>
         public double Hours { get; set; }
 
         /// <summary>
@@ -89,7 +107,12 @@ namespace monkey.service.Fun.OA
         public string Descript { get; set; }
 
         /// <summary>
-        /// 构造方法
+        /// 构造方法 - 空
+        /// </summary>
+        public LeaveInfo() { }
+
+        /// <summary>
+        /// 构造方法 - 使用ID
         /// </summary>
         /// <param name="id"></param>
         public LeaveInfo(string id) : base(id)
@@ -104,6 +127,7 @@ namespace monkey.service.Fun.OA
                 SetValue(row);
             }
         }
+
 
         /// <summary>
         /// 构造方法 - 数据库
@@ -121,6 +145,29 @@ namespace monkey.service.Fun.OA
             this.EndTime = row.EndTime;
             this.UserId = row.UserId;
             this.Descript = row.Descript;
+            this.Hours = (this.EndTime - this.BeginTime).TotalHours;
+            this.BeginTimeString = this.BeginTime.ToString("yyyy-MM-dd HH:mm");
+            this.EndTimeString = this.EndTime.ToString("yyyy-MM-dd HH:mm");
+        }
+
+        /// <summary>
+        /// 获取我的请假申请列表
+        /// </summary>
+        /// <param name="userId">用户的ID</param>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static BaseResponseList<LeaveInfo> SearchMyLeavesList(string userId, BaseRequest condtion) {
+            BaseResponseList<LeaveInfo> result = new BaseResponseList<LeaveInfo>();
+
+            using (var db = new DefaultContainer()) {
+                var rows = (from c in db.Db_BaseWorkOrderSet.OfType<Db_OA_Leave>() where c.UserId == userId select c);
+                result.total = rows.Count();
+                if (result.total > 0 && condtion.getRows) {
+                    result.rows = rows.OrderByDescending(p => p.CreatedOn).Skip(condtion.getSkip()).Take(condtion.pageSize).AsEnumerable().Select(p => new LeaveInfo(p)).ToList();
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -149,9 +196,51 @@ namespace monkey.service.Fun.OA
             }
         }
 
+        /// <summary>
+        /// 编辑请假申请
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public LeaveInfo EditLeaveInfo(LeaveInfoEditRequest info)
+        {
+            using (var db = new DefaultContainer()) {
+                var row = db.Db_BaseWorkOrderSet.OfType<Db_OA_Leave>().Single(p => p.Id == this.Id);
+                row.BeginTime = info.BeginTime;
+                row.EndTime = info.EndTime;
+                row.LeaveType = (byte)info.Type.GetHashCode();
+                row.Descript = info.Descript;
+                db.SaveChanges();
+                return new LeaveInfo(row);
+            }
+        }
+
+        /// <summary>
+        /// 删除请假申请
+        /// </summary>
+        public override void Del()
+        {
+            //验证
+            if (this.OrderStatus == WorkOrderStatus.待提交 || this.OrderStatus == WorkOrderStatus.已终止)
+            {
+                base.Del();
+            }
+            else {
+                throw new ValiDataException("只有待提交和已终止状态的请假申请可以被删除");
+            }
+        }
+
         public override string getNameString()
         {
             return "请假申请";
+        }
+
+        /// <summary>
+        /// 请假申请详情展示页面地址
+        /// </summary>
+        /// <returns></returns>
+        public override string GetOrderDetailPageUrl()
+        {
+            return "/manager/OA/LeaveDefaultDetail?pageId={0}&id={1}";
         }
 
         /// <summary>
@@ -165,7 +254,7 @@ namespace monkey.service.Fun.OA
             if (line.ToStep.Id == "e76982fed81b4f13982528b375339c9b") {
                 //判断天数
                 var td = (this.EndTime - this.BeginTime).TotalDays;
-                if (td > 2) {
+                if (td >= 2) {
                     return nextLines.Single(p => p.Id == "507fbfb416b44301b71684dea4a498db");
                 }
                 else {

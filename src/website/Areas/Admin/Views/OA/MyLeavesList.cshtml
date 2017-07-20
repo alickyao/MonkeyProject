@@ -1,0 +1,259 @@
+﻿@using monkey.service.WorkFlow;
+@{
+    ViewBag.Title = "我的请假申请列表";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string pageId = ViewBag.pageId;
+    string condtion = JsonConvert.SerializeObject(Model);
+    string newPageId = SysHelps.getRandmonStirng();
+}
+@model BaseRequest
+
+<script>
+    $(function () {
+        var request = $.parseJSON('@Html.Raw(condtion)');
+        var grid = $("#@(pageId)grid");
+        function loadGrid() {
+            console.log(request);
+            grid.datagrid("loading");
+            $.post("/api/OA_Leave/GetMyLeavesList", request, function (json) {
+                setGridRows(json, grid);
+            });
+        }
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: true,
+            rownumbers: true,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            columns: [[
+                {
+                    field: 'CreatedOnString', title: '创建时间',
+                },
+                {
+                    field: 'OrderStatusString', title: '执行状态', align: 'left', styler: function (value, row, index) {
+                        switch (row.OrderStatus) {
+                            case 1:
+                                return "color:#ff6600";
+                                break;
+                            case 2:
+                                return "color:blue";
+                                break;
+                            case 3:
+                                return "color:red";
+                                break;
+                        }
+                    }
+                },
+                {
+                    field: 'TypeString', title: '类型',
+                },
+                {
+                    field: 'BeginTimeString', title: '请假开始时间',
+                },
+                {
+                    field: 'EndTimeString', title: '请假结束时间',
+                },
+                {
+                    field: 'Descript', title: '请假事由',
+                },
+            ]],
+            toolbar: [
+                {
+                    text: "新增",
+                    iconCls: "icon-add",
+                    handler: function () {
+                        var url = "@Url.Action("LeaveEdit", new { pageId = pageId })";
+                        console.log(url);
+                        editDialogWin.dialog("setTitle", "新增请假申请").dialog("open").dialog("refresh", url);
+                    }
+                },
+                {
+                    text: "编辑",
+                    iconCls: "icon-edit",
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                        }
+                        else {
+                            var url = "@Url.Action("LeaveEdit", new { pageId = pageId })";
+                            url += "&id=" + row.Id;
+                            console.log(url);
+                            editDialogWin.dialog("setTitle", "编辑请假申请").dialog("open").dialog("refresh", url);
+                        }
+                    }
+                },
+                {
+                    text: "删除",
+                    iconCls: "icon-clear",
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                        }
+                        else {
+                            $.messager.confirm('请确认', '确认要删除该申请？', function (r) {
+                                if (r) {
+                                    var url = "/api/OA_Leave/DelLeave/" + row.Id;
+                                    console.log(url);
+                                    grid.datagrid("loading");
+                                    $.getJSON(url, function (json) {
+                                        showmsg(json);
+                                        if (json.Message == "0") {
+                                            loadGrid();
+                                        }
+                                        else {
+                                            grid.datagrid("loaded");
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                },
+                '-'
+                ,
+                {
+                    text: "提交审批",
+                    iconCls: "icon-arrow_up",
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                        }
+                        else {
+                            $.messager.confirm('请确认', '确认提交到工作流进行审批？', function (r) {
+                                if (r) {
+                                    var url = "/api/WorkFlowOrders/BeginWorkFlow/" + row.Id + "?defId=4317b372ccf7439fbb649989796506b1";//请假申请的工作流ID
+                                    console.log(url);
+                                    grid.datagrid("loading");
+                                    $.getJSON(url, function (json) {
+                                        showmsg(json);
+                                        if (json.Message == "0") {
+                                            loadGrid();
+                                        }
+                                        else {
+                                            grid.datagrid("loaded");
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                },
+                {
+                    text: "审批详情",
+                    iconCls: "icon-search",
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                        }
+                        else {
+                            if (row.Id != "" && row.Id != null) {
+                                var url = "@Url.Action("WorkFlowOrderInfo","WorkFlow",new { pageId = pageId })";
+                                url += "&id=" + row.Id;
+                                console.log(url);
+                                dialogWin.dialog({
+                                    title: "工单详情",
+                                    href: url
+                                }).dialog("open");
+                            }
+                        }
+                    }
+                },
+            ],
+            onDblClickRow: function (index, row) {
+                var url = "@Url.Action("WorkFlowOrderInfo", "WorkFlow", new { pageId = pageId })";
+                url += "&id=" + row.Id;
+                console.log(url);
+                dialogWin.dialog({
+                    title: "工单详情",
+                    href: url
+                }).dialog("open");
+            }
+        });
+
+        //展示窗口
+        var dialogWin = $('#@(pageId)dd');
+
+        dialogWin.dialog({
+            cache: false,
+            modal: true,
+            closed: true,
+            inline: true,
+        });
+
+        //新增编辑窗口
+        var editDialogWin = $("#@(pageId)editDD");
+        editDialogWin.dialog({
+            cache: false,
+            modal: true,
+            closed: true,
+            inline: true,
+            toolbar: [
+                {
+                text: '保存',
+                iconCls: 'icon-save',
+                handler: function () {
+                    var btn = $(this);
+                    //获取表单
+                    var form = $("#@(pageId)LeaveEditForm");
+                    //验证表单
+                    var r = form.form("validate");
+                    if (r) {
+                        //提交
+                        var d = form.serializeObject();
+                        console.log(d);
+                        btn.linkbutton("disable");
+                        var url = "/api/OA_Leave/EditLeave";
+                        console.log(url);
+                        $.post(url, d, function (json) {
+                            showmsg(json);
+                            btn.linkbutton("enable");
+                            if (json.Message == "0") {
+                                //刷新网格
+                                loadGrid();
+                                editDialogWin.dialog("close");
+                            }
+                        });
+                        
+                    }
+                }
+                },
+                {
+                    text: '关闭',
+                    iconCls: 'icon-clear',
+                    handler: function () {
+                        editDialogWin.dialog("close");
+                    }
+                }
+            ]
+        });
+
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            }
+        });
+        loadGrid();
+
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false">
+        <div id="@(pageId)dd" style="width:90%;height:90%; overflow:hidden"></div>
+        <div id="@(pageId)editDD" style="width:90%;height:90%; overflow:hidden"></div>
+        <table id="@(pageId)grid"></table>
+    </div>
+</div>
+

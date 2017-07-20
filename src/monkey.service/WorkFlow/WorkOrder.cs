@@ -161,6 +161,11 @@ namespace monkey.service.WorkFlow
         #endregion
 
         /// <summary>
+        /// 空构造
+        /// </summary>
+        public BaseWorkOrder() { }
+
+        /// <summary>
         /// 从数据库对象构造
         /// </summary>
         /// <param name="row"></param>
@@ -225,6 +230,18 @@ namespace monkey.service.WorkFlow
             return result;
         }
 
+        /// <summary>
+        /// 物理删除 工单
+        /// </summary>
+        public virtual void Del() {
+            using (var db = new DefaultContainer()) {
+                var row = db.Db_BaseWorkOrderSet.Single(p => p.Id == this.Id);
+                db.Db_BaseWorkOrderApprovalHistorySet.RemoveRange(row.Db_BaseWorkOrderApprovalHistory);
+                db.Db_BaseWorkOrderTaskUserSet.RemoveRange(row.Db_BaseWorkOrderTaskUser);
+                db.Db_BaseWorkOrderSet.Remove(row);
+                db.SaveChanges();
+            }
+        }
 
         #region -- 工作流程
         /// <summary>
