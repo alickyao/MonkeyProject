@@ -58,7 +58,7 @@ namespace monkey.service.Fun.OA
     }
 
     /// <summary>
-    /// 请假
+    /// 请假申请
     /// </summary>
     public class LeaveInfo : BaseWorkOrder
     {
@@ -232,7 +232,7 @@ namespace monkey.service.Fun.OA
 
 
 
-        #region -- 重写工单审批特殊操作
+        #region -- 重写工单审批特殊操作 DEMO
 
         #region -- 启动时
 
