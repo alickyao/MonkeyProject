@@ -21,6 +21,9 @@ namespace monkey.service.WorkFlow
         /// 基础工单 - 无类具体类型
         /// </summary>
         无类型,
+        /// <summary>
+        /// 请假申请
+        /// </summary>
         请假申请
     }
 
@@ -257,12 +260,12 @@ namespace monkey.service.WorkFlow
         /// <param name="defId">工作流定义的ID</param>
         /// <param name="user">提交工作流的用户</param>
         public void WorkFlowBegin(string defId, ICommunicationable user) {
-            if (this.OrderStatus == WorkOrderStatus.待提交)
+            if (this.OrderStatus == WorkOrderStatus.待提交 || this.OrderStatus == WorkOrderStatus.已终止)
             {
                 DoWorkFlowBegin(defId, user);
             }
             else {
-                throw new ValiDataException("只有待提交的工单才可进行提交操作");
+                throw new ValiDataException("只有待提交或者已终止的的工单才可进行提交操作");
             }
         }
 
@@ -298,7 +301,7 @@ namespace monkey.service.WorkFlow
             }
 
             //记录到日志
-            UserLog.create("启动工作流", "工作流", user, this);
+            UserLog.create(string.Format("启动工作流，执行流程[{0}]", defInfo.Caption), "工作流", user, this);
 
             //执行
             //获取下一步
@@ -341,7 +344,7 @@ namespace monkey.service.WorkFlow
         public virtual void DoWorkFlowConfim(WorkFlowDefLineDetail line) {
             if (line.ToStep != null) {
 
-                if (!DoWorkFlowConfimBefore())
+                if (!DoWorkFlowConfimBefore(line))
                 {
                     throw new ValiDataException("当前工作流无法执行");
                 }
@@ -435,7 +438,9 @@ namespace monkey.service.WorkFlow
         /// <summary>
         /// 【具体业务根据需要重写】执行审批工作流前 - 一般 可进行一些验证 默认返回为True
         /// </summary>
-        public virtual bool DoWorkFlowConfimBefore() {
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public virtual bool DoWorkFlowConfimBefore(WorkFlowDefLineDetail line) {
             return true;
         }
 
@@ -618,6 +623,25 @@ namespace monkey.service.WorkFlow
                 UserLog.create(string.Format("流程被终止，原因：[{0}]", condtion.Remark), "工作流", user, this);
                 //后续操作
                 DoWorkFlowTerminationAfter(condtion, nowTaskUsers, taskUserInfo, stepInfo, user);
+                return result;
+            }
+            else {
+                throw new ValiDataException("只有执行中的工单才可进行终止操作");
+            }
+        }
+
+        /// <summary>
+        /// 管理员无条件直接终止工作流
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public BaseWorkOrder WorkFlowTerminationForAdmin(ICommunicationable user, BaseWorkOrderUserConfirmReqeust condtion) {
+            if (this.OrderStatus == WorkOrderStatus.执行中)
+            {
+                var result = DoWorkFlowTermination(user, condtion.Remark);
+                //记录到日志
+                UserLog.create("流程被管理员直接终止", "工作流", user, this);
                 return result;
             }
             else {

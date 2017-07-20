@@ -64,6 +64,19 @@ namespace website.Controllers.WorkFlow
         }
 
         /// <summary>
+        /// 根据工单的ID获取 其对应的具体的工单对象
+        /// </summary>
+        /// <param name="id">工单的ID</param>
+        /// <returns></returns>
+        private BaseWorkOrder GetWorkOrderById(string id) {
+            BaseWorkOrder info = new BaseWorkOrder(id);
+            if (info.OrderType == WorkOrderType.请假申请) {
+                info = new LeaveInfo(id);
+            }
+            return info;
+        }
+
+        /// <summary>
         /// [后台角色权限]启动工作流
         /// </summary>
         /// <param name="id">被启动的工单的ID</param>
@@ -72,7 +85,7 @@ namespace website.Controllers.WorkFlow
         [HttpGet]
         [ApiAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse BeginWorkFlow(string id, string defId) {
-            var info = new BaseWorkOrder(id);
+            var info = GetWorkOrderById(id);
             info.WorkFlowBegin(defId, UserManager.getUserById(User.Identity.Name));
             return BaseResponse.getResult("提交成功");
         }
@@ -85,10 +98,7 @@ namespace website.Controllers.WorkFlow
         [HttpPost]
         [ApiAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse WorkFlowUserConfim(BaseWorkOrderUserConfirmReqeust condtion) {
-            var info = new BaseWorkOrder(condtion.Id);
-            if (info.OrderType == WorkOrderType.请假申请) {
-                info = new LeaveInfo(condtion.Id);
-            }
+            var info = GetWorkOrderById(condtion.Id);
             info.DoWorkFlowUserConfirm(condtion, UserManager.getUserById(User.Identity.Name));
             return BaseResponse.getResult("审批成功");
         }
@@ -102,9 +112,23 @@ namespace website.Controllers.WorkFlow
         [ApiAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse WorkFlowUserTermination(BaseWorkOrderUserConfirmReqeust condtion)
         {
-            var info = new BaseWorkOrder(condtion.Id);
+            var info = GetWorkOrderById(condtion.Id);
             info.WorkFlowTermination(UserManager.getUserById(User.Identity.Name), condtion);
-            return BaseResponse.getResult("审批成功");
+            return BaseResponse.getResult("工作流已终止");
+        }
+
+        /// <summary>
+        /// [管理员角色权限]管理员无条件终止工作流
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ApiAuthorize(Roles ="admin")]
+        public BaseResponse WorkFlowAdminUserTermination(BaseWorkOrderUserConfirmReqeust condtion)
+        {
+            var info = new BaseWorkOrder(condtion.Id);
+            info.WorkFlowTerminationForAdmin(UserManager.getUserById(User.Identity.Name), condtion);
+            return BaseResponse.getResult("工作流已终止");
         }
 
         /// <summary>

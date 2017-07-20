@@ -174,7 +174,28 @@
                     text: "终止",
                     iconCls: "icon-no",
                     handler: function () {
-
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                        }
+                        else {
+                            $.messager.confirm('请确认', '确认要终止该工作流？', function (r) {
+                                if (r) {
+                                    var url = "/api/WorkFlowOrders/WorkFlowAdminUserTermination";
+                                    console.log(url);
+                                    grid.datagrid("loading");
+                                    $.post(url, { id: row.Id, Remark: "直接终止" }, function (json) {
+                                        showmsg(json);
+                                        if (json.Message == "0") {
+                                            loadGrid();
+                                        }
+                                        else {
+                                            grid.datagrid("loaded");
+                                        }
+                                    });
+                                }
+                            });
+                        }
                     }
                 },
                 '-',

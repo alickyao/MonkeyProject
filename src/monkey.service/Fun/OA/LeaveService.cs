@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using monkey.service.WorkFlow;
 using monkey.service.Db;
 using monkey.service.Users;
+using monkey.service.Logs;
 
 
 namespace monkey.service.Fun.OA
@@ -229,10 +230,185 @@ namespace monkey.service.Fun.OA
             }
         }
 
-        public override string getNameString()
+
+
+        #region -- 重写工单审批特殊操作
+
+        #region -- 启动时
+
+        /// <summary>
+        /// 工作流启动前
+        /// </summary>
+        /// <param name="defId"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        protected override bool DoWorkFlowBeginBefore(string defId, ICommunicationable user)
         {
-            return "请假申请";
+            UserLog.create("【自定义】请假申请工作流即将启动", "请假申请", user, this);
+            return base.DoWorkFlowBeginBefore(defId, user);
         }
+        /// <summary>
+        /// 工作流启动后
+        /// </summary>
+        /// <param name="defId"></param>
+        /// <param name="user"></param>
+
+        protected override void DoWorkFlowBeginAfter(string defId, ICommunicationable user)
+        {
+            UserLog.create("【自定义】请假申请工作流已启动完毕", "请假申请", user, this);
+            base.DoWorkFlowBeginAfter(defId, user);
+        }
+
+        #endregion
+
+        #region -- 启动后在执行所有步骤前
+
+        /// <summary>
+        /// 启动后在执行所有步骤前
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public override bool DoWorkFlowConfimBefore(WorkFlowDefLineDetail line)
+        {
+            UserLog.create(string.Format("【自定义】请假申请即将执行步骤[{0}]", line.ToStep.name), "请假申请", adminUser, this);
+            return base.DoWorkFlowConfimBefore(line);
+        }
+
+        #endregion
+
+        #region -- 执行到需要待用户审批的任务节点
+
+        /// <summary>
+        /// 执行到待用户审批步骤是返回执行人的列表
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public override List<ICommunicationable> DoWorkFlowGetTaskUserList(WorkFlowDefLineDetail line)
+        {
+            UserLog.create("【自定义】请假申请进入到任务节点，返回执行人", "请假申请", adminUser, this);
+            return base.DoWorkFlowGetTaskUserList(line);
+        }
+
+        /// <summary>
+        /// 执行到待用户审批步骤是返回执行人的列表 主流程处理完毕后
+        /// </summary>
+        /// <param name="userId"></param>
+        public override void DoWorkFlowSetTaskUserListAfter(List<ICommunicationable> userId)
+        {
+            UserLog.create("【自定义】请假申请进入到任务节点，返回执行人后", "请假申请", adminUser, this);
+            base.DoWorkFlowSetTaskUserListAfter(userId);
+        }
+
+        #endregion
+
+        #region -- 用户审批时
+
+        /// <summary>
+        /// 用户审批前
+        /// </summary>
+        /// <param name="condtion">审批请求</param>
+        /// <param name="nowTaskUsers">当前审批的用户列表</param>
+        /// <param name="userInfo">当前审批人</param>
+        /// <param name="stepInfo">当前步骤</param>
+        /// <returns></returns>
+        protected override bool DoWorkFlowUserConfirmBefore(BaseWorkOrderUserConfirmReqeust condtion, List<BaseWorkOrderTaskUserInfo> nowTaskUsers, ICommunicationable userInfo, WorkFlowDefStep stepInfo)
+        {
+            UserLog.create("【自定义】请假申请用户即将审批", "请假申请", userInfo, this);
+            return base.DoWorkFlowUserConfirmBefore(condtion, nowTaskUsers, userInfo, stepInfo);
+        }
+
+        /// <summary>
+        /// 用户审批后
+        /// </summary>
+        /// <param name="condtion">审批请求</param>
+        /// <param name="nowTaskUsers">当前审批的用户列表</param>
+        /// <param name="taskUserInfo">当前审批人</param>
+        /// <param name="stepInfo">当前步骤</param>
+        /// <param name="nextLines">后续可选步骤</param>
+        /// <param name="userInfo">审批人</param>
+        protected override void DoWorkFlowUserConfirmAfter(BaseWorkOrderUserConfirmReqeust condtion, List<BaseWorkOrderTaskUserInfo> nowTaskUsers, BaseWorkOrderTaskUserInfo taskUserInfo, WorkFlowDefStep stepInfo, List<WorkFlowDefLineDetail> nextLines, ICommunicationable userInfo)
+        {
+            UserLog.create("【自定义】请假申请用户已审批", "请假申请", userInfo, this);
+            base.DoWorkFlowUserConfirmAfter(condtion, nowTaskUsers, taskUserInfo, stepInfo, nextLines, userInfo);
+        }
+
+        #endregion
+
+        #region -- 自动执行 - 除开任务节点和结束节点外的其他节点在执行后都会调用该步骤 并返回后续步骤
+
+        /// <summary>
+        /// 自动执行 - 除开任务节点和结束节点外的其他节点在执行后都会调用该步骤
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="nextLines"></param>
+        /// <returns></returns>
+        public override WorkFlowDefLineDetail DoWorkFlowSelectLine(WorkFlowDefLineDetail line, List<WorkFlowDefLineDetail> nextLines)
+        {
+            UserLog.create("【自定义】请假申请自动执行", "请假申请", adminUser, this);
+            //当审批执行到  天数判断 节点时
+            if (line.ToStep.Id == "e76982fed81b4f13982528b375339c9b")
+            {
+                //判断天数
+                var td = (this.EndTime - this.BeginTime).TotalDays;
+                if (td >= 2)
+                {
+                    return nextLines.Single(p => p.Id == "507fbfb416b44301b71684dea4a498db");
+                }
+                else {
+                    return nextLines.Single(p => p.Id == "800372357ce4495999e77875e1890b8d");
+                }
+            }
+            return base.DoWorkFlowSelectLine(line, nextLines);
+        }
+
+        #endregion
+
+        #region -- 工作流完成后（整个流程已结束）
+
+        /// <summary>
+        /// 工作流完结后
+        /// </summary>
+        public override void DoWorkFlowEndAfter()
+        {
+            UserLog.create("【自定义】请假申请工作流审批已经完成", "请假申请", adminUser, this);
+            base.DoWorkFlowEndAfter();
+        }
+
+        #endregion
+
+        #region -- 终止时
+
+        /// <summary>
+        /// 终止前
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <param name="nowTaskUsers"></param>
+        /// <param name="userInfo"></param>
+        /// <param name="stepInfo"></param>
+        /// <returns></returns>
+        protected override bool DoWorkFlowTerminationBefore(BaseWorkOrderUserConfirmReqeust condtion, List<BaseWorkOrderTaskUserInfo> nowTaskUsers, ICommunicationable userInfo, WorkFlowDefStep stepInfo)
+        {
+            UserLog.create("【自定义】请假申请审批即将被终止", "请假申请", userInfo, this);
+            return base.DoWorkFlowTerminationBefore(condtion, nowTaskUsers, userInfo, stepInfo);
+        }
+
+        /// <summary>
+        /// 终止后
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <param name="nowTaskUsers"></param>
+        /// <param name="taskUserInfo"></param>
+        /// <param name="stepInfo"></param>
+        /// <param name="userInfo"></param>
+        protected override void DoWorkFlowTerminationAfter(BaseWorkOrderUserConfirmReqeust condtion, List<BaseWorkOrderTaskUserInfo> nowTaskUsers, BaseWorkOrderTaskUserInfo taskUserInfo, WorkFlowDefStep stepInfo, ICommunicationable userInfo)
+        {
+            UserLog.create("【自定义】请假申请已经被终止", "请假申请", userInfo, this);
+            base.DoWorkFlowTerminationAfter(condtion, nowTaskUsers, taskUserInfo, stepInfo, userInfo);
+        }
+
+        #endregion
+
+        #endregion
 
         /// <summary>
         /// 请假申请详情展示页面地址
@@ -244,24 +420,12 @@ namespace monkey.service.Fun.OA
         }
 
         /// <summary>
-        /// 天数判断步骤 返回对应的审批线
+        /// 获取业务的名称
         /// </summary>
-        /// <param name="line"></param>
-        /// <param name="nextLines"></param>
         /// <returns></returns>
-        public override WorkFlowDefLineDetail DoWorkFlowSelectLine(WorkFlowDefLineDetail line, List<WorkFlowDefLineDetail> nextLines)
+        public override string getNameString()
         {
-            if (line.ToStep.Id == "e76982fed81b4f13982528b375339c9b") {
-                //判断天数
-                var td = (this.EndTime - this.BeginTime).TotalDays;
-                if (td >= 2) {
-                    return nextLines.Single(p => p.Id == "507fbfb416b44301b71684dea4a498db");
-                }
-                else {
-                    return nextLines.Single(p => p.Id == "800372357ce4495999e77875e1890b8d");
-                }
-            }
-            return base.DoWorkFlowSelectLine(line, nextLines);
+            return "请假申请";
         }
     }
 }
