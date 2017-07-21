@@ -21,6 +21,7 @@
     <EntitySet Name="Db_BaseWorkOrderSet" EntityType="Default.Store.Db_BaseWorkOrderSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_BaseWorkOrderTaskUserSet" EntityType="Default.Store.Db_BaseWorkOrderTaskUserSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_BaseWorkOrderApprovalHistorySet" EntityType="Default.Store.Db_BaseWorkOrderApprovalHistorySet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_BaseDocTreeSet" EntityType="Default.Store.Db_BaseDocTreeSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" EntityType="Default.Store.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" EntityType="Default.Store.Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_BaseUserSet_Db_ManagerUser" EntityType="Default.Store.Db_BaseUserSet_Db_ManagerUser" store:Type="Tables" Schema="dbo" />
@@ -55,6 +56,10 @@
     <AssociationSet Name="Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory" Association="Default.Store.Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory">
       <End Role="Db_BaseWorkOrder" EntitySet="Db_BaseWorkOrderSet" />
       <End Role="Db_BaseWorkOrderApprovalHistory" EntitySet="Db_BaseWorkOrderApprovalHistorySet" />
+    </AssociationSet>
+    <AssociationSet Name="Db_BaseDocDb_BaseDocTree" Association="Default.Store.Db_BaseDocDb_BaseDocTree">
+      <End Role="Db_BaseDoc" EntitySet="Db_BaseDocSet" />
+      <End Role="Db_BaseDocTree" EntitySet="Db_BaseDocTreeSet" />
     </AssociationSet>
     <AssociationSet Name="FK_Db_WorkFlowDefArea_inherits_Db_WorkFlowDefBaseUnit" Association="Default.Store.FK_Db_WorkFlowDefArea_inherits_Db_WorkFlowDefBaseUnit">
       <End Role="Db_WorkFlowDefBaseUnit" EntitySet="Db_WorkFlowDefBaseUnitSet" />
@@ -132,7 +137,6 @@
     <Property Name="DocType" Type="int" Nullable="false" />
     <Property Name="Caption" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Code" Type="nvarchar" Nullable="true" MaxLength="50" />
-    <Property Name="TreeId" Type="nvarchar" Nullable="true" MaxLength="50" />
     <Property Name="CreatedOn" Type="datetime" Nullable="false" />
     <Property Name="Seq" Type="int" Nullable="false" />
     <Property Name="IsDeleted" Type="bit" Nullable="false" />
@@ -246,6 +250,14 @@
     <Property Name="WorkFlowDefLineId" Type="nvarchar" Nullable="false" MaxLength="50" />
     <Property Name="CreatedOn" Type="datetime" Nullable="false" />
     <Property Name="Db_BaseWorkOrderId" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_BaseDocTreeSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="TreeId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Db_BaseDocId" Type="nvarchar" Nullable="false" MaxLength="50" />
   </EntityType>
   <EntityType Name="Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea">
     <Key>
@@ -398,6 +410,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="Db_BaseDocDb_BaseDocTree">
+    <End Role="Db_BaseDoc" Type="Default.Store.Db_BaseDocSet" Multiplicity="1" />
+    <End Role="Db_BaseDocTree" Type="Default.Store.Db_BaseDocTreeSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Db_BaseDoc">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_BaseDocTree">
+        <PropertyRef Name="Db_BaseDocId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_Db_WorkFlowDefArea_inherits_Db_WorkFlowDefBaseUnit">
     <End Role="Db_WorkFlowDefBaseUnit" Type="Default.Store.Db_WorkFlowDefBaseUnitSet" Multiplicity="1">
       <OnDelete Action="Cascade" />
@@ -544,6 +568,11 @@
             <End Role="Db_BaseWorkOrder" EntitySet="Db_BaseWorkOrderSet" />
             <End Role="Db_BaseWorkOrderApprovalHistory" EntitySet="Db_BaseWorkOrderApprovalHistorySet" />
           </AssociationSet>
+          <EntitySet Name="Db_BaseDocTreeSet" EntityType="Default.Db_BaseDocTree" />
+          <AssociationSet Name="Db_BaseDocDb_BaseDocTree" Association="Default.Db_BaseDocDb_BaseDocTree">
+            <End Role="Db_BaseDoc" EntitySet="Db_BaseDocSet" />
+            <End Role="Db_BaseDocTree" EntitySet="Db_BaseDocTreeSet" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Db_BaseUser">
           <Key>
@@ -624,12 +653,12 @@
           <Property Name="DocType" Type="Int32" Nullable="false" />
           <Property Name="Caption" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="Code" Type="String" Nullable="true" MaxLength="50" Unicode="true" FixedLength="false" />
-          <Property Name="TreeId" Type="String" Nullable="true" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Seq" Type="Int32" Nullable="false" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
           <Property Name="IsDisabled" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Db_BaseDocFile" Relationship="Default.Db_BaseDocDb_BaseDocFile" FromRole="Db_BaseDoc" ToRole="Db_BaseDocFile" />
+          <NavigationProperty Name="Db_BaseDocTree" Relationship="Default.Db_BaseDocDb_BaseDocTree" FromRole="Db_BaseDoc" ToRole="Db_BaseDocTree" />
         </EntityType>
         <EntityType Name="Db_BaseFile">
           <Key>
@@ -844,6 +873,27 @@
           <Property Name="Descript" Type="String" Nullable="false" />
           <Property Name="UserId" Type="String" Nullable="false" MaxLength="50" />
         </EntityType>
+        <EntityType Name="Db_BaseDocTree">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="50" />
+          <Property Name="TreeId" Type="String" Nullable="false" MaxLength="50" />
+          <NavigationProperty Name="Db_BaseDoc" Relationship="Default.Db_BaseDocDb_BaseDocTree" FromRole="Db_BaseDocTree" ToRole="Db_BaseDoc" />
+          <Property Name="Db_BaseDocId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="Db_BaseDocDb_BaseDocTree">
+          <End Type="Default.Db_BaseDoc" Role="Db_BaseDoc" Multiplicity="1" />
+          <End Type="Default.Db_BaseDocTree" Role="Db_BaseDocTree" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Db_BaseDoc">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Db_BaseDocTree">
+              <PropertyRef Name="Db_BaseDocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -927,7 +977,6 @@
           <ScalarProperty Name="DocType" ColumnName="DocType" />
           <ScalarProperty Name="Caption" ColumnName="Caption" />
           <ScalarProperty Name="Code" ColumnName="Code" />
-          <ScalarProperty Name="TreeId" ColumnName="TreeId" />
           <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
           <ScalarProperty Name="Seq" ColumnName="Seq" />
           <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
@@ -1083,6 +1132,15 @@
           <ScalarProperty Name="WorkFlowDefLineId" ColumnName="WorkFlowDefLineId" />
           <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
           <ScalarProperty Name="Db_BaseWorkOrderId" ColumnName="Db_BaseWorkOrderId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Db_BaseDocTreeSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Default.Db_BaseDocTree)">
+        <MappingFragment StoreEntitySet="Db_BaseDocTreeSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="TreeId" ColumnName="TreeId" />
+          <ScalarProperty Name="Db_BaseDocId" ColumnName="Db_BaseDocId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

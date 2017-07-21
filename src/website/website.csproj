@@ -705,6 +705,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseManagementController.cs" />
+    <Compile Include="Areas\Admin\Controllers\DocController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\LogsController.cs" />
@@ -740,6 +741,8 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
+    <Compile Include="Controllers\Fun\Doc\DocController.cs" />
+    <Compile Include="Controllers\Fun\Doc\DocPicController.cs" />
     <Compile Include="Controllers\Fun\OA\OA_LeaveController.cs" />
     <Compile Include="Controllers\Logs\LogsController.cs" />
     <Compile Include="Controllers\SysBase\FileController.cs" />
@@ -826,6 +829,8 @@
     <Content Include="Areas\Admin\Views\OA\MyLeavesList.cshtml" />
     <Content Include="Areas\Admin\Views\OA\LeaveDefaultDetail.cshtml" />
     <Content Include="Areas\Admin\Views\OA\LeaveEdit.cshtml" />
+    <Content Include="Areas\Admin\Views\Doc\BaseDocList.cshtml" />
+    <Content Include="Areas\Admin\Views\Doc\EditDocPic.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

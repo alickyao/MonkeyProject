@@ -1,0 +1,76 @@
+﻿@using monkey.service.Fun.Doc;
+@{
+    ViewBag.Title = "编辑图文内容";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string pageId = ViewBag.pageId;
+    string treeId = ViewBag.treeId;
+    string newPageId = SysHelps.getRandmonStirng();
+}
+@model DocPic
+
+<script>
+    $(function () {
+        
+        var selectcat = $("#@(pageId)selectcat");
+        //分类树
+        $.getJSON("/api/BaseTree/GetBaseTreeByCode?code=@treeId", function (json) {
+            console.log(json);
+            var treeList = [];
+            treeList = json.item.children;
+            selectcat.combotree({
+                data: treeList,
+                animate: true,
+                multiple: true,
+                editable: false,
+                cascadeCheck: false,
+                lines: true,
+                required: true,
+                panelHeight: 'auto',
+                onLoadSuccess: function (node, data) {
+                    //selectcat.combotree("setValues", treeSet);
+                }
+            });
+        });
+
+        window.setTimeout(function () {
+            var Editor = KindEditor.create("#@(pageId)content", {
+                uploadJson: '/File/upload?path=editor',//指定上传文件的服务器端程序。
+                fileManagerJson: '/Scripts/kindeditor/asp.net/file_manager_json.ashx',//指定浏览远程图片的服务器端程序。
+                allowFileManager: true,//true时显示浏览远程服务器按钮。
+                afterBlur: function () {
+                    Editor.sync("#@(pageId)content");
+                }
+            });
+        }, 300);
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false">
+        <form id="@(pageId)EditDocPicForm" style="padding:5px;">
+            <table class="formtable" style="width:100%;">
+                <tr>
+                    <td class="t" style="width:100px;">标题</td>
+                    <td><input type="text" class="easyui-textbox" name="Caption" style="width:500px;" data-options="required:true" value="@Model.Caption" /></td>
+                </tr>
+                <tr>
+                    <td class="t">所在分类</td>
+                    <td><input type="text" class="easyui-combotree" id="@(pageId)selectcat" name="TreeIds" style="width:300px;" /></td>
+                </tr>
+                <tr>
+                    <td class="t">文档编号&nbsp;<a href="#" title="设置编号后，可通过改名称获取该文档的详情" data-options="position:'right'" class="easyui-tooltip">提示</a></td>
+                    <td><input type="text" class="easyui-textbox" name="Code" value="@Model.Code" /></td>
+                </tr>
+                <tr>
+                    <td class="t">摘要描述</td>
+                    <td><input type="text" class="easyui-textbox" name="Descript" data-options="multiline:true" style="width:85%; height:60px;" value="@Model.Descript" /></td>
+                </tr>
+                <tr>
+                    <td class="t" style="vertical-align:top">图文内容</td>
+                    <td><textarea name="Content" id="@(pageId)content" style="width: 85%; height: 800px;">@Model.Content</textarea></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+

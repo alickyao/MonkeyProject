@@ -40,5 +40,6 @@ namespace monkey.service.Db
         public virtual DbSet<Db_BaseWorkOrder> Db_BaseWorkOrderSet { get; set; }
         public virtual DbSet<Db_BaseWorkOrderTaskUser> Db_BaseWorkOrderTaskUserSet { get; set; }
         public virtual DbSet<Db_BaseWorkOrderApprovalHistory> Db_BaseWorkOrderApprovalHistorySet { get; set; }
+        public virtual DbSet<Db_BaseDocTree> Db_BaseDocTreeSet { get; set; }
     }
 }

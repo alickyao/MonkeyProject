@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 07/14/2017 16:49:58
+-- Date Created: 07/21/2017 09:59:08
 -- Generated from EDMX file: D:\project\git\MonkeyProject\src\monkey.service\Db\Default.edmx
 -- --------------------------------------------------
 
@@ -17,32 +17,11 @@ GO
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[FK_Db_BaseDocDb_BaseDocFile]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_BaseDocFileSet] DROP CONSTRAINT [FK_Db_BaseDocDb_BaseDocFile];
-GO
 IF OBJECT_ID(N'[dbo].[FK_Db_BaseUserDb_BaseUserRole]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_BaseUserRoleSet] DROP CONSTRAINT [FK_Db_BaseUserDb_BaseUserRole];
 GO
-IF OBJECT_ID(N'[dbo].[FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_BaseWorkOrderApprovalHistorySet] DROP CONSTRAINT [FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory];
-GO
-IF OBJECT_ID(N'[dbo].[FK_Db_BaseWorkOrderDb_BaseWorkOrderTaskUser]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_BaseWorkOrderTaskUserSet] DROP CONSTRAINT [FK_Db_BaseWorkOrderDb_BaseWorkOrderTaskUser];
-GO
-IF OBJECT_ID(N'[dbo].[FK_Db_DocPic_inherits_Db_BaseDoc]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_BaseDocSet_Db_DocPic] DROP CONSTRAINT [FK_Db_DocPic_inherits_Db_BaseDoc];
-GO
-IF OBJECT_ID(N'[dbo].[FK_Db_ExceptionLog_inherits_Db_BaseLog]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_BaseLogSet_Db_ExceptionLog] DROP CONSTRAINT [FK_Db_ExceptionLog_inherits_Db_BaseLog];
-GO
-IF OBJECT_ID(N'[dbo].[FK_Db_ManagerUser_inherits_Db_BaseUser]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser] DROP CONSTRAINT [FK_Db_ManagerUser_inherits_Db_BaseUser];
-GO
-IF OBJECT_ID(N'[dbo].[FK_Db_UserLog_inherits_Db_BaseLog]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_BaseLogSet_Db_UserLog] DROP CONSTRAINT [FK_Db_UserLog_inherits_Db_BaseLog];
-GO
-IF OBJECT_ID(N'[dbo].[FK_Db_WorkFlowDefArea_inherits_Db_WorkFlowDefBaseUnit]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea] DROP CONSTRAINT [FK_Db_WorkFlowDefArea_inherits_Db_WorkFlowDefBaseUnit];
+IF OBJECT_ID(N'[dbo].[FK_Db_BaseDocDb_BaseDocFile]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_BaseDocFileSet] DROP CONSTRAINT [FK_Db_BaseDocDb_BaseDocFile];
 GO
 IF OBJECT_ID(N'[dbo].[FK_Db_WorkFlowDefinitionDb_WorkFlowDefArea]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea] DROP CONSTRAINT [FK_Db_WorkFlowDefinitionDb_WorkFlowDefArea];
@@ -53,49 +32,73 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_Db_WorkFlowDefinitionDb_WorkFlowDefStep]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep] DROP CONSTRAINT [FK_Db_WorkFlowDefinitionDb_WorkFlowDefStep];
 GO
+IF OBJECT_ID(N'[dbo].[FK_Db_BaseWorkOrderDb_BaseWorkOrderTaskUser]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_BaseWorkOrderTaskUserSet] DROP CONSTRAINT [FK_Db_BaseWorkOrderDb_BaseWorkOrderTaskUser];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_BaseWorkOrderApprovalHistorySet] DROP CONSTRAINT [FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_WorkFlowDefArea_inherits_Db_WorkFlowDefBaseUnit]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea] DROP CONSTRAINT [FK_Db_WorkFlowDefArea_inherits_Db_WorkFlowDefBaseUnit];
+GO
 IF OBJECT_ID(N'[dbo].[FK_Db_WorkFlowDefStep_inherits_Db_WorkFlowDefBaseUnit]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep] DROP CONSTRAINT [FK_Db_WorkFlowDefStep_inherits_Db_WorkFlowDefBaseUnit];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_ManagerUser_inherits_Db_BaseUser]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser] DROP CONSTRAINT [FK_Db_ManagerUser_inherits_Db_BaseUser];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_ExceptionLog_inherits_Db_BaseLog]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_BaseLogSet_Db_ExceptionLog] DROP CONSTRAINT [FK_Db_ExceptionLog_inherits_Db_BaseLog];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_UserLog_inherits_Db_BaseLog]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_BaseLogSet_Db_UserLog] DROP CONSTRAINT [FK_Db_UserLog_inherits_Db_BaseLog];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_DocPic_inherits_Db_BaseDoc]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_BaseDocSet_Db_DocPic] DROP CONSTRAINT [FK_Db_DocPic_inherits_Db_BaseDoc];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_OA_Leave_inherits_Db_BaseWorkOrder]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_BaseWorkOrderSet_Db_OA_Leave] DROP CONSTRAINT [FK_Db_OA_Leave_inherits_Db_BaseWorkOrder];
 GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[Db_BaseDocFileSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseDocFileSet];
-GO
-IF OBJECT_ID(N'[dbo].[Db_BaseDocSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseDocSet];
-GO
-IF OBJECT_ID(N'[dbo].[Db_BaseDocSet_Db_DocPic]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseDocSet_Db_DocPic];
-GO
-IF OBJECT_ID(N'[dbo].[Db_BaseFileSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseFileSet];
+IF OBJECT_ID(N'[dbo].[Db_BaseUserSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseUserSet];
 GO
 IF OBJECT_ID(N'[dbo].[Db_BaseLogSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseLogSet];
 GO
-IF OBJECT_ID(N'[dbo].[Db_BaseLogSet_Db_ExceptionLog]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseLogSet_Db_ExceptionLog];
-GO
-IF OBJECT_ID(N'[dbo].[Db_BaseLogSet_Db_UserLog]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseLogSet_Db_UserLog];
+IF OBJECT_ID(N'[dbo].[Db_BaseUserRoleSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseUserRoleSet];
 GO
 IF OBJECT_ID(N'[dbo].[Db_BaseTreeSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseTreeSet];
 GO
-IF OBJECT_ID(N'[dbo].[Db_BaseUserRoleSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseUserRoleSet];
+IF OBJECT_ID(N'[dbo].[Db_BaseDocSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseDocSet];
 GO
-IF OBJECT_ID(N'[dbo].[Db_BaseUserSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseUserSet];
+IF OBJECT_ID(N'[dbo].[Db_BaseFileSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseFileSet];
 GO
-IF OBJECT_ID(N'[dbo].[Db_BaseUserSet_Db_ManagerUser]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser];
+IF OBJECT_ID(N'[dbo].[Db_BaseDocFileSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseDocFileSet];
 GO
-IF OBJECT_ID(N'[dbo].[Db_BaseWorkOrderApprovalHistorySet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_BaseWorkOrderApprovalHistorySet];
+IF OBJECT_ID(N'[dbo].[Db_WorkFlowRoleSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_WorkFlowRoleSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_WorkFlowRoleDescriptSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_WorkFlowRoleDescriptSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefinitionSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_WorkFlowDefinitionSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefBaseUnitSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_WorkFlowDefBaseUnitSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefLineSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_WorkFlowDefLineSet];
 GO
 IF OBJECT_ID(N'[dbo].[Db_BaseWorkOrderSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseWorkOrderSet];
@@ -103,8 +106,8 @@ GO
 IF OBJECT_ID(N'[dbo].[Db_BaseWorkOrderTaskUserSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_BaseWorkOrderTaskUserSet];
 GO
-IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefBaseUnitSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_WorkFlowDefBaseUnitSet];
+IF OBJECT_ID(N'[dbo].[Db_BaseWorkOrderApprovalHistorySet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseWorkOrderApprovalHistorySet];
 GO
 IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea];
@@ -112,17 +115,20 @@ GO
 IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefStep];
 GO
-IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefinitionSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_WorkFlowDefinitionSet];
+IF OBJECT_ID(N'[dbo].[Db_BaseUserSet_Db_ManagerUser]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseUserSet_Db_ManagerUser];
 GO
-IF OBJECT_ID(N'[dbo].[Db_WorkFlowDefLineSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_WorkFlowDefLineSet];
+IF OBJECT_ID(N'[dbo].[Db_BaseLogSet_Db_ExceptionLog]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseLogSet_Db_ExceptionLog];
 GO
-IF OBJECT_ID(N'[dbo].[Db_WorkFlowRoleDescriptSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_WorkFlowRoleDescriptSet];
+IF OBJECT_ID(N'[dbo].[Db_BaseLogSet_Db_UserLog]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseLogSet_Db_UserLog];
 GO
-IF OBJECT_ID(N'[dbo].[Db_WorkFlowRoleSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_WorkFlowRoleSet];
+IF OBJECT_ID(N'[dbo].[Db_BaseDocSet_Db_DocPic]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseDocSet_Db_DocPic];
+GO
+IF OBJECT_ID(N'[dbo].[Db_BaseWorkOrderSet_Db_OA_Leave]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_BaseWorkOrderSet_Db_OA_Leave];
 GO
 
 -- --------------------------------------------------
@@ -174,7 +180,6 @@ CREATE TABLE [dbo].[Db_BaseDocSet] (
     [DocType] int  NOT NULL,
     [Caption] nvarchar(max)  NOT NULL,
     [Code] nvarchar(50)  NULL,
-    [TreeId] nvarchar(50)  NULL,
     [CreatedOn] datetime  NOT NULL,
     [Seq] int  NOT NULL,
     [IsDeleted] bit  NOT NULL,
@@ -287,6 +292,14 @@ CREATE TABLE [dbo].[Db_BaseWorkOrderApprovalHistorySet] (
     [WorkFlowDefLineId] nvarchar(50)  NOT NULL,
     [CreatedOn] datetime  NOT NULL,
     [Db_BaseWorkOrderId] nvarchar(50)  NOT NULL
+);
+GO
+
+-- Creating table 'Db_BaseDocTreeSet'
+CREATE TABLE [dbo].[Db_BaseDocTreeSet] (
+    [Id] nvarchar(50)  NOT NULL,
+    [TreeId] nvarchar(50)  NOT NULL,
+    [Db_BaseDocId] nvarchar(50)  NOT NULL
 );
 GO
 
@@ -451,6 +464,12 @@ ADD CONSTRAINT [PK_Db_BaseWorkOrderApprovalHistorySet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
+-- Creating primary key on [Id] in table 'Db_BaseDocTreeSet'
+ALTER TABLE [dbo].[Db_BaseDocTreeSet]
+ADD CONSTRAINT [PK_Db_BaseDocTreeSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
 -- Creating primary key on [Id] in table 'Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea'
 ALTER TABLE [dbo].[Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea]
 ADD CONSTRAINT [PK_Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea]
@@ -600,6 +619,21 @@ GO
 CREATE INDEX [IX_FK_Db_BaseWorkOrderDb_BaseWorkOrderApprovalHistory]
 ON [dbo].[Db_BaseWorkOrderApprovalHistorySet]
     ([Db_BaseWorkOrderId]);
+GO
+
+-- Creating foreign key on [Db_BaseDocId] in table 'Db_BaseDocTreeSet'
+ALTER TABLE [dbo].[Db_BaseDocTreeSet]
+ADD CONSTRAINT [FK_Db_BaseDocDb_BaseDocTree]
+    FOREIGN KEY ([Db_BaseDocId])
+    REFERENCES [dbo].[Db_BaseDocSet]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_Db_BaseDocDb_BaseDocTree'
+CREATE INDEX [IX_FK_Db_BaseDocDb_BaseDocTree]
+ON [dbo].[Db_BaseDocTreeSet]
+    ([Db_BaseDocId]);
 GO
 
 -- Creating foreign key on [Id] in table 'Db_WorkFlowDefBaseUnitSet_Db_WorkFlowDefArea'

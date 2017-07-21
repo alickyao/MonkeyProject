@@ -18,13 +18,13 @@ namespace monkey.service.Db
         public Db_BaseDoc()
         {
             this.Db_BaseDocFile = new HashSet<Db_BaseDocFile>();
+            this.Db_BaseDocTree = new HashSet<Db_BaseDocTree>();
         }
     
         public string Id { get; set; }
         public int DocType { get; set; }
         public string Caption { get; set; }
         public string Code { get; set; }
-        public string TreeId { get; set; }
         public System.DateTime CreatedOn { get; set; }
         public int Seq { get; set; }
         public bool IsDeleted { get; set; }
@@ -32,5 +32,7 @@ namespace monkey.service.Db
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Db_BaseDocFile> Db_BaseDocFile { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Db_BaseDocTree> Db_BaseDocTree { get; set; }
     }
 }

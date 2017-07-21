@@ -1,0 +1,154 @@
+﻿@using monkey.service.Fun.Doc;
+@{
+    ViewBag.Title = "基础图文、文档内容管理";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string pageId = ViewBag.pageId;
+    string treeId = ViewBag.treeId;
+    string condtion = JsonConvert.SerializeObject(Model);
+    string newPageId = SysHelps.getRandmonStirng();
+
+    var funList = SysHelps.getEnumTypeList(typeof(BaseDocType));
+}
+@model BaseRequest
+
+<script>
+    $(function () {
+        var request = $.parseJSON('@Html.Raw(condtion)');
+        var grid = $("#@(pageId)grid");
+        function loadGrid() {
+            console.log(request);
+            //grid.datagrid("loading");
+            //$.post("/api/OA_Leave/GetMyLeavesList", request, function (json) {
+            //    setGridRows(json, grid);
+            //});
+        }
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: true,
+            rownumbers: true,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            columns: [[
+                {
+                    field: 'CreatedOnString', title: '创建时间',
+                },
+            ]],
+            toolbar: "#@(pageId)tb",
+            onDblClickRow: function (index, row) {
+
+            }
+        });
+
+        //展示窗口
+        var dialogWin = $('#@(pageId)dd');
+
+    dialogWin.dialog({
+        cache: false,
+        modal: true,
+        closed: true,
+        inline: true,
+    });
+
+    //新增编辑窗口
+    var editDialogWin = $("#@(pageId)editDD");
+    editDialogWin.dialog({
+        cache: false,
+        modal: true,
+        closed: true,
+        inline: true,
+        toolbar: [
+            {
+                text: '保存',
+                iconCls: 'icon-save',
+                handler: function () {
+                    var btn = $(this);
+                    //获取表单
+                    var form = $("#@(pageId)LeaveEditForm");
+                    //验证表单
+                    var r = form.form("validate");
+                    if (r) {
+                        //提交
+                        var d = form.serializeObject();
+                        console.log(d);
+                        btn.linkbutton("disable");
+                        var url = "/api/OA_Leave/EditLeave";
+                        console.log(url);
+                        //$.post(url, d, function (json) {
+                        //    showmsg(json);
+                        //    btn.linkbutton("enable");
+                        //    if (json.Message == "0") {
+                        //        //刷新网格
+                        //        loadGrid();
+                        //        editDialogWin.dialog("close");
+                        //    }
+                        //});
+
+                    }
+                }
+            },
+            {
+                text: '关闭',
+                iconCls: 'icon-clear',
+                handler: function () {
+                    editDialogWin.dialog("close");
+                }
+            }
+        ]
+    });
+
+    grid.datagrid('getPager').pagination({
+        onSelectPage: function (pPageIndex, pPageSize) {
+            request.page = pPageIndex;
+            request.pageSize = pPageSize;
+            loadGrid();
+        }
+    });
+    loadGrid();
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false">
+        <div id="@(pageId)dd" style="width:90%;height:90%; overflow:hidden"></div>
+        <div id="@(pageId)editDD" style="width:90%;height:90%; overflow:hidden"></div>
+
+        <div id="@(pageId)tb">
+            <a href="javascript:void(0)" class="easyui-menubutton"
+               data-options="menu:'#@(pageId)mm',iconCls:'icon-add'">新增</a>
+            <div id="@(pageId)mm" data-options="onClick:@(pageId)menuHandler" style="width:150px;">
+                @foreach (var s in funList)
+                {
+                    <div data-options="name:'@s.value'">@s.text</div>
+                }
+            </div>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-clear" id="@(pageId)delrow" plain="true">删除</a>
+        </div>
+
+        <table id="@(pageId)grid"></table>
+    </div>
+</div>
+<script>
+    function @(pageId)menuHandler(item) {
+        var editDialogWin = $("#@(pageId)editDD");
+        var url = "";
+        //打开对应的编辑界面
+        switch (item.name) {
+            case "0"://图文集
+                url = "@Url.Action("EditDocPic")";
+                url += "?pageId=@(pageId)&treeId=@(treeId)";
+                break;
+        }
+        console.log(url);
+        editDialogWin.dialog({
+            href: url,
+            title: '新增:' + item.text
+        }).dialog("open");
+    }
+</script>
+

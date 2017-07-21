@@ -43,6 +43,15 @@
           </ManagerMenu>
         </children>
       </ManagerMenu>
+      <ManagerMenu>
+        <text>内容管理</text>
+        <children>
+          <ManagerMenu>
+            <text>图文内容管理</text>
+            <url><![CDATA[/manager/Doc/BaseDocList?treeId=Doc]]></url>
+          </ManagerMenu>
+        </children>
+      </ManagerMenu>
     </children>
   </ManagerMenu>
   <ManagerMenu>
