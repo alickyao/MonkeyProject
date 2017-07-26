@@ -1,0 +1,99 @@
+﻿@using monkey.service.Fun.Doc;
+@{
+    ViewBag.Title = "编辑文档图集";
+    Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
+    string pageId = ViewBag.pageId;
+}
+@model BaseDoc
+
+<script>
+    $(function () {
+        var uploadBtn = $("#@(pageId)UploadImgFileBtn");
+        var uploadForm = $("#@(pageId)UploadImgFileForm");
+        var fileInput = uploadForm.find("input[name='imgfiles']");
+        var ImgBox = $("#@(pageId)ImgList");
+        uploadBtn.linkbutton({
+            onClick: function () {
+                var btn = $(this);
+                console.log("上传图片集");
+                fileInput.click();
+            }
+        });
+
+        //上传文件
+        fileInput.change(function () {
+            console.log("开始上传");
+            uploadBtn.linkbutton("disable");
+            var formData = new FormData(uploadForm[0]);
+            $.ajax({
+                url: '/api/File/UploadFile?path=0',
+                type: 'POST',
+                success: function (data) {
+                    showmsg(data);
+                    uploadBtn.linkbutton("enable");
+
+                    var url = "@Url.Action("ShowDocImgFile")";
+                    url += "?FileId=" + data.item[0].Id + "&FilePath="+data.item[0].Path;
+                    $.get(url, function (data) {
+                        ImgBox.append(data);
+                        $.parser.parse(ImgBox);
+                    });
+                },
+                error: function (ex) {
+                    console.log(ex);
+                    $.messager.alert('错误', "发生异常", 'error');
+                    uploadBtn.linkbutton("enable");
+                },
+                // Form数据
+                data: formData,
+                //Options to tell JQuery not to process data or worry about content-type
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        });
+
+        $("#@(pageId)SaveImgFileBtn").linkbutton({
+            onClick: function () {
+                var btn = $(this);
+                console.log("保存图片集");
+                var forms = ImgBox.find(".DocImgFileInfo");
+                var filesRequest = [];
+                if (forms.length > 0) {
+                    for (var i = 0; i < forms.length; i++) {
+                        var d = $(forms[i]).serializeObject();
+                        filesRequest.push(d);
+                    }
+                }
+                var url = "/api/Doc/UpdateDocImgFiles";
+                var updateRequest = {
+                    DocId: "@Model.Id",
+                    FilesList: filesRequest
+                };
+                console.log(updateRequest);
+                console.log(url);
+                btn.linkbutton("disable");
+                $.post(url, updateRequest, function (json) {
+                    showmsg(json);
+                    btn.linkbutton("enable");
+                });
+            }
+        });
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'north',title:'上传图片',split:true" style="padding:5px;height:70px;">
+        <form id="@(pageId)UploadImgFileForm">
+            <a href="javascript:void(0)" id="@(pageId)UploadImgFileBtn" class="easyui-linkbutton" data-options="iconCls:'icon-add'">上传图片</a>
+            <input type="file" name="imgfiles" style="display:none;" />
+            <a href="javascript:void(0)" id="@(pageId)SaveImgFileBtn" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存</a>
+        </form>
+    </div>
+    <div data-options="region:'center',border:false">
+        <div id="@(pageId)ImgList">
+
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,16 @@
+﻿@using monkey.service.Fun.Doc;
+@{
+    ViewBag.Title = "显示文档图集";
+    Layout = null;
+}
+@model BaseDocImgFile
+
+<div>
+    <form class="DocImgFileInfo">
+        <div>@Model.FilePath</div>
+        <div>@Model.FileId</div>
+        <input type="hidden" name="FileId" value="@Model.FileId" />
+        <input type="hidden" name="Caption" value="@Model.Caption" />
+    </form>
+</div>
+

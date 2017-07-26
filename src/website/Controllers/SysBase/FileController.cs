@@ -52,7 +52,7 @@ namespace website.Controllers.SysBase
                     file.SaveAs(HttpContext.Current.Server.MapPath(newFilePath));
                     files.Add(BaseFile.CreateBaseFile(newFilePath));
                 }
-                return BaseResponse.getResult(files);
+                return BaseResponse.getResult(files,"上传成功");
             }
             else {
                 throw new ValiDataException("没有上传任何文件");

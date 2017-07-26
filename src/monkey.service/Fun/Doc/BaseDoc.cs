@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using monkey.service.Db;
 using monkey.service;
+using monkey.service.Logs;
+using System.Data.SqlClient;
 
 namespace monkey.service.Fun.Doc
 {
@@ -22,7 +24,7 @@ namespace monkey.service.Fun.Doc
     /// <summary>
     /// 文档 基类
     /// </summary>
-    public class BaseDoc
+    public class BaseDoc:ILogStringable
     {
         #region -- 基本属性
 
@@ -89,7 +91,18 @@ namespace monkey.service.Fun.Doc
         /// 使用ID构造
         /// </summary>
         /// <param name="id"></param>
-        public BaseDoc(string id) { }
+        public BaseDoc(string id) {
+
+            using (var db = new DefaultContainer())
+            {
+                var row = db.Db_BaseDocSet.SingleOrDefault(p => p.Id == id);
+                if (row == null)
+                {
+                    throw new DataNotFundException(string.Format("未能通过ID[{0}]找到该信息", id));
+                }
+                SetValue(row);
+            }
+        }
 
         /// <summary>
         /// 使用数据库对象构造
@@ -110,6 +123,84 @@ namespace monkey.service.Fun.Doc
             this.Seq = row.Seq;
             this.IsDeleted = row.IsDeleted;
             this.IsDisabled = row.IsDisabled;
+        }
+
+        /// <summary>
+        /// 获取所在的分类（所在分类树的集合）
+        /// </summary>
+        /// <returns></returns>
+        public List<BaseTree> GetTreeListInfo() {
+            List<BaseTree> result = new List<BaseTree>();
+
+            using (var db = new DefaultContainer()) {
+                var treeIds = db.Db_BaseDocTreeSet.Where(p => p.Db_BaseDocId == this.Id).Select(p => p.TreeId).ToList();
+                if (treeIds.Count > 0) {
+                    var rows = (from c in db.Db_BaseTreeSet
+                                where treeIds.Contains(c.Id)
+                                select c);
+                    result = rows.AsEnumerable().Select(p => new BaseTree(p)).ToList();
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 更新文档图片集
+        /// </summary>
+        /// <param name="filesList"></param>
+        public void UpdatImgFileList(List<BaseDocImgFile> filesList) {
+            if (filesList == null) {
+                filesList = new List<BaseDocImgFile>();
+            }
+            foreach (var item in filesList) {
+                ValiDatas.valiData(item);
+            }
+            using (var db = new DefaultContainer()) {
+                //删除原来的
+                db.Database.ExecuteSqlCommand("delete from Db_BaseDocFileSet where Db_BaseDocId =@docId", new SqlParameter("@docId", this.Id));
+                if (filesList.Count > 0) {
+                    List<Db_BaseDocFile> dbFiles = new List<Db_BaseDocFile>();
+                    foreach (var item in filesList) {
+                        dbFiles.Add(new Db_BaseDocFile() {
+                            Caption = item.Caption,
+                            CreatedOn = DateTime.Now,
+                            Db_BaseDocId = this.Id,
+                            Descript = item.Descript,
+                            Seq = item.Seq,
+                            FileId = item.FileId,
+                            Id = Guid.NewGuid().ToString()
+                        });
+                    }
+                    db.Db_BaseDocFileSet.AddRange(dbFiles);
+                    db.SaveChanges();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 标记为删除
+        /// </summary>
+        public void SelDel() {
+            using (var db = new DefaultContainer()) {
+                var row = db.Db_BaseDocSet.Single(p => p.Id == this.Id);
+                row.IsDeleted = true;
+                db.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// 切换禁用状态
+        /// </summary>
+        /// <returns></returns>
+        public BaseDoc SetDisable() {
+            using (var db = new DefaultContainer())
+            {
+                var row = db.Db_BaseDocSet.Single(p => p.Id == this.Id);
+                row.IsDisabled = row.IsDisabled ? false : true;
+                db.SaveChanges();
+                return new BaseDoc(row);
+            }
         }
 
         /// <summary>
@@ -144,6 +235,96 @@ namespace monkey.service.Fun.Doc
                               ).Count();
                 return result;
             }
+        }
+
+        public string getIdString()
+        {
+            return this.Id;
+        }
+
+        public virtual string getNameString()
+        {
+            return string.Format("{0}", this.DocTypeString);
+        }
+    }
+
+    /// <summary>
+    /// 基础文档搜索请求
+    /// </summary>
+    public class BaseDocSerarchRequest : BaseRequest {
+
+        /// <summary>
+        /// 所在分类的ID
+        /// </summary>
+        public List<string> TreeId { get; set; }
+
+        /// <summary>
+        /// 关键字（标题）
+        /// </summary>
+        public string q { get; set; }
+    }
+
+    /// <summary>
+    /// 基础文档列表
+    /// </summary>
+    public class BaseDocDetailList : BaseDoc {
+
+        /// <summary>
+        /// 所在分类描述
+        /// </summary>
+        public string TreeNames { get; set; }
+
+
+        /// <summary>
+        /// 通过数据库构造
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="tree"></param>
+        public BaseDocDetailList(Db_BaseDoc row, List<Db_BaseTree> tree) : base(row)
+        {
+            if (tree.Count > 0) {
+                this.TreeNames = string.Join(",", tree.Select(p => p.Name));
+            }
+        }
+
+        /// <summary>
+        /// 检索基础文档列表
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static BaseResponseList<BaseDocDetailList> SearchBaseDocList(BaseDocSerarchRequest condtion) {
+            BaseResponseList<BaseDocDetailList> result = new BaseResponseList<BaseDocDetailList>();
+
+            List<string> treeId = new List<string>();
+            if (condtion.TreeId != null) {
+                if (condtion.TreeId.Count > 0) {
+                    var t = condtion.TreeId.Where(p => !string.IsNullOrEmpty(p)).ToList();
+                    if (t.Count > 0) {
+                        treeId = t;
+                    }
+                }
+            }
+
+            using (var db = new DefaultContainer()) {
+                var rows = (from c in db.Db_BaseDocSet
+                            where c.IsDeleted == false
+                            && (treeId.Count == 0 ? true:treeId.Intersect(c.Db_BaseDocTree.Select(p=>p.TreeId)).Count() >0)
+                            && (string.IsNullOrEmpty(condtion.q) ? true : c.Caption.Contains(condtion.q))
+                            orderby c.CreatedOn descending
+                            select new
+                            {
+                                row = c,
+                                tree = (from t in db.Db_BaseTreeSet where c.Db_BaseDocTree.Select(p=>p.TreeId).Contains(t.Id) select t)
+                            }
+                            );
+                result.total = rows.Count();
+                if (result.total > 0 && condtion.getRows) {
+                    var rowsList = rows.Skip(condtion.getSkip()).Take(condtion.pageSize).AsEnumerable().Select(p => new BaseDocDetailList(p.row, p.tree.ToList())).ToList();
+                    result.rows = rowsList;
+                }
+            }
+
+            return result;
         }
     }
 }

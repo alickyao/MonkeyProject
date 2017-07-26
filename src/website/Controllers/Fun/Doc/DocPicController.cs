@@ -17,13 +17,26 @@ namespace website.Controllers.Fun.Doc
     public class DocPicController : ApiController
     {
         /// <summary>
-        /// 创建/编辑 图文消息
+        /// [后台角色权限]创建/编辑 图文消息
         /// </summary>
         /// <param name="info"></param>
         /// <returns></returns>
+        [HttpPost]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse EditDocPic(DocPicEditReqeust info) {
-            var result = DocPic.CreateDocPic(info);
-            return BaseResponse.getResult(result);
+            UserManager user = UserManager.getUserById(User.Identity.Name);
+            if (string.IsNullOrEmpty(info.Id))
+            {
+                var result = DocPic.CreateDocPic(info);
+                UserLog.create("新增图文集", "图文集", user, result);
+                return BaseResponse.getResult(result,"新增成功");
+            }
+            else {
+                var docPicInfo = new DocPic(info.Id);
+                var result = docPicInfo.EditDocPic(info);
+                UserLog.create("编辑图文集信息", "图文集", user, result);
+                return BaseResponse.getResult(result,"保存成功");
+            }
         }
     }
 }

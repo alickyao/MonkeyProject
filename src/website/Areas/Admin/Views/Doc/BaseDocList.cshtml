@@ -17,10 +17,10 @@
         var grid = $("#@(pageId)grid");
         function loadGrid() {
             console.log(request);
-            //grid.datagrid("loading");
-            //$.post("/api/OA_Leave/GetMyLeavesList", request, function (json) {
-            //    setGridRows(json, grid);
-            //});
+            grid.datagrid("loading");
+            $.post("/api/Doc/SearchBaseDocList", request, function (json) {
+                setGridRows(json, grid);
+            });
         }
 
         grid.datagrid({
@@ -38,78 +38,186 @@
                 {
                     field: 'CreatedOnString', title: '创建时间',
                 },
+                {
+                    field: 'Seq', title: '排序', align: 'right'
+                },
+                {
+                    field: 'Code', title: '标识符/编号',
+                },
+                {
+                    field: 'DocTypeString', title: '类型',
+                },
+                {
+                    field: 'Caption', title: '标题',
+                },
+                {
+                    field: 'TreeNames', title: '所在分类',
+                },
+                {
+                    field: 'IsDisabled', title: '禁用', align: 'center', formatter: function (value, row, index) {
+                        return value ? "<span style='color:red'>是</span>" : "";
+                    }
+                },
             ]],
             toolbar: "#@(pageId)tb",
             onDblClickRow: function (index, row) {
-
+                //打开编辑界面
+                var url = "";
+                switch (row.DocType) {
+                    case 0:
+                        url = "@Url.Action("EditDocPic")";
+                        url += "?pageId=@(pageId)&treeId=@(treeId)&id=" + row.Id;
+                        break;
+                }
+                console.log(url);
+                editDialogWin.dialog({
+                    href: url,
+                    title: '编辑' + row.DocTypeString
+                }).dialog("open");
             }
         });
 
         //展示窗口
         var dialogWin = $('#@(pageId)dd');
 
-    dialogWin.dialog({
-        cache: false,
-        modal: true,
-        closed: true,
-        inline: true,
-    });
+        dialogWin.dialog({
+            cache: false,
+            modal: true,
+            closed: true,
+            inline: true,
+        });
 
-    //新增编辑窗口
-    var editDialogWin = $("#@(pageId)editDD");
-    editDialogWin.dialog({
-        cache: false,
-        modal: true,
-        closed: true,
-        inline: true,
-        toolbar: [
-            {
-                text: '保存',
-                iconCls: 'icon-save',
-                handler: function () {
-                    var btn = $(this);
-                    //获取表单
-                    var form = $("#@(pageId)LeaveEditForm");
-                    //验证表单
-                    var r = form.form("validate");
-                    if (r) {
-                        //提交
-                        var d = form.serializeObject();
-                        console.log(d);
-                        btn.linkbutton("disable");
-                        var url = "/api/OA_Leave/EditLeave";
-                        console.log(url);
-                        //$.post(url, d, function (json) {
-                        //    showmsg(json);
-                        //    btn.linkbutton("enable");
-                        //    if (json.Message == "0") {
-                        //        //刷新网格
-                        //        loadGrid();
-                        //        editDialogWin.dialog("close");
-                        //    }
-                        //});
+        //新增编辑窗口
+        var editDialogWin = $("#@(pageId)editDD");
+        editDialogWin.dialog({
+            cache: false,
+            modal: true,
+            closed: true,
+            inline: true,
+            toolbar: [
+                {
+                    text: '保存',
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        var btn = $(this);
+                        //获取表单
+                        var form = $("#@(pageId)EditDocForm");
+                        //验证表单
+                        var r = form.form("validate");
+                        if (r) {
+                            //提交
+                            var d = form.serializeObject();
+                            console.log(d);
+                            btn.linkbutton("disable");
+                            var url = "/api/DocPic/EditDocPic";
+                            console.log(url);
+                            $.post(url, d, function (json) {
+                                showmsg(json);
+                                btn.linkbutton("enable");
+                                if (json.Message == "0") {
+                                    //刷新网格
+                                    loadGrid();
+                                    editDialogWin.dialog("close");
+                                }
+                            });
 
+                        }
+                    }
+                },
+                {
+                    text: '关闭',
+                    iconCls: 'icon-clear',
+                    handler: function () {
+                        editDialogWin.dialog("close");
                     }
                 }
-            },
-            {
-                text: '关闭',
-                iconCls: 'icon-clear',
-                handler: function () {
-                    editDialogWin.dialog("close");
+            ]
+        });
+
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            }
+        });
+        loadGrid();
+
+        //删除按钮
+        $("#@(pageId)DelRowBtn").linkbutton({
+            onClick: function () {
+                var row = grid.datagrid("getSelected");
+                if (row == null) {
+                    $.messager.alert('错误', "请先选中一行", 'error');
+                }
+                else {
+                    $.messager.confirm('请确认', '确认要删除该信息？<br />'+row.Caption, function (r) {
+                        if (r) {
+                            var url = "/api/Doc/DelDoc/" + row.Id;
+                            console.log(url);
+                            grid.datagrid("loading");
+                            $.getJSON(url, function (json) {
+                                showmsg(json);
+                                if (json.Message == "0") {
+                                    loadGrid();
+                                }
+                                else {
+                                    grid.datagrid("loaded");
+                                }
+                            });
+                        }
+                    });
                 }
             }
-        ]
-    });
+        });
 
-    grid.datagrid('getPager').pagination({
-        onSelectPage: function (pPageIndex, pPageSize) {
-            request.page = pPageIndex;
-            request.pageSize = pPageSize;
-            loadGrid();
-        }
-    });
-    loadGrid();
+        //切换禁用按钮
+
+        $("#@(pageId)SetDisRowBtn").linkbutton({
+            onClick: function () {
+                var row = grid.datagrid("getSelected");
+                if (row == null) {
+                    $.messager.alert('错误', "请先选中一行", 'error');
+                }
+                else {
+                    var url = "/api/Doc/SetDisable/" + row.Id;
+                    console.log(url);
+                    grid.datagrid("loading");
+                    $.getJSON(url, function (json) {
+                        showmsg(json);
+                        if (json.Message == "0") {
+                            //更新行
+                            var rowIndex = grid.datagrid("getRowIndex", row);
+                            row.IsDisabled = json.item.IsDisabled;
+                            grid.datagrid("updateRow", {
+                                index: rowIndex,
+                                row: row
+                            });
+                        }
+                        grid.datagrid("loaded");
+                    });
+                }
+            }
+        });
+
+        //显示日志按钮
+        $("#@(pageId)ShowLogBtn").linkbutton({
+            onClick: function () {
+                var row = grid.datagrid("getSelected");
+                if (row == null) {
+                    $.messager.alert('错误', "请先选中一行", 'error');
+                }
+                else {
+                    var url = "@Url.Action("userLogList", "Logs")";
+                    url += "?fkId=" + row.Id;
+                    console.log(url);
+                    dialogWin.dialog({
+                        title:"查看日志",
+                        content: getIframe(url)
+                    }).dialog("open");
+                }
+            }
+        });
     });
 </script>
 
@@ -127,7 +235,9 @@
                     <div data-options="name:'@s.value'">@s.text</div>
                 }
             </div>
-            <a href="#" class="easyui-linkbutton" iconCls="icon-clear" id="@(pageId)delrow" plain="true">删除</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" id="@(pageId)SetDisRowBtn" plain="true">切换禁用状态</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-clear" id="@(pageId)DelRowBtn" plain="true">标记为已删除</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="@(pageId)ShowLogBtn" plain="true">查看日志</a>
         </div>
 
         <table id="@(pageId)grid"></table>

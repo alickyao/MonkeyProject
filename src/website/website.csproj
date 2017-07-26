@@ -831,6 +831,8 @@
     <Content Include="Areas\Admin\Views\OA\LeaveEdit.cshtml" />
     <Content Include="Areas\Admin\Views\Doc\BaseDocList.cshtml" />
     <Content Include="Areas\Admin\Views\Doc\EditDocPic.cshtml" />
+    <Content Include="Areas\Admin\Views\Doc\DocImgFiles.cshtml" />
+    <Content Include="Areas\Admin\Views\Doc\ShowDocImgFile.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
