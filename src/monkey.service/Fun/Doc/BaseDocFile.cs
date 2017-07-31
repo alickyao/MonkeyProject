@@ -29,6 +29,8 @@ namespace monkey.service.Fun.Doc
     /// </summary>
     public class BaseDocImgFile
     {
+        #region
+
         /// <summary>
         /// 文档的图片记录ID
         /// </summary>
@@ -70,9 +72,27 @@ namespace monkey.service.Fun.Doc
         /// </summary>
         public DateTime CreatedOn { get; set; }
 
+        #endregion
+
         /// <summary>
         /// 空构造
         /// </summary>
         public BaseDocImgFile() { }
+
+        /// <summary>
+        /// 使用数据库的行构造
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="file"></param>
+        public BaseDocImgFile(Db_BaseDocFile row, Db_BaseFile file) {
+            this.Id = row.Id;
+            this.FileId = row.FileId;
+            this.DocId = row.Db_BaseDocId;
+            this.FilePath = file.Path;
+            this.Caption = row.Caption;
+            this.Seq = row.Seq;
+            this.Descript = row.Descript;
+            this.CreatedOn = row.CreatedOn;
+        }
     }
 }

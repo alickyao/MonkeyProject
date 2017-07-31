@@ -3,6 +3,7 @@
     ViewBag.Title = "编辑文档图集";
     Layout = "~/Areas/Admin/Views/Shared/View_easylayout.cshtml";
     string pageId = ViewBag.pageId;
+    var imgFileList = Model.GetImgFileList();
 }
 @model BaseDoc
 
@@ -53,6 +54,37 @@
             });
         });
 
+        //删除与向上向下排序
+        $(document).off("click", ".DocImgDelBtn");
+        $(document).on("click", ".DocImgDelBtn", function () {
+            var btn = $(this);
+            var li = btn.parents(".DocImgFileLiBox");
+            console.log(li);
+            li.remove();
+        });
+
+        $(document).off("click", ".DocImgSortUpBtn");
+        $(document).on("click", ".DocImgSortUpBtn", function () {
+            var btn = $(this);
+            var li = btn.parents(".DocImgFileLiBox");
+            var p = li.prev();
+            if (p.length == 1) {
+                li.after(p);
+            }
+        });
+
+        $(document).off("click", ".DocImgSortDownBtn");
+        $(document).on("click", ".DocImgSortDownBtn", function () {
+            var btn = $(this);
+            var li = btn.parents(".DocImgFileLiBox");
+            var n = li.next();
+            if (n.length == 1) {
+                li.before(n);
+            }
+        });
+
+
+        //保存图集按钮
         $("#@(pageId)SaveImgFileBtn").linkbutton({
             onClick: function () {
                 var btn = $(this);
@@ -62,6 +94,7 @@
                 if (forms.length > 0) {
                     for (var i = 0; i < forms.length; i++) {
                         var d = $(forms[i]).serializeObject();
+                        d.Seq = i;
                         filesRequest.push(d);
                     }
                 }
@@ -91,9 +124,11 @@
         </form>
     </div>
     <div data-options="region:'center',border:false">
-        <div id="@(pageId)ImgList">
-
-        </div>
+        <ul class="BaseDocImgList" id="@(pageId)ImgList">
+            @foreach (var item in imgFileList) {
+                @Html.DisplayFor(m=> item, "ShowImgFileForm")
+            }
+        </ul>
     </div>
 </div>
 

@@ -5,12 +5,5 @@
 }
 @model BaseDocImgFile
 
-<div>
-    <form class="DocImgFileInfo">
-        <div>@Model.FilePath</div>
-        <div>@Model.FileId</div>
-        <input type="hidden" name="FileId" value="@Model.FileId" />
-        <input type="hidden" name="Caption" value="@Model.Caption" />
-    </form>
-</div>
+@Html.DisplayFor(m=> Model, "ShowImgFileForm")
 

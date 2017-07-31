@@ -54,38 +54,77 @@
                 }
             });
         }, 300);
+
+        $("#@(pageId)SaveDocBaseInfoBtn").linkbutton({
+            onClick: function () {
+                var btn = $(this);
+                //获取表单
+                var form = $("#@(pageId)EditDocForm");
+                //验证表单
+                var r = form.form("validate");
+                if (r) {
+                    //提交
+                    var d = form.serializeObject();
+                    console.log(d);
+                    btn.linkbutton("disable");
+                    var url = "/api/DocPic/EditDocPic";
+                    console.log(url);
+                    $.post(url, d, function (json) {
+                        showmsg(json);
+                        btn.linkbutton("enable");
+                        if (json.Message == "0") {
+                            //刷新窗口
+                            var editDialogWin = $("#@(pageId)editDD");
+                            url = "@Url.Action("EditDocPic")";
+                            url += "?pageId=@(pageId)&treeId=@(treeId)&id=" + json.item.Id;
+                            if (editDialogWin.length == 1) {
+                                editDialogWin.dialog("refresh", url);
+                            }
+                        }
+                    });
+
+                }
+            }
+        })
     });
 </script>
 
 <div class="easyui-layout" data-options="fit:true">
     <div data-options="region:'center',border:false">
         <div  class="easyui-tabs" data-options="fit:true,border:false">
-            <div title="基本信息">
-                <form id="@(pageId)EditDocForm" style="padding:5px;">
-                    <input type="hidden" name="Id" value="@Model.Id" />
-                    <table class="formtable" style="width:100%;">
-                        <tr>
-                            <td class="t" style="width:100px;">标题</td>
-                            <td><input type="text" class="easyui-textbox" name="Caption" style="width:500px;" data-options="required:true" value="@Model.Caption" /></td>
-                        </tr>
-                        <tr>
-                            <td class="t">所在分类</td>
-                            <td><input type="text" class="easyui-combotree" id="@(pageId)selectcat" name="TreeIds" style="width:300px;" /></td>
-                        </tr>
-                        <tr>
-                            <td class="t">文档编号&nbsp;<a href="#" title="设置编号后，可通过改名称获取该文档的详情" data-options="position:'right'" class="easyui-tooltip">提示</a></td>
-                            <td><input type="text" class="easyui-textbox" name="Code" value="@Model.Code" /></td>
-                        </tr>
-                        <tr>
-                            <td class="t">摘要描述</td>
-                            <td><input type="text" class="easyui-textbox" name="Descript" data-options="multiline:true" style="width:85%; height:60px;" value="@Model.Descript" /></td>
-                        </tr>
-                        <tr>
-                            <td class="t" style="vertical-align:top">图文内容</td>
-                            <td><textarea name="Content" id="@(pageId)content" style="width: 85%; height: 800px;">@Model.Content</textarea></td>
-                        </tr>
-                    </table>
-                </form>
+            <div title="基本信息"  style="padding:5px;">
+                <div class="easyui-layout" data-options="fit:true">
+                    <div data-options="region:'north',title:'编辑保存基本信息',split:true" style="padding:5px;height:70px;">
+                        <a href="javascript:void(0)" id="@(pageId)SaveDocBaseInfoBtn" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存</a>
+                    </div>
+                    <div data-options="region:'center',border:false">
+                        <form id="@(pageId)EditDocForm">
+                            <input type="hidden" name="Id" value="@Model.Id" />
+                            <table class="formtable" style="width:100%;">
+                                <tr>
+                                    <td class="t" style="width:100px;">标题</td>
+                                    <td><input type="text" class="easyui-textbox" name="Caption" style="width:500px;" data-options="required:true" value="@Model.Caption" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="t">所在分类</td>
+                                    <td><input type="text" class="easyui-combotree" id="@(pageId)selectcat" name="TreeIds" style="width:300px;" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="t">文档编号&nbsp;<a href="#" title="设置编号后，可通过改名称获取该文档的详情" data-options="position:'right'" class="easyui-tooltip">提示</a></td>
+                                    <td><input type="text" class="easyui-textbox" name="Code" value="@Model.Code" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="t">摘要描述</td>
+                                    <td><input type="text" class="easyui-textbox" name="Descript" data-options="multiline:true" style="width:85%; height:60px;" value="@Model.Descript" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="t" style="vertical-align:top">图文内容</td>
+                                    <td><textarea name="Content" id="@(pageId)content" style="width: 85%; height: 800px;">@Model.Content</textarea></td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                </div>
             </div>
             @if (!string.IsNullOrEmpty(Model.Id))
             {

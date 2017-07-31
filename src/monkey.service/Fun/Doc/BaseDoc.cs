@@ -204,6 +204,24 @@ namespace monkey.service.Fun.Doc
         }
 
         /// <summary>
+        /// 获取图片集
+        /// </summary>
+        /// <returns></returns>
+        public List<BaseDocImgFile> GetImgFileList() {
+            List<BaseDocImgFile> result = new List<BaseDocImgFile>();
+            using (var db = new DefaultContainer()) {
+                var dbDoc = db.Db_BaseDocSet.Single(p => p.Id == this.Id);
+                var rows = (from c in dbDoc.Db_BaseDocFile
+                            join f in db.Db_BaseFileSet on c.FileId equals f.Id
+                            orderby c.Seq ascending
+                            select new { c, f }
+                            ).ToList();
+                result = rows.Select(p => new BaseDocImgFile(p.c, p.f)).ToList();
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 验证CODE是否可用 确认其唯一性 （已排除被删除的项目）
         /// </summary>
         /// <param name="code"></param>

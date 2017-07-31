@@ -51,3 +51,16 @@
 .paddingbox {
     padding:5px;
 }
+
+.BaseDocImgList {
+    list-style:none;
+    margin:0;
+    padding:0;
+}
+    .BaseDocImgList .DocImgFileLiBox {
+        margin-bottom:5px;
+    }
+
+    .BaseDocImgList .DocImgBtnList div {
+        padding:5px 0;
+    }

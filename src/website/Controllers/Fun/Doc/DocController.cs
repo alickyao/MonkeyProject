@@ -57,8 +57,10 @@ namespace website.Controllers.Fun.Doc
         [HttpPost]
         [ApiAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse UpdateDocImgFiles(BaseDocImgFilesUploadRequest info) {
+            UserManager user = UserManager.getUserById(User.Identity.Name);
             var docInfo = new BaseDoc(info.DocId);
             docInfo.UpdatImgFileList(info.FilesList);
+            UserLog.create("编辑图集", "文档管理", user, docInfo);
             return BaseResponse.getResult("保存成功");
         }
 

@@ -833,6 +833,7 @@
     <Content Include="Areas\Admin\Views\Doc\EditDocPic.cshtml" />
     <Content Include="Areas\Admin\Views\Doc\DocImgFiles.cshtml" />
     <Content Include="Areas\Admin\Views\Doc\ShowDocImgFile.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\DisplayTemplates\ShowImgFileForm.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
