@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "请登录";
     Layout = "~/Areas/Admin/Views/Shared/View_botslayout.cshtml";
+    var dbInfo = SysHelps.CheckDb();
 }
 
 <div class="container">
@@ -9,32 +10,43 @@
         <div class="col-md-12"><p style="margin:50px 0">&nbsp;</p></div>
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <div class="panel panel-primary">
-                <div class="panel-heading ">请登录</div>
-                <div class="panel-body">
-                    <form class="form-horizontal" id="defaultForm">
-                        <div class="form-group">
-                            <label for="loginName" class="col-sm-2 control-label">登录名</label>
-                            <div class="col-sm-10">
+            @if (dbInfo.Message == "0")
+            {
+                <div class="panel panel-primary">
+                    <div class="panel-heading ">请登录</div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" id="defaultForm">
+                            <div class="form-group">
+                                <label for="loginName" class="col-sm-2 control-label">登录名</label>
+                                <div class="col-sm-10">
 
-                                <input type="text" class="form-control" name="loginName" placeholder="请输入登录名">
+                                    <input type="text" class="form-control" name="loginName" placeholder="请输入登录名">
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="pwd" class="col-sm-2 control-label">密码</label>
-                            <div class="col-sm-10">
-                                <input type="password" class="form-control" name="passWord" placeholder="请输入密码">
+                            <div class="form-group">
+                                <label for="pwd" class="col-sm-2 control-label">密码</label>
+                                <div class="col-sm-10">
+                                    <input type="password" class="form-control" name="passWord" placeholder="请输入密码">
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                                <button type="submit" class="btn btn-info" id="loginBtn" data-loading-text="请稍后" data-complete-text="验证成功...请稍后">登录</button>
-                                <button type="button" class="btn btn-default" id="loginResetBtn">清空</button>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-info" id="loginBtn" data-loading-text="请稍后" data-complete-text="验证成功...请稍后">登录</button>
+                                    <button type="button" class="btn btn-default" id="loginResetBtn">清空</button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
-            </div>
+            }
+            else {
+                <div class="panel panel-danger">
+                    <div class="panel-heading ">出错啦</div>
+                    <div class="panel-body">
+                        @dbInfo.MessageDetail
+                    </div>
+                </div>
+            }
         </div>
         <div class="col-md-3"></div>
     </div>

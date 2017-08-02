@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using monkey.service.Db;
 
 namespace monkey.service
 {
@@ -161,5 +162,30 @@ namespace monkey.service
             return retString;
         }
 
+        /// <summary>
+        /// 检查数据库连接是否正常
+        /// </summary>
+        /// <returns></returns>
+        public static BaseResponse CheckDb() {
+            BaseResponse result = new BaseResponse();
+            try
+            {
+                using (var db = new DefaultContainer()) {
+                    if (db.Database.Exists())
+                    {
+                        return BaseResponse.getResult("数据库连接正常");
+                    }
+                    else {
+                        result.Message = "500";
+                        result.MessageDetail = "数据库连接失败";
+                    }
+                }
+            }
+            catch (Exception e) {
+                result.Message = "500";
+                result.MessageDetail = e.Message;
+            }
+            return result;
+        }
     }
 }
