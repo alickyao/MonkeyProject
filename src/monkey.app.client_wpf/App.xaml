@@ -1,0 +1,74 @@
+﻿<Application x:Class="monkey.app.client_wpf.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:monkey.app.client_wpf"
+             StartupUri="NewWindow.xaml" ShutdownMode="OnMainWindowClose"
+             Activated="Application_Activated"
+             >
+<!--
+    应用程序事件
+    Activated  当应用程序成为前台应用程序时触发。
+    Deactivated  当应用程序不再是前台应用程序时触发。
+    DispatcherUnhandledException  如果异常是由应用程序引发，但未处理，触发。
+    Exit 在应用程序关闭之前，触发，而且不能撤消。
+    FragmentNavigation  发生在应用程序的一个浏览器启动导航到内容片段导航时，会立即发生，如果所需片段在当前目录，或者，在源 XAML 目录加载后，如果所需片段在其他内容。
+    LoadCompleted  在导航到在应用程序中的一个浏览器的目录加载的分析完成并已呈现时触发。
+    Navigated  当导航到在应用程序中使用的浏览器已找到的内容时触发，这时它可能还没有完成加载。
+    Navigating 在一个新的导航由应用程序，一个浏览器请求发生。
+    NavigationFailed 出现问题，则错误，当应用程序的一个浏览器导航到所请求的内容时。
+    NavigationProgress 定期发生在应用程序中使用浏览器管理提供导航进度信息的下载过程。
+    NavigationStopped 发生在一个浏览器的 StopLoading 方法在应用程序的调用，或者，如果新的导航由浏览器请求，在当前导航正在进行的。
+    SessionEnding 当用户在注销或关闭操作系统关闭 Windows 会话时发生。
+    Startup 当 Application 对象的 Run 方法调用，发生。
+    
+    应用程序的关闭
+    OnLastWindowClose（默认值）：应用程序关闭时，或最后一个窗口关闭时关闭，或调用Application对象的Shutdown() 方法时，应用程序关闭。
+    OnMainWindowClose：启动窗体关闭或调用Application对象的Shutdown()方法时，应用程序关闭。（和C#的Windows应用程序的关闭模式比较类似）
+    OnExplicitShutdown：只有在调用Application对象的Shutdown()方法时，应用程序才会关闭。
+-->
+    
+    <Application.Resources>
+        <!-- Header text style -->
+        <Style x:Key="headerTextStyle">
+            <Setter Property="Label.VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="Label.FontFamily" Value="Trebuchet MS"></Setter>
+            <Setter Property="Label.FontWeight" Value="Bold"></Setter>
+            <Setter Property="Label.FontSize" Value="18"></Setter>
+            <Setter Property="Label.Foreground" Value="#0066cc"></Setter>
+        </Style>
+        <!-- Label style -->
+        <Style x:Key="labelStyle" TargetType="{x:Type Label}">
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="0,0,0,5" />
+        </Style>
+        <!-- DataGrid header style -->
+        <Style x:Key="columnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="Height" Value="35" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="Background" Value="#4E87D4" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <!-- List header style -->
+        <Style x:Key="listHeaderStyle" TargetType="{x:Type Border}">
+            <Setter Property="Height" Value="35" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="Background" Value="#4E87D4" />
+        </Style>
+        <!-- List header text style -->
+        <Style x:Key="listHeaderTextStyle" TargetType="{x:Type Label}">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+        <!-- Button style -->
+        <Style x:Key="buttonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="125" />
+            <Setter Property="Height" Value="25" />
+            <Setter Property="Margin" Value="0,10,0,0" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+
+    </Application.Resources>
+</Application>

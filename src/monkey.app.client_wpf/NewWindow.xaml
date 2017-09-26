@@ -1,0 +1,19 @@
+﻿<Window x:Class="monkey.app.client_wpf.NewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:monkey.app.client_wpf"
+        mc:Ignorable="d"
+        Title="NewWindow" Height="600" Width="800">
+    <Grid>
+        <StackPanel HorizontalAlignment="Left" Height="249" Margin="10,10,0,0" VerticalAlignment="Top" Width="272" Grid.ColumnSpan="2">
+            <Label x:Name="lblHello" Content="欢迎来到WPF的世界"/>
+            <Button x:Name="btnThd" Content="多线程同步调用" Click="btnThd_Click"/>
+            <Button x:Name="btnAppBeginInvoke" Content="BeginInvoke 异步调用" Click="btnAppBeginInvoke_Click"/>
+            <Button x:Name="canvasBtn" Content="Canvas" Click="canvasBtn_Click"/>
+            <Button x:Name="button" Content="WrapPanel" Click="button_Click"/>
+        </StackPanel>
+
+    </Grid>
+</Window>

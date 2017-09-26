@@ -83,6 +83,11 @@
     <Compile Include="ProjectInstaller.Designer.cs">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </Compile>
+    <Compile Include="Service\PingTelSwitch.cs" />
+    <Compile Include="Service\SysHelp.cs" />
+    <Compile Include="Service\SysLog.cs" />
+    <Compile Include="Service\SysThreading.cs" />
+    <Compile Include="Service\UshangService.cs" />
     <Compile Include="TimeQuartz.cs">
       <SubType>Component</SubType>
     </Compile>
