@@ -1,0 +1,41 @@
+﻿@using monkey.service.Fun.Doc;
+@{
+    //显示一个图片标题与描述表单
+    Layout = null;
+}
+@model BaseDocImgFile
+
+<li class="DocImgFileLiBox">
+    <form class="DocImgFileInfo">
+        <table class="formtable" style="width:100%;">
+            <tr>
+                <td style="width:50px; text-align:center;" class="DocImgBtnList">
+                    <div><a href="javascript:void(0)" class="easyui-linkbutton DocImgSortUpBtn" data-options="iconCls:'icon-arrow_up'"></a></div>
+                    <div><a href="javascript:void(0)" class="easyui-linkbutton DocImgDelBtn" data-options="iconCls:'icon-no'"></a></div>
+                    <div><a href="javascript:void(0)" class="easyui-linkbutton DocImgSortDownBtn" data-options="iconCls:'icon-arrow_down'"></a></div>
+                </td>
+                <td style="width:200px;">@try
+                {
+                    <a href="@Model.FilePath" target="_blank"><img src="@BaseFile.GetImgFileThumbnailPath(Model.FilePath,new GetImgFileThumbnailRequest())" /></a>
+                }
+                catch(Exception e)
+                {
+                    <div style="width:200px; height:200px; overflow:hidden;">@e.Message</div>
+                }</td>
+                <td style="vertical-align:top">
+                    <table>
+                        <tr>
+                            <td class="t">标题</td>
+                            <td><input class="easyui-textbox" data-options="" name="Caption" style="width:300px" value="@Model.Caption"></td>
+                        </tr>
+                        <tr>
+                            <td class="t">描述</td>
+                            <td><input class="easyui-textbox" data-options="multiline:true" name="Descript" style="width:300px;height:152px;" value="@Model.Descript"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <input type="hidden" name="FileId" value="@Model.FileId" />
+    </form>
+</li>
