@@ -57,7 +57,7 @@ namespace monkey.app.timequartz.Service
         /// <summary>
         /// 连续超过多少次则发送错误报告
         /// </summary>
-        const int ErrorCountMax = 3;
+        const int ErrorCountMax = 1;
 
         /// <summary>
         /// 执行
