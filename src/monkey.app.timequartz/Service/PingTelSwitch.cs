@@ -48,6 +48,17 @@ namespace monkey.app.timequartz.Service
         /// </summary>
         const int SendMsgTimeInterval = 30;
 
+
+        /// <summary>
+        /// 错误计数器
+        /// </summary>
+        public static int ErrorCount = 0;
+
+        /// <summary>
+        /// 连续超过多少次则发送错误报告
+        /// </summary>
+        const int ErrorCountMax = 3;
+
         /// <summary>
         /// 执行
         /// </summary>
@@ -70,19 +81,23 @@ namespace monkey.app.timequartz.Service
                     IsSendMsg = false;
                     SendMsgTime = null;
                     FirstSendMsgTime = null;
+                    ErrorCount = 0;
                 }
                 else {
+                    ErrorCount = ErrorCount + 1;
                     //其他情况，写入错误日志以及发起通知等操作
-                    SysLog.CreateTextLog(LogType.error, msg);
+                    SysLog.CreateTextLog(LogType.error, msg + string.Format(",error count is {0}", ErrorCount));
                     string postString = "发现成都公司电话交换机链接失败";
                     if (!IsSendMsg)
                     {
-                        //没有发送错误报告，立即发送错误报告
-                        SysLog.CreateTextLog(LogType.error, "发生错误立即发送错误报告");
-                        IsSendMsg = true;
-                        SendMsgTime = DateTime.Now;
-                        FirstSendMsgTime = DateTime.Now;
-                        UshangService.UploadNotice(postString, true);
+                        //没有发送错误报告，并且超过了错误累计的上限，立即发送错误报告
+                        if (ErrorCount > ErrorCountMax) {
+                            SysLog.CreateTextLog(LogType.error, "发生错误立即发送错误报告");
+                            IsSendMsg = true;
+                            SendMsgTime = DateTime.Now;
+                            FirstSendMsgTime = DateTime.Now;
+                            UshangService.UploadNotice(postString, true);
+                        }
                     }
                     else {
                         if (SendMsgTime.Value.AddMinutes(SendMsgTimeInterval) <= DateTime.Now)
