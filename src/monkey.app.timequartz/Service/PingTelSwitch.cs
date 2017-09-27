@@ -92,7 +92,7 @@ namespace monkey.app.timequartz.Service
                     {
                         //没有发送错误报告，并且超过了错误累计的上限，立即发送错误报告
                         if (ErrorCount > ErrorCountMax) {
-                            SysLog.CreateTextLog(LogType.error, "发生错误立即发送错误报告");
+                            SysLog.CreateTextLog(LogType.error, string.Format("错误已经连续{0}次发生，执行发送错误报告至U上商侣后台以及短信通知管理员", ErrorCount));
                             IsSendMsg = true;
                             SendMsgTime = DateTime.Now;
                             FirstSendMsgTime = DateTime.Now;
