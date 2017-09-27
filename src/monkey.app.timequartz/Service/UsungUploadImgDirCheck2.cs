@@ -20,7 +20,7 @@ namespace monkey.app.timequartz.Service
         public string SaveFileName { get; set; }
 
         /// <summary>
-        /// U上商侣 图片下载检查
+        /// U上商侣 图片下载检查 - 通过第二个URL来访问
         /// </summary>
         /// <param name="host"></param>
         /// <param name="saveFileName"></param>
