@@ -88,6 +88,8 @@
     <Compile Include="Service\SysLog.cs" />
     <Compile Include="Service\SysThreading.cs" />
     <Compile Include="Service\UshangService.cs" />
+    <Compile Include="Service\UsungUploadImgDirCheck.cs" />
+    <Compile Include="Service\UsungUploadImgDirCheck2.cs" />
     <Compile Include="TimeQuartz.cs">
       <SubType>Component</SubType>
     </Compile>

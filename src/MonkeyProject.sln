@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "monkey.app.timequartz", "mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "monkey.app.client_wpf", "monkey.app.client_wpf\monkey.app.client_wpf.csproj", "{C5F659D6-2813-48A8-9E21-BC87BDF1558D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "monkey.app.test", "monkey.app.test\monkey.app.test.csproj", "{CDFD7B03-676F-4DE0-92A3-13A118579633}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,14 @@ Global
 		{C5F659D6-2813-48A8-9E21-BC87BDF1558D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C5F659D6-2813-48A8-9E21-BC87BDF1558D}.Release|x86.ActiveCfg = Release|Any CPU
 		{C5F659D6-2813-48A8-9E21-BC87BDF1558D}.Release|x86.Build.0 = Release|Any CPU
+		{CDFD7B03-676F-4DE0-92A3-13A118579633}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDFD7B03-676F-4DE0-92A3-13A118579633}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDFD7B03-676F-4DE0-92A3-13A118579633}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CDFD7B03-676F-4DE0-92A3-13A118579633}.Debug|x86.Build.0 = Debug|Any CPU
+		{CDFD7B03-676F-4DE0-92A3-13A118579633}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDFD7B03-676F-4DE0-92A3-13A118579633}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDFD7B03-676F-4DE0-92A3-13A118579633}.Release|x86.ActiveCfg = Release|Any CPU
+		{CDFD7B03-676F-4DE0-92A3-13A118579633}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,5 +91,6 @@ Global
 		{798954E9-6835-40DB-96A6-2C0A8FA06B31} = {54485B0E-BFB0-4DD8-9007-6409D5547D1D}
 		{65330AF6-7723-4186-8643-843EF866E634} = {54485B0E-BFB0-4DD8-9007-6409D5547D1D}
 		{C5F659D6-2813-48A8-9E21-BC87BDF1558D} = {54485B0E-BFB0-4DD8-9007-6409D5547D1D}
+		{CDFD7B03-676F-4DE0-92A3-13A118579633} = {54485B0E-BFB0-4DD8-9007-6409D5547D1D}
 	EndGlobalSection
 EndGlobal

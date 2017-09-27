@@ -17,6 +17,8 @@ namespace monkey.app.timequartz
             //SysHelp.HttpGet("http://127.0.0.1:8701/api/Timer/DoScan");
             List<IThreading> runList = new List<IThreading>();
             runList.Add(new PingTelSwitch());
+            runList.Add(new UsungUploadImgDirCheck("https://api.iusung.com", "from_api"));
+            runList.Add(new UsungUploadImgDirCheck2("https://adm.iusung.com", "from_adm"));
             foreach (var r in runList)
             {
                 Thread t = new Thread(new ThreadStart(r.Run));
