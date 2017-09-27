@@ -39,6 +39,16 @@ namespace monkey.app.timequartz.Service
         }
 
         /// <summary>
+        /// 错误计数器
+        /// </summary>
+        public static int ErrorCount = 0;
+
+        /// <summary>
+        /// 连续超过多少次则发送错误报告
+        /// </summary>
+        const int ErrorCountMax = 10;
+
+        /// <summary>
         /// 执行
         /// </summary>
         public void Run()
@@ -66,18 +76,23 @@ namespace monkey.app.timequartz.Service
                     //曾经发送过错误报告，发送已修复报告
                     UshangService.UploadNotice(string.Format("U上商侣图片已经可正常通过 {0} 进行访问", this.Host), true);
                 }
+                ErrorCount = 0;
                 IsSendMsg = false;
             }
             catch (Exception e)
             {
+                ErrorCount = ErrorCount + 1;
                 //记录到错误日志
-                SysLog.CreateTextLog(LogType.error, string.Format("Download file from [{0}] is fail,Error message is [{1}]", this.Host, e.Message));
+                SysLog.CreateTextLog(LogType.error, string.Format("Download file from [{0}] is fail,Error message is [{1}],ErrorCount is {2}", this.Host, e.Message, ErrorCount));
                 if (!IsSendMsg)
                 {
-                    //没有发送错误报告-立即发送
-                    IsSendMsg = true;
-                    UshangService.UploadNotice(string.Format("发现U上商侣图片无法从 {0} 进行访问，错误提示：{1}", this.Host, e.Message
-                        ), true);
+                    //没有发送错误报告-检查错误计数器
+                    if (ErrorCount > ErrorCountMax)
+                    {
+                        IsSendMsg = true;
+                        UshangService.UploadNotice(string.Format("发现U上商侣图片无法从 {0} 进行访问，错误提示：{1}", this.Host, e.Message
+                            ), true);
+                    }
                 }
             }
         }
