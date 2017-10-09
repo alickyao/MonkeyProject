@@ -73,7 +73,7 @@ namespace monkey.app.timequartz.Service
                 SysLog.CreateTextLog(LogType.runing, string.Format("Download file from [{0}] is success", fileUrl));
                 if (IsSendMsg) {
                     //曾经发送过错误报告，发送已修复报告
-                    UshangService.UploadNotice(string.Format("U上商侣图片已经可正常通过 {0} 进行访问",this.Host), true);
+                    //UshangService.UploadNotice(string.Format("U上商侣图片已经可正常通过 {0} 进行访问",this.Host), true);
                 }
                 ErrorCount = 0;
                 IsSendMsg = false;
@@ -86,8 +86,8 @@ namespace monkey.app.timequartz.Service
                     //没有发送错误报告-检查错误计数器
                     if (ErrorCount > ErrorCountMax) {
                         IsSendMsg = true;
-                        UshangService.UploadNotice(string.Format("发现U上商侣图片无法从 {0} 进行访问，错误提示：{1}", this.Host, e.Message
-                            ), true);
+                        //UshangService.UploadNotice(string.Format("发现U上商侣图片无法从 {0} 进行访问，错误提示：{1}", this.Host, e.Message
+                        //    ), true);
                     }
                 }
             }
