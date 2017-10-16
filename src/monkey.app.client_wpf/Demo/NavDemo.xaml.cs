@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace monkey.app.client_wpf
+namespace monkey.app.client_wpf.Demo
 {
     /// <summary>
-    /// ExpenseReportPage.xaml 的交互逻辑
+    /// NavDemo.xaml 的交互逻辑
     /// </summary>
-    public partial class ExpenseReportPage : Page
+    public partial class NavDemo : Page
     {
-        public ExpenseReportPage()
+        public NavDemo()
         {
             InitializeComponent();
         }

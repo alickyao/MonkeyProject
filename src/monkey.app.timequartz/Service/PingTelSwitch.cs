@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using monkey.app.timequartz;
 using System.Net.NetworkInformation;
+using System.Threading;
 
 namespace monkey.app.timequartz.Service
 {
@@ -66,10 +67,38 @@ namespace monkey.app.timequartz.Service
         {
             try
             {
-                Ping p = new Ping();
-                var pR = p.Send(HOST);
-                string msg = string.Format("ping {0} is {1}", HOST, pR.Status.ToString());
-                if (pR.Status == IPStatus.Success)
+                //变更为PING 11次 间隔1秒
+
+                int eC = 0;
+                int sC = 0;
+                bool isSuccess = false;
+                List<string> eCString = new List<string>();
+                for (int i = 0; i < 11; i++)
+                {
+                    Ping p = new Ping();
+                    var rR = p.Send(HOST);
+                    if (rR.Status == IPStatus.Success)
+                    {
+                        sC = sC + 1;
+                    }
+                    else {
+                        eC = eC + 1;
+                        eCString.Add(rR.Status.ToString());
+                    }
+                    Thread.Sleep(1000);
+                }
+
+                if (eC > sC)
+                {
+                    //错误比正确多
+                }
+                else {
+                    //正确比错误多
+                    isSuccess = true;
+                }
+
+                string msg = string.Format("ping {0} result [Success time:{1},Error time:{2},error String List is: {3}]", HOST, sC, eC, eCString.Count > 0 ? string.Join(",", eCString) : "none");
+                if (isSuccess)
                 {
                     //成功，写入日志。
                     SysLog.CreateTextLog(LogType.runing, msg);

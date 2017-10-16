@@ -10,18 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using monkey.app.client_wpf.Demo;
 
 namespace monkey.app.client_wpf
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : NavigationWindow
+    public partial class MainWindow : Window
     {
         public MainWindow()
         {
+            this.Content = new NavDemo();//指定WINDOW的内容为一个PAGE
             InitializeComponent();
         }
     }

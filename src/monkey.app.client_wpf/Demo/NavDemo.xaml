@@ -1,0 +1,24 @@
+﻿<Page x:Class="monkey.app.client_wpf.Demo.NavDemo"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:monkey.app.client_wpf.Demo"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="800"
+      Title="NavDemo">
+
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="43*" Name="TOP" />
+            <RowDefinition Height="557*" Name="CENTER"/>
+            <RowDefinition Height="20" Name="FOOTER"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="DEMO导航窗口" Grid.Row="0" VerticalAlignment="Center" Margin="10,0,0,0" FontWeight="Bold"></TextBlock>
+        <Grid Grid.Row="1">
+        </Grid>
+        <Grid Grid.Row="2" Background="#FF9EE9F5">
+            <TextBlock Text="演示程序" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+        </Grid>
+    </Grid>
+</Page>
