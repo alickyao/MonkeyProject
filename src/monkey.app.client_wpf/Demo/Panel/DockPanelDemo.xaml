@@ -1,0 +1,39 @@
+﻿<Page x:Class="monkey.app.client_wpf.Demo.Panel.DockPanelDemo"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:monkey.app.client_wpf.Demo.Panel"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+      Title="DockPanelDemo">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="43*" Name="TOP" />
+            <RowDefinition Height="557*" Name="CENTER"/>
+        </Grid.RowDefinitions>
+        <WrapPanel VerticalAlignment="Center" Grid.Row="0">
+            <Button Name="Back"  Margin="10,0,0,0" HorizontalAlignment="Left" Click="Back_Click">返回</Button>
+        </WrapPanel>
+        <StackPanel Grid.Row="1" Margin="10,0">
+            <TextBlock>Demo\Panel\DockPanelDemo.xaml</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="0,10,0,10">停靠面板，可以将面板的某一边指定给每个元素，当面板大小变化时，按钮将根据指定的边进行停靠。在DockPanel中，指定停靠边的控件，会根据定义的顺序占领边角，所有控件绝不会交叠。</TextBlock>
+            <DockPanel>
+                <Button DockPanel.Dock="Top">Button1</Button>
+                <Button DockPanel.Dock="Bottom">Button2</Button>
+                <Button DockPanel.Dock="Left">Button3</Button>
+                <Button DockPanel.Dock="Right">Button4</Button>
+                <Button>Button5</Button>
+            </DockPanel>
+            <TextBlock TextWrapping="Wrap" Margin="0,10,0,10">默认情况下，后添加的元素只能使用剩余空间，最后一个元素填充所有剩余空间。如果不希望最后一个元素填充剩余区域，可以将DockPanel属性LastChildFill设置为False。</TextBlock>
+            <DockPanel LastChildFill="False">
+                <Button DockPanel.Dock="Left">Button1</Button>
+                <Button DockPanel.Dock="Right">Button2</Button>
+                <Button DockPanel.Dock="Top">Button3</Button>
+                <Button DockPanel.Dock="Bottom">Button4</Button>
+                <Button>Button5</Button>
+            </DockPanel>
+        </StackPanel>
+    </Grid>
+</Page>

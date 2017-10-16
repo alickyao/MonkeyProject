@@ -1,0 +1,45 @@
+﻿<Page x:Class="monkey.app.client_wpf.Demo.Panel.GridDemo"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:monkey.app.client_wpf.Demo.Panel"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+      Title="GridDemo">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" Name="TOP" />
+            <RowDefinition Height="Auto" Name="CENTER"/>
+            <RowDefinition Name="Footer"/>
+        </Grid.RowDefinitions>
+        <WrapPanel VerticalAlignment="Center" Grid.Row="0" Height="20" Margin="0,6">
+            <Button Name="Back" Margin="10,0,0,0" HorizontalAlignment="Left" Click="Back_Click">返回</Button>
+        </WrapPanel>
+        <StackPanel Grid.Row="1" Margin="10,0">
+            <TextBlock>Demo\Panel\GridDemo.xaml</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="0,10,0,10">网格面板，以表格形式布局元素，对于整个面板上的元素进行布局，有效地解决多行之间、多列之间位置的一致性。Grid很像网页中的Table，定义一个网格，需要定义行、列，划分单元格，坐标从(0,0)开始。列宽和行高，分别可以在ColumnDefinition、RowDefinition里面指定Width、Height的值。</TextBlock>
+        </StackPanel>
+        <Grid Grid.Row="2" Background="Gainsboro">
+            <!--定义列 2列-->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <!--定义行 3行-->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <!--定义元素，并指定单元格-->
+            <TextBlock Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">第1列，第1行</TextBlock>
+            <TextBlock Grid.Column="0" Grid.Row="1">第1列，第2行</TextBlock>
+            <TextBlock Grid.Column="0" Grid.Row="2">第1列，第3行</TextBlock>
+            <Button Grid.Column="1" Grid.Row="0">第2列，第1行</Button>
+            <Button Grid.Column="1" Grid.Row="1">第2列，第2行</Button>
+            <Button Grid.Column="1" Grid.Row="2">第2列，第3行</Button>
+        </Grid>
+    </Grid>
+</Page>

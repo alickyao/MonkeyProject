@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using monkey.app.client_wpf.Demo.Panel;
+using monkey.app.client_wpf.Demo.Platform;
 
 namespace monkey.app.client_wpf.Demo
 {
@@ -20,9 +22,100 @@ namespace monkey.app.client_wpf.Demo
     /// </summary>
     public partial class NavDemo : Page
     {
+
         public NavDemo()
         {
+            
             InitializeComponent();
+            
         }
+
+        #region -- 布局基本
+        /// <summary>
+        /// 栈面板，可以将元素排列成一行或者一列
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StackPanel_Click(object sender, RoutedEventArgs e)
+        {
+            var pWin = Window.GetWindow(this);
+            StackPanelDemo p = new StackPanelDemo();
+            pWin.Content = p;
+        }
+
+        /// <summary>
+        /// 环绕面板，当元素布局到达边界时，可以自动换行
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void WrapPanel_Click(object sender, RoutedEventArgs e)
+        {
+            var pWin = Window.GetWindow(this);
+            WrapPanelDemo p = new WrapPanelDemo();
+            pWin.Content = p;
+        }
+
+        /// <summary>
+        /// 停靠面板
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DockPanel_Click(object sender, RoutedEventArgs e)
+        {
+            var pWin = Window.GetWindow(this);
+            DockPanelDemo p = new DockPanelDemo();
+            pWin.Content = p;
+        }
+
+        /// <summary>
+        /// 画布
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Canvas_Click(object sender, RoutedEventArgs e)
+        {
+            var pWin = Window.GetWindow(this);
+            CanvasDemo p = new CanvasDemo();
+            pWin.Content = p;
+        }
+
+        /// <summary>
+        /// 网格
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Grid_Click(object sender, RoutedEventArgs e)
+        {
+            var pWin = Window.GetWindow(this);
+            GridDemo p = new GridDemo();
+            pWin.Content = p;
+        }
+
+        /// <summary>
+        /// 均布网格
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UniformGrid_Click(object sender, RoutedEventArgs e)
+        {
+            var pWin = Window.GetWindow(this);
+            UniformGridDemo p = new UniformGridDemo();
+            pWin.Content = p;
+        }
+        #endregion
+
+        #region 布局-实例
+        /// <summary>
+        /// 通用后台界面布局 - 演示
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Platform_Click(object sender, RoutedEventArgs e)
+        {
+            PlatformDemo p = new PlatformDemo();
+            p.Show();
+        }
+        #endregion
+
     }
 }

@@ -64,6 +64,27 @@
     <Compile Include="Demo\NavDemo.xaml.cs">
       <DependentUpon>NavDemo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Demo\Panel\CanvasDemo.xaml.cs">
+      <DependentUpon>CanvasDemo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Panel\DockPanelDemo.xaml.cs">
+      <DependentUpon>DockPanelDemo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Panel\GridDemo.xaml.cs">
+      <DependentUpon>GridDemo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Panel\StackPanelDemo.xaml.cs">
+      <DependentUpon>StackPanelDemo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Panel\UniformGridDemo.xaml.cs">
+      <DependentUpon>UniformGridDemo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Panel\WrapPanelDemo.xaml.cs">
+      <DependentUpon>WrapPanelDemo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Platform\PlatformDemo.xaml.cs">
+      <DependentUpon>PlatformDemo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -95,6 +116,34 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Demo\NavDemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Demo\Panel\CanvasDemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Demo\Panel\DockPanelDemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Demo\Panel\GridDemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Demo\Panel\StackPanelDemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Demo\Panel\UniformGridDemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Demo\Panel\WrapPanelDemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Demo\Platform\PlatformDemo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
