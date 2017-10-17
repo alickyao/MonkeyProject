@@ -7,6 +7,29 @@
         mc:Ignorable="d"
         Title="PlatformMain" Height="768" Width="1024">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Grid.ColumnSpan="2" Background="#FF73CBEC">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+        </Grid>
+        <GroupBox Grid.Row="1" Grid.Column="0" Background="White"
+            Header="Recent Projects">...</GroupBox>
+        <GroupBox Grid.Row="2" Grid.Column="0" Background="White"
+            Header="Getting Started">...</GroupBox>
+        <GroupBox Grid.Row="3" Grid.Column="0" Background="White"
+            Header="Headlines">...</GroupBox>
     </Grid>
 </Window>
