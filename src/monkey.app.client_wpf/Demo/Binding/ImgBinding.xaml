@@ -1,0 +1,72 @@
+﻿<Window x:Class="monkey.app.client_wpf.Demo.Binding.ImgBinding"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:c="clr-namespace:System.Collections;assembly=mscorlib"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:monkey.app.client_wpf.Demo.Binding"
+        mc:Ignorable="d"
+        Title="ImgBinding" Height="768" Width="1024">
+    <Window.Resources>
+        <DataTemplate x:Key="itemTemplate">
+            <CheckBox Name="cb" Content="{Binding}"></CheckBox>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Month}" Value="6">
+                    <Setter TargetName="cb" Property="IsChecked" Value="True"></Setter>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+        <Style TargetType="CheckBox">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="IsChecked" Value="True"></Setter>
+                    <Setter Property="Foreground" Value="Red"></Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
+    <Grid>
+        <Menu>
+            <MenuItem Header="File">
+                <MenuItem>
+                    <MenuItem.Header>
+                        <Button>ok</Button>
+                    </MenuItem.Header>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+
+        <StackPanel Margin="10,20,10,10">
+            <TextBlock>图片绑定</TextBlock>
+            <ListBox ItemTemplate="{StaticResource itemTemplate}">
+                <ListBox.ItemsSource>
+                    <c:ArrayList>
+                        <sys:DateTime>2016-9-10</sys:DateTime>
+                        <sys:DateTime>2016-10-11</sys:DateTime>
+                        <sys:DateTime>2016-6-11</sys:DateTime>
+                    </c:ArrayList>
+                </ListBox.ItemsSource>
+            </ListBox>
+            <Rectangle Height="100" Width="100" Fill="Blue" Opacity="0.5">
+                <Rectangle.Triggers>
+                    <EventTrigger RoutedEvent="Mouse.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard TargetProperty="(Rectangle.Opacity)">
+                                <DoubleAnimation To="1" Duration="0:0:1"></DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Mouse.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard TargetProperty="(Rectangle.Opacity)">
+                                <DoubleAnimation To="0.5" Duration="0:0:1"></DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Rectangle.Triggers>
+            </Rectangle>
+        </StackPanel>
+    </Grid>
+</Window>

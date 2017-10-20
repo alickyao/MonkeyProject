@@ -21,7 +21,17 @@ namespace monkey.app.client_wpf
         /// <param name="e"></param>
         private void Application_Activated(object sender, EventArgs e)
         {
-            //throw new NotImplementedException();
+            Console.WriteLine("程序设置到前台");
+        }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            Console.WriteLine("程序已经退出");
+        }
+
+        private void Application_Deactivated(object sender, EventArgs e)
+        {
+            Console.WriteLine("程序已到后台");
         }
     }
 }

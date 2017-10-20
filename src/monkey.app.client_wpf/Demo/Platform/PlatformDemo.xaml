@@ -6,6 +6,12 @@
         xmlns:local="clr-namespace:monkey.app.client_wpf.Demo.Platform"
         mc:Ignorable="d"
         Title="PlatformMain" Height="768" Width="1024">
+    <Window.Resources>
+        <local:UserInfo x:Key="User1"></local:UserInfo>
+        <DataTemplate x:Key="UserList">
+            <TextBlock Text="{Binding Path=FullName}"></TextBlock>
+        </DataTemplate>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -17,19 +23,39 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Grid Grid.Row="0" Grid.ColumnSpan="2" Background="#FF73CBEC">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Grid.ColumnSpan="2" Background="#FF73CBEC" Height="30">
             
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                <TextBlock FontFamily="Rockwell Extra Bold" FontSize="25.333" Foreground="#FF226787"><Span FontFamily="Showcard Gothic">HooHa</Span> Monkey</TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="1">
+                <Button>业务</Button>
+                <Button>资源</Button>
+                <Button>管理</Button>
+            </StackPanel>
+            <WrapPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,10,0">
+                <TextBlock x:Name="UserName" Text="{Binding Path=FullName}"></TextBlock>
+                <TextBlock x:Name="Time" Text="{Binding}">
+                </TextBlock>
+            </WrapPanel>
         </Grid>
-        <GroupBox Grid.Row="1" Grid.Column="0" Background="White"
-            Header="Recent Projects">...</GroupBox>
+        <ListBox Grid.Row="1" x:Name="UserListBox" Grid.Column="0" ItemsSource="{Binding}" ItemTemplate="{StaticResource UserList}" BorderBrush="{x:Null}">
+        </ListBox>
         <GroupBox Grid.Row="2" Grid.Column="0" Background="White"
             Header="Getting Started">...</GroupBox>
         <GroupBox Grid.Row="3" Grid.Column="0" Background="White"
             Header="Headlines">...</GroupBox>
+        <TabControl Grid.Row="1" Grid.Column="1" Grid.RowSpan="3">
+            <TabItem Header="工作台">
+                <Frame x:Name="WorkTable"></Frame>
+            </TabItem>
+            <TabItem Header="具体业务">
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

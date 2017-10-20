@@ -7,33 +7,65 @@
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="800"
       Title="NavDemo">
+    <Page.Resources>
 
+        <!-- 对应所有TEXTBLOCK的样式 -->
+        <Style TargetType="TextBlock">
+            <Setter Property="LineHeight" Value="18"></Setter>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="TitleBlockBig">
+            <Setter Property="FontSize" Value="26"></Setter>
+            <Setter Property="FontWeight" Value="Bold"></Setter>
+            <Setter Property="Foreground" Value="#ff6600"></Setter>
+        </Style>
+        <!-- 样式的继承 -->
+        <Style TargetType="TextBlock" BasedOn="{StaticResource TitleBlockBig}" x:Key="TitleBlock">
+            <Setter Property="FontSize" Value="16"></Setter>
+            <Setter Property="Foreground" Value="#666"></Setter>
+        </Style>
+        <!-- 重写所有按钮的基本结构 -->
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="0,10,10,0"></Setter>
+        </Style>
+    </Page.Resources>
     <Grid Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="43*" Name="TOP" />
+            <RowDefinition Height="Auto" Name="TOP" />
             <RowDefinition Height="557*" Name="CENTER"/>
             <RowDefinition Height="20" Name="FOOTER"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="DEMO导航" Grid.Row="0" VerticalAlignment="Center" Margin="10,0,0,0" FontWeight="Bold"></TextBlock>
+        <StackPanel  Grid.Row="0">
+            <TextBlock Style="{StaticResource TitleBlockBig}" Text="DEMO导航" VerticalAlignment="Center" Margin="10,10,0,10"></TextBlock>
+            <WrapPanel Margin="10,0,0,0">
+                <TextBlock Text="当前显卡级别："></TextBlock>
+                <TextBlock x:Name="RendertierTextBlock"></TextBlock>
+            </WrapPanel>
+        </StackPanel>
+        
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="10,0,10,10" Orientation="Vertical">
                 <StackPanel>
-                    <TextBlock FontWeight="Bold" Margin="0,0,0,10">Panel 相关</TextBlock>
+                    <TextBlock Style="{StaticResource TitleBlock}"  Margin="0,10,0,10">Panel 相关</TextBlock>
                     <TextBlock TextWrapping="Wrap">应用程序界面设计中，合理的元素布局至关重要，它可以方便用户使用，并将信息清晰合理地展现给用户。WPF提供了一套功能强大的工具——面板（Panel），来控制用户界面的布局。你可以使用这些面板控件来排布元素。如果内置布局控件不能满足需要的话，还可以创建自定义的布局元素。
                     </TextBlock>
                 </StackPanel>
                 <WrapPanel Orientation="Horizontal">
-                    <Button Name="StackPanel" Margin="0,10,10,0" Click="StackPanel_Click">StackPanel（栈面板）</Button>
-                    <Button Name="WrapPanel" Margin="0,10,10,0" Click="WrapPanel_Click">WrapPanel（环绕面板）</Button>
-                    <Button Name="DockPanel" Margin="0,10,10,0" Click="DockPanel_Click">DockPanel（停靠面板）</Button>
-                    <Button Name="Canvas" Margin="0,10,10,0" Click="Canvas_Click">Canvas（画布）</Button>
-                    <Button Name="Grid" Margin="0,10,10,0" Click="Grid_Click">Grid（网格面板）</Button>
-                    <Button Name="UniformGrid" Margin="0,10,10,0" Click="UniformGrid_Click">UniformGrid（均布网格）</Button>
+                    <Button Name="StackPanel" Click="StackPanel_Click">StackPanel（栈面板）</Button>
+                    <Button Name="WrapPanel" Click="WrapPanel_Click">WrapPanel（环绕面板）</Button>
+                    <Button Name="DockPanel" Click="DockPanel_Click">DockPanel（停靠面板）</Button>
+                    <Button Name="Canvas" Click="Canvas_Click">Canvas（画布）</Button>
+                    <Button Name="Grid" Click="Grid_Click">Grid（网格面板）</Button>
+                    <Button Name="UniformGrid" Click="UniformGrid_Click">UniformGrid（均布网格）</Button>
                 </WrapPanel>
                 <StackPanel Margin="0,10,0,0">
-                    <TextBlock FontWeight="Bold">布局实践</TextBlock>
-                    <WrapPanel Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource TitleBlock}">基础实践</TextBlock>
+                    </StackPanel>
+                    <WrapPanel>
                         <Button Name="Platform" Click="Platform_Click">通用后台布局界面演示</Button>
+                        <Button Name="SimpBinding" Click="SimpBinding_Click">简单数据绑定</Button>
+                        <Button Name="MesBox" Click="MesBox_Click">后台消息</Button>
+                        <Button Name="ColorPickerBtn" Click="ColorPickerBtn_Click">调色器</Button>
                     </WrapPanel>
                 </StackPanel>
             </StackPanel>

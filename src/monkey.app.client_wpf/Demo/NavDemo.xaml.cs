@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using monkey.app.client_wpf.Demo.Panel;
 using monkey.app.client_wpf.Demo.Platform;
+using monkey.app.client_wpf.Demo.Binding;
+using monkey.app.client_wpf.Demo.ColorPicker;
 
 namespace monkey.app.client_wpf.Demo
 {
@@ -27,7 +29,9 @@ namespace monkey.app.client_wpf.Demo
         {
             
             InitializeComponent();
-            
+            //获取硬件显卡加速级别  0 无 1 差 2 良
+            int rendertier = RenderCapability.Tier >> 16;
+            RendertierTextBlock.Text = rendertier.ToString();
         }
 
         #region -- 布局基本
@@ -117,5 +121,22 @@ namespace monkey.app.client_wpf.Demo
         }
         #endregion
 
+        private void SimpBinding_Click(object sender, RoutedEventArgs e)
+        {
+            ImgBinding win = new ImgBinding();
+            win.Show();
+        }
+
+        private void ColorPickerBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ColorPickerDemo win = new ColorPickerDemo();
+            win.Show();
+        }
+
+        private void MesBox_Click(object sender, RoutedEventArgs e)
+        {
+            MesBox win = new MesBox();
+            win.Show();
+        }
     }
 }

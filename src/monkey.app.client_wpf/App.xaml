@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:monkey.app.client_wpf"
              StartupUri="MainWindow.xaml" ShutdownMode="OnMainWindowClose"
-             Activated="Application_Activated"
+             Activated="Application_Activated" Exit="Application_Exit" Deactivated="Application_Deactivated"
              >
 <!--
     应用程序事件
