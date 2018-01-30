@@ -98,8 +98,18 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Demo\Baodian\DefaultCtrXaml.xaml.cs">
+      <DependentUpon>DefaultCtrXaml.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Baodian\SimpFormTest.xaml.cs">
+      <DependentUpon>SimpFormTest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Baodian\StudyXAMl.xaml.cs">
+      <DependentUpon>StudyXAMl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Demo\Binding\ImgBinding.xaml.cs">
       <DependentUpon>ImgBinding.xaml</DependentUpon>
     </Compile>
@@ -157,6 +167,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Content Include="Config\appsettings.config" />
     <None Include="monkey.app.client_wpf_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -169,6 +180,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Demo\Baodian\DefaultCtrXaml.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Demo\Baodian\SimpFormTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Demo\Baodian\StudyXAMl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Demo\Binding\ImgBinding.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -242,6 +265,16 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Demo\Image\130I1114401-15.jpg" />
+    <Resource Include="Demo\Image\15563RI9-7.jpg" />
+    <Resource Include="Demo\Image\LadakhIndia_ZH-CN9406594317_1920x1080.jpg" />
+    <Resource Include="Demo\Image\NottulnHerbst_ZH-CN9638949027_1920x1080.jpg" />
+    <Resource Include="Demo\Image\QuaiBranlyMuseum_ZH-CN10941225231_1920x1080.jpg" />
+    <Resource Include="Demo\Image\Rapadalen_ZH-CN11779950174_1920x1080.jpg" />
+    <Resource Include="Demo\Image\Umbrella_ZH-CN8238029705_1920x1080.jpg" />
+    <Resource Include="Demo\Image\UrbanPainters_ZH-CN8992212566_1920x1080.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

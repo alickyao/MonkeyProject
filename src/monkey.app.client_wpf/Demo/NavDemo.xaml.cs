@@ -16,6 +16,7 @@ using monkey.app.client_wpf.Demo.Panel;
 using monkey.app.client_wpf.Demo.Platform;
 using monkey.app.client_wpf.Demo.Binding;
 using monkey.app.client_wpf.Demo.ColorPicker;
+using monkey.app.client_wpf.Demo.Baodian;
 
 namespace monkey.app.client_wpf.Demo
 {
@@ -138,5 +139,39 @@ namespace monkey.app.client_wpf.Demo
             MesBox win = new MesBox();
             win.Show();
         }
+
+
+        #region -- 编程宝典
+
+        /// <summary>
+        /// XAML概述
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StudyXAML_Click(object sender, RoutedEventArgs e)
+        {
+            StudyXAMl win = new StudyXAMl();
+            win.Show();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DefaultCtrXamlBtn_Click(object sender, RoutedEventArgs e)
+        {
+            DefaultCtrXaml win = new DefaultCtrXaml();
+            win.Show();
+        }
+
+        private void FromTest_Click(object sender, RoutedEventArgs e)
+        {
+            SimpFormTest win = new SimpFormTest();
+            win.Show();
+        }
+
+        #endregion
+
+
     }
 }

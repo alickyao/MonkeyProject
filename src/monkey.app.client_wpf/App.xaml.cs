@@ -33,5 +33,11 @@ namespace monkey.app.client_wpf
         {
             Console.WriteLine("程序已到后台");
         }
+
+        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show(string.Format("error:type is {0}", e.Exception.Message));
+            e.Handled = true;
+        }
     }
 }

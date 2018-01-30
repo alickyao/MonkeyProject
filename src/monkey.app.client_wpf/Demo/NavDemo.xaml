@@ -26,6 +26,7 @@
         <!-- 重写所有按钮的基本结构 -->
         <Style TargetType="Button">
             <Setter Property="Margin" Value="0,10,10,0"></Setter>
+            <Setter Property="Padding" Value="3"></Setter>
         </Style>
     </Page.Resources>
     <Grid Background="White">
@@ -66,6 +67,16 @@
                         <Button Name="SimpBinding" Click="SimpBinding_Click">简单数据绑定</Button>
                         <Button Name="MesBox" Click="MesBox_Click">后台消息</Button>
                         <Button Name="ColorPickerBtn" Click="ColorPickerBtn_Click">调色器</Button>
+                    </WrapPanel>
+                </StackPanel>
+                <StackPanel Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource TitleBlock}">编程宝典</TextBlock>
+                    </StackPanel>
+                    <WrapPanel>
+                        <Button Name="StudyXAML" Click="StudyXAML_Click">XAML概述</Button>
+                        <Button Name="DefaultCtrXamlBtn" Click="DefaultCtrXamlBtn_Click">控件的标准模板</Button>
+                        <Button Name="FromTest" Click="FromTest_Click">表单数据绑定与获取</Button>
                     </WrapPanel>
                 </StackPanel>
             </StackPanel>

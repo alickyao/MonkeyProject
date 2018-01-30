@@ -1,0 +1,219 @@
+﻿<Window x:Class="monkey.app.client_wpf.Demo.Baodian.StudyXAMl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:monkey.app.client_wpf.Demo.Baodian"
+        mc:Ignorable="d"
+        Title="StudyXAMl" Height="600" Width="800">
+    <Window.Resources>
+        <ImageBrush x:Key="TitleBrush" Viewport="0,0,200,200" ImageSource="/Demo/Image/130I1114401-15.jpg" Opacity="0.3" ViewportUnits="Absolute" TileMode="Tile" />
+        <Style x:Key="BtnB" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource TitleBrush}">
+            </Setter>
+            <Setter Property="Control.FontSize" Value="30"></Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="red"></Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="AnTest" TargetType="TextBlock">
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Mouse.MouseEnter">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Duration="0:0:1" Storyboard.TargetProperty="FontSize" To="22"></DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Mouse.MouseLeave">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Duration="0:0:1" Storyboard.TargetProperty="FontSize"></DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="RunTest" TargetType="TextBlock">
+            <Style.Triggers>
+                <Trigger Property="FontSize" Value="12">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Duration="0:0:1" Storyboard.TargetProperty="FontSize" To="22"></DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                </Trigger>
+                <Trigger Property="FontSize" Value="22">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Duration="0:0:1" Storyboard.TargetProperty="FontSize" To="11"></DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <ControlTemplate x:Key="ButtonTemplate" TargetType="{x:Type Button}">
+            <Border BorderThickness="3" BorderBrush="Orange" CornerRadius="5" Background="Red" TextBlock.Foreground="White">
+                <ContentPresenter Margin="{TemplateBinding Padding}"></ContentPresenter>
+            </Border>
+        </ControlTemplate>
+    </Window.Resources>
+    <Grid>
+        
+        <Grid.Background>
+            <LinearGradientBrush>
+                <LinearGradientBrush.GradientStops>
+                    <GradientStop Offset="0.00" Color="#FFEEEEEE"></GradientStop>
+                    <GradientStop Offset="0.543" Color="#FFDBDCDB"></GradientStop>
+                    <GradientStop Offset="1" Color="#FF9C9C9C"></GradientStop>
+                </LinearGradientBrush.GradientStops>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="0" Margin="10">
+            <StackPanel>
+
+                <Button Margin="10" Padding="3" Template="{StaticResource ButtonTemplate}">Button with Custom Template</Button>
+
+                <Grid Height="200">
+                    <Rectangle Width="100"  Height="30" RenderTransformOrigin="0,0">
+                        <Rectangle.RenderTransform>
+                            <RotateTransform Angle="50" />
+                        </Rectangle.RenderTransform>
+                        <Rectangle.Fill>
+                            <ImageBrush ImageSource="/Demo/Image/15563RI9-7.jpg"></ImageBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </Grid>
+                <Grid Height="200">
+                    <Canvas>
+                        <Polyline x:Name="UserPolyLine" SnapsToDevicePixels="True" Stroke="Blue" Points="0,200 10,180 20,50,30,160" StrokeThickness="5" StrokeEndLineCap="Round" />
+                    </Canvas>
+                </Grid>
+                <Grid Height="200" x:Name="gs">
+                    <Grid.Background>
+                        <ImageBrush ImageSource="/Demo/Image/LadakhIndia_ZH-CN9406594317_1920x1080.jpg" Stretch="UniformToFill"></ImageBrush>
+                    </Grid.Background>
+                </Grid>
+                <Grid Height="100" Width="100" Margin="0,10,0,10">
+                    <Grid.Background>
+                        <VisualBrush Visual="{Binding ElementName=gs}"></VisualBrush>
+                    </Grid.Background>
+                </Grid>
+
+                <Button x:Name="shutdownbtn" Click="shutdownbtn_Click">关闭</Button>
+                <Button x:Name="New" Command="ApplicationCommands.New">New</Button>
+                <ProgressBar Height="20" IsIndeterminate="True"></ProgressBar>
+
+                <TextBlock Style="{StaticResource AnTest}">This Animation Test</TextBlock>
+                <TextBlock Style="{StaticResource RunTest}">AutoRun</TextBlock>
+                <Button Style="{StaticResource BtnB}" x:Name="ImgBtn"  Margin="10" Padding="5" Height="300">This is ImgBrash</Button>
+                <Slider x:Name="sliderTextFont" Value="20"  Minimum="1" Maximum="40" Margin="10" Background="#FFD15555" ></Slider>
+                <TextBlock FontSize="{Binding ElementName=sliderTextFont, Path=Value}" Margin="10">This Is it</TextBlock>
+
+                <ListBox x:Name="lit" SelectionChanged="lit_SelectionChanged">
+                    <CheckBox>option 1</CheckBox>
+                    <CheckBox>option 2</CheckBox>
+                </ListBox>
+                <TextBlock x:Name="lit_SelectedItem"></TextBlock>
+
+                <ComboBox IsEditable="True">
+                    <ComboBoxItem>
+                        <TextBlock>option 1</TextBlock>
+                    </ComboBoxItem>
+                    <ComboBoxItem>
+                        <TextBlock>option 2</TextBlock>
+                    </ComboBoxItem>
+                </ComboBox>
+                <WrapPanel Margin="10">
+                    <Button Content="This Is Begin" Foreground="{x:Static SystemColors.ActiveCaptionBrush}" IsDefault="True">
+                        <Button.ToolTip>
+                            <StackPanel>
+                                <TextBlock>hehehe</TextBlock>
+                            </StackPanel>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button Content="Cancel" IsCancel="True" Margin="10,0,0,0"></Button>
+                    <CheckBox IsChecked="{x:Null}">不确认的因素</CheckBox>
+                </WrapPanel>
+                <WrapPanel Margin="10">
+                    <Border Padding="10" Margin="0,10,10,10" BorderBrush="#FFC12E2E" CornerRadius="5" BorderThickness="5" >
+                        <ListBox>
+                            <ListBoxItem>
+                                <sys:DateTime>2017-10-15</sys:DateTime>
+                            </ListBoxItem>
+                            <ListBoxItem>
+                                <sys:DateTime>2017-11-15</sys:DateTime>
+                            </ListBoxItem>
+                        </ListBox>
+                    </Border>
+
+                </WrapPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Row="0" Grid.Column="0" Padding="3">
+                        <Grid>
+                            <Polygon Points="0,0,0,50,200,25,125,50" Fill="Red"></Polygon>
+                        </Grid>
+                    </Button>
+                    <Button Grid.Row="1" Grid.Column="0">row2</Button>
+                    <Button Grid.Row="2" Grid.Column="0">row3</Button>
+
+                    <Button Grid.Row="0" Grid.Column="2" Grid.RowSpan="3">button1</Button>
+                    <GridSplitter Width="3" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Center" Background="#FFA27070" ShowsPreview="True"></GridSplitter>
+                </Grid>
+                <StackPanel Margin="10">
+                    <Label Target="{Binding ElementName=txt_a}">Choose_a</Label>
+                    <TextBox Name="txt_a"></TextBox>
+                </StackPanel>
+                <StackPanel>
+                    <Expander ExpandDirection="Down">
+                        <Expander.Header>
+                            <Border BorderBrush="#FFD89C9C" BorderThickness="1" Padding="3" CornerRadius="3">
+                                <TextBlock>this is group 1</TextBlock>
+                            </Border>
+                        </Expander.Header>
+                        <Button>ok</Button>
+                    </Expander>
+                </StackPanel>
+                <GroupBox Header="TextBox" Margin="10">
+                    <StackPanel Margin="3">
+                        <Label>Text</Label>
+                        <TextBox x:Name="MTextBox" TextWrapping="WrapWithOverflow" MinLines="3"></TextBox>
+                        <Label>Pass</Label>
+                        <PasswordBox></PasswordBox>
+                        <Label>Rich</Label>
+                        <RichTextBox Height="100"></RichTextBox>
+                    </StackPanel>
+                </GroupBox>
+
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

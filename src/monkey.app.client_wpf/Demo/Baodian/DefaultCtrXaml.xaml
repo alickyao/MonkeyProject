@@ -1,0 +1,27 @@
+﻿<Window x:Class="monkey.app.client_wpf.Demo.Baodian.DefaultCtrXaml"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:monkey.app.client_wpf.Demo.Baodian"
+        mc:Ignorable="d"
+        Title="控件默认的模板" Height="600" Width="800" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="7*"></ColumnDefinition>
+            
+        </Grid.ColumnDefinitions>
+        <ListBox x:Name="listTypes" Grid.Column="0" SelectionChanged="listTypes_SelectionChanged"></ListBox>
+        <GridSplitter Grid.Column="1" Width="3" Background="#ccc" HorizontalAlignment="Center"></GridSplitter>
+        <Grid x:Name="detailGrid" Grid.Column="2">
+            <ScrollViewer>
+                <Border BorderThickness="1" BorderBrush="#ccc">
+                    <TextBlock x:Name="txtTemplate" TextWrapping="Wrap" LineHeight="24"></TextBlock>
+                </Border>
+            </ScrollViewer>
+            
+        </Grid>
+    </Grid>
+</Window>
